@@ -1,0 +1,48 @@
+.animeText {
+  display: inline-block;
+  text-align: inherit;
+  line-height: 1.1;
+}
+
+.word {
+  display: inline-block;
+  position: relative;
+  margin-right: 0.2rem;
+  margin-bottom: 0.2rem;
+  padding: 0.1rem 0.2rem;
+  border-radius: 2rem;
+  will-change: background-color, opacity;
+  background-color: rgba(60, 60, 60, 0);
+  opacity: 0;
+}
+
+.word span {
+  position: relative;
+  opacity: 0;
+}
+
+/* Sizes */
+.sizeSm {
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.sizeMd {
+  font-size: 2rem;
+  font-weight: 900;
+}
+
+.sizeLg {
+  font-size: 3rem;
+  font-weight: 900;
+}
+
+
+/* Plain variant: remove word pills/background entirely */
+.plain .word {
+  padding: 0;
+  border-radius: 0;
+  background-color: transparent;
+}
+
+
