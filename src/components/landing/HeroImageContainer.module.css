@@ -1,0 +1,50 @@
+/* HeroImageContainer styles */
+
+.container {
+  /* Position will be set via inline styles (absolute) */
+  overflow: hidden;
+  /* No transitions - controlled by GSAP via inline styles */
+  transition: none;
+  /* Performance optimization */
+  will-change: width, height, border-radius, transform, top, left;
+  /* Ensure proper stacking */
+  z-index: 1;
+  position: relative;
+}
+
+/* Translucent blue overlay */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--charcoal-blue);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+  /* Use brand color with opacity for translucency */
+  /* We'll control opacity via inline styles based on resizeProgress */
+  mix-blend-mode: normal;
+  /* Performance optimization */
+  will-change: opacity;
+}
+
+/* Mobile responsive breakpoint */
+@media (max-width: 767px) {
+  .container {
+    /* Mobile-specific adjustments handled in component */
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .container {
+    will-change: auto;
+    transition: none;
+  }
+  
+  .overlay {
+    will-change: auto;
+  }
+}

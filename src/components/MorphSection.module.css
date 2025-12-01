@@ -1,0 +1,27 @@
+.morphSection {
+  will-change: border-radius;
+  border-radius: 0;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.contentWrapper {
+  width: 100%;
+  height: 100%;
+  max-width: var(--container-medium);
+  margin: 0 auto;
+  padding: var(--section-padding-y-mobile) var(--section-padding-x);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .contentWrapper {
+    padding: var(--section-padding-y-mobile) var(--section-padding-x-mobile);
+  }
+}
+

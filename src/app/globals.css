@@ -1,35 +1,379 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Color Palette */
+  --charcoal-blue: #28536bff;
+  --rosy-taupe: #c2948aff;
+  --steel-blue: #7ea8beff;
+  --parchment: #f6f0edff;
+  --khaki-beige: #bbb193ff;
+
+  --background: var(--parchment);
+  --foreground: var(--charcoal-blue);
+
+  --font-serif: var(--font-spectral);
+  --font-sans: var(--font-dm-sans);
+
+  /* ===== TYPOGRAPHY TOKENS ===== */
+  
+  /* Base font size - fluid */
+  --text-base: clamp(1rem, 0.0625vw + 0.9375rem, 1.25rem); /* 16px → 20px */
+
+  /* Text scale (step-based) */
+  --text-xs: clamp(0.75rem, 0.5vw + 0.625rem, 0.875rem);   /* 12px → 14px */
+  --text-sm: clamp(0.875rem, 0.5vw + 0.75rem, 1rem);       /* 14px → 16px */
+  --text-lg: clamp(1.125rem, 0.5vw + 1rem, 1.375rem);      /* 18px → 22px */
+  --text-xl: clamp(1.25rem, 0.75vw + 1rem, 1.5rem);        /* 20px → 24px */
+  --text-2xl: clamp(1.5rem, 1vw + 1.125rem, 2rem);         /* 24px → 32px */
+  --text-3xl: clamp(2rem, 2vw + 1.25rem, 3rem);            /* 32px → 48px */
+  --text-4xl: clamp(2.5rem, 3vw + 1.5rem, 4rem);           /* 40px → 64px */
+
+  /* Semantic heading tokens (3 levels) */
+  --heading-hero: clamp(2.5rem, 4vw + 1rem, 4.5rem);       /* Hero headlines */
+  --heading-section: clamp(2rem, 3vw + 1rem, 3.5rem);      /* Section titles */
+  --heading-sub: clamp(1.5rem, 1.5vw + 1rem, 2.25rem);     /* Subsection titles */
+
+  /* Line heights */
+  --leading-tight: 1.1;
+  --leading-snug: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65;
+
+  /* Letter spacing */
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.05em;
+  --tracking-wider: 0.1em;
+  --tracking-widest: 0.2em;
+
+  /* ===== SPACING TOKENS (4px Grid) ===== */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-24: 6rem;     /* 96px */
+  --space-32: 8rem;     /* 128px */
+
+  /* Section padding (vertical) */
+  --section-padding-y: var(--space-24);
+  --section-padding-y-mobile: var(--space-16);
+
+  /* Section padding (horizontal) */
+  --section-padding-x: var(--space-8);
+  --section-padding-x-mobile: var(--space-6);
+
+  /* Container widths */
+  --container-narrow: 800px;
+  --container-medium: 1200px;
+  --container-wide: 1400px;
+  --container-max: 1600px;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  
+  /* Custom Colors */
+  --color-charcoal-blue: var(--charcoal-blue);
+  --color-rosy-taupe: var(--rosy-taupe);
+  --color-steel-blue: var(--steel-blue);
+  --color-parchment: var(--parchment);
+  --color-khaki-beige: var(--khaki-beige);
 
-/* Local font: ArtifaktElement */
-@font-face {
-  font-family: "ArtifaktElement";
-  src: url("/fonts/ArtifaktElement-Regular.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
+  /* Fonts */
+  --font-serif: var(--font-spectral);
+  --font-sans: var(--font-dm-sans);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Dark mode overrides if needed - for now using the same palette but maybe swapping background/foreground 
+       Since user said "Use these colors and different shades of these colors only", I will stick to the palette.
+       A dark mode might use charcoal-blue as background and parchment as text.
+    */
+    --background: var(--charcoal-blue);
+    --foreground: var(--parchment);
   }
 }
 
 body {
-  background: var(--background);
+  /* Always use parchment background to prevent blue flash during loader.
+     The site is designed with a light theme in mind. */
+  background: var(--parchment);
   color: var(--foreground);
-  font-family: "ArtifaktElement", Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: 400; /* Spectral looks good with lighter weights */
+}
+
+/* Accessibility: Skip to content link */
+.skip-to-content {
+  position: absolute;
+  top: -100px;
+  left: 0;
+  background: var(--charcoal-blue);
+  color: var(--parchment);
+  padding: 0.75rem 1.5rem;
+  text-decoration: none;
+  z-index: 100;
+  border-radius: 0 0 0.5rem 0;
+  font-weight: 600;
+  font-family: var(--font-sans);
+}
+
+.skip-to-content:focus {
+  top: 0;
+  outline: 2px solid var(--parchment);
+  outline-offset: 2px;
+}
+
+/* Focus visible styles for better keyboard navigation */
+*:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Lock scrolling during loader phase */
+html.is-loading {
+  overflow: hidden;
+}
+
+html.is-loading body {
+  overflow: hidden;
+}
+
+/* Loader background rise overlay */
+.hero-bg {
+  position: fixed;
+  inset: 0;
+  background-color: var(--parchment);
+  transform-origin: bottom;
+  transform: scaleY(0);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Loading counter styles */
+.counter {
+  position: fixed;
+  right: 3rem;
+  bottom: 2rem;
+  display: none; /* Hidden by default, shown via .is-loading class */
+  height: 120px;
+  font-size: 120px;
+  line-height: 150px;
+  color: var(--charcoal-blue);
+  -webkit-text-stroke: 2px var(--charcoal-blue);
+  clip-path: polygon(0 0, 100% 0, 100% 120px, 0 120px);
+  z-index: 20;
+  opacity: 1;
+  visibility: visible;
+  font-family: var(--font-serif);
+}
+
+html.is-loading .counter {
+  display: flex;
+}
+
+.counter-1,
+.counter-2,
+.counter-3 {
+  position: relative;
+  top: -15px;
+}
+
+.num1offset1 {
+  position: relative;
+  right: -30px;
+}
+
+.num1offset2 {
+  position: relative;
+  right: -15px;
+}
+
+/* Navbar & content layout */
+.site-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--space-20);
+  padding: var(--space-6);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 50;
+  background-color: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transition: background-color 0.3s ease;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+.site-nav > * {
+  pointer-events: auto;
+}
+
+.logo-slot {
+  position: absolute;
+  left: var(--space-6);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 192px;
+  height: 48px;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.nav-link {
+  color: inherit;
+  text-decoration: none;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--space-2);
+  transition: all 0.2s ease;
+  background: transparent;
+  border: 1px solid transparent;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.nav-link:hover {
+  background-color: rgba(40, 83, 107, 0.05); /* charcoal-blue with opacity */
+  border-color: rgba(40, 83, 107, 0.1);
+}
+
+.nav-link:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  background-color: rgba(40, 83, 107, 0.08);
+  border-color: rgba(40, 83, 107, 0.15);
+}
+
+.nav-link:active {
+  transform: scale(0.98);
+}
+
+.nav-items {
+  margin-left: auto;
+}
+
+.nav-divider {
+  display: none;
+}
+
+/* Content Layout */
+.content-wrapper {
+  position: relative;
+  z-index: 1;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+/* Text Reveal Demo Section */
+.text-reveal-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--section-padding-y-mobile) var(--section-padding-x-mobile);
+}
+
+.demo-container {
+  width: 100%;
+  max-width: var(--container-medium);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  align-items: center;
+}
+
+.demo-title {
+  font-size: var(--heading-section);
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: var(--space-4);
+  line-height: var(--leading-snug);
+  font-family: var(--font-serif);
+}
+
+.text-reveal-demo {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: var(--space-12) var(--space-8);
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: var(--space-6);
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Simple reveal utility */
+.reveal {
+  transform: translateY(20px);
+  opacity: 0;
+}
+
+/* Anti-flash logic */
+html.is-loading .site-content-wrapper {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+.site-content-wrapper {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .text-reveal-demo {
+    padding: var(--space-8) var(--space-4);
+  }
+
+  .site-nav {
+    height: var(--space-16);
+    padding: var(--space-4);
+  }
+
+  .logo-slot {
+    left: var(--space-4);
+    width: 192px;
+    height: 48px;
+  }
+
+  .text-reveal-section {
+    padding: var(--space-8) var(--space-4);
+  }
+
+  .demo-container {
+    gap: var(--space-8);
+  }
 }
