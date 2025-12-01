@@ -121,7 +121,7 @@ export const Landing = ({ navRef }: LandingProps) => {
 
       gsap.ticker.lagSmoothing(0);
 
-      const frameCount = 832;
+      const frameCount = 385;
 
       // --- COMBINED SCROLLTRIGGER FOR BOTH PHASES ---
       // Single ScrollTrigger handles both resize and timeline phases to avoid double-pinning

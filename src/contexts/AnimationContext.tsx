@@ -47,7 +47,7 @@ export const AnimationProvider = ({ children }: AnimationProviderProps) => {
   const [shouldPlayLoader, setShouldPlayLoader] = useState(true);
 
   // Use our image preloader
-  const { progress, imagesLoaded, preloadImages, images } = useImagePreloader(832);
+  const { progress, imagesLoaded, preloadImages, images } = useImagePreloader(385);
   const [visualProgress, setVisualProgress] = useState(0);
   const progressRef = useRef(0);
   

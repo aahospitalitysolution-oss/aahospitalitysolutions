@@ -19,7 +19,7 @@ export const LandingCanvas = forwardRef<LandingCanvasHandle, LandingCanvasProps>
     const contextRef = useRef<CanvasRenderingContext2D | null>(null);
     const videoFramesRef = useRef({ frame: 0 });
 
-    const frameCount = 832;
+    const frameCount = 385;
 
     const setCanvasSize = () => {
       const canvas = canvasRef.current;
@@ -42,7 +42,9 @@ export const LandingCanvas = forwardRef<LandingCanvasHandle, LandingCanvasProps>
       const canvasWidth = window.innerWidth;
       const canvasHeight = window.innerHeight;
 
-      context.clearRect(0, 0, canvasWidth, canvasHeight);
+      // Fill background with black first
+      context.fillStyle = "#000000";
+      context.fillRect(0, 0, canvasWidth, canvasHeight);
 
       // Use shared images array
       const img = images[videoFramesRef.current.frame];
@@ -52,21 +54,26 @@ export const LandingCanvas = forwardRef<LandingCanvasHandle, LandingCanvasProps>
 
         let drawWidth, drawHeight, drawX, drawY;
 
+        // "Cover" mode - fill viewport, may crop
         if (imageAspect > canvasAspect) {
+          // Image is wider than canvas - fit to height, crop sides
           drawHeight = canvasHeight;
           drawWidth = drawHeight * imageAspect;
-          drawX = (canvasWidth - drawWidth) / 2;
+          drawX = (canvasWidth - drawWidth) / 2; // Center horizontally
           drawY = 0;
         } else {
+          // Image is taller than canvas - fit to width, crop top/bottom
           drawWidth = canvasWidth;
           drawHeight = drawWidth / imageAspect;
           drawX = 0;
-          drawY = (canvasHeight - drawHeight) / 2;
+          // Adjust vertical position: 0 = top, 0.5 = center, 1 = bottom
+          const verticalPosition = 0.3; // Show more of the top (30% from top)
+          drawY = (canvasHeight - drawHeight) * verticalPosition;
         }
 
         context.drawImage(img, drawX, drawY, drawWidth, drawHeight);
 
-        // Overlay to darken by 5%
+        // Overlay to darken by 10%
         context.fillStyle = "rgba(0, 0, 0, 0.10)";
         context.fillRect(0, 0, canvasWidth, canvasHeight);
       }
