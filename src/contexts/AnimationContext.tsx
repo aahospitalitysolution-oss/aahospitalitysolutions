@@ -21,6 +21,9 @@ interface AnimationContextType {
   stageRef: React.RefObject<HTMLDivElement | null>;
   images: HTMLImageElement[];
   imagesLoaded: boolean;
+  allFramesLoaded: boolean;
+  getNearestLoadedFrame: (index: number) => number;
+  isFrameLoaded: (index: number) => boolean;
 }
 
 const AnimationContext = createContext<AnimationContextType | undefined>(
@@ -46,8 +49,16 @@ export const AnimationProvider = ({ children }: AnimationProviderProps) => {
   // Default to true to avoid hydration mismatch, we correct it immediately on mount
   const [shouldPlayLoader, setShouldPlayLoader] = useState(true);
 
-  // Use our image preloader
-  const { progress, imagesLoaded, preloadImages, images } = useImagePreloader(385);
+  // Use our image preloader with progressive loading
+  const { 
+    progress, 
+    imagesLoaded, 
+    preloadImages, 
+    images,
+    allFramesLoaded,
+    getNearestLoadedFrame,
+    isFrameLoaded
+  } = useImagePreloader(385);
   const [visualProgress, setVisualProgress] = useState(0);
   const progressRef = useRef(0);
   
@@ -183,7 +194,18 @@ export const AnimationProvider = ({ children }: AnimationProviderProps) => {
 
   return (
     <AnimationContext.Provider
-      value={{ loaderComplete, shouldPlayLoader, boxRef, blueRef, stageRef, images, imagesLoaded }}
+      value={{ 
+        loaderComplete, 
+        shouldPlayLoader, 
+        boxRef, 
+        blueRef, 
+        stageRef, 
+        images, 
+        imagesLoaded,
+        allFramesLoaded,
+        getNearestLoadedFrame,
+        isFrameLoaded
+      }}
     >
       {/* Loader elements - rendered globally */}
       <div ref={heroBgRef} className="hero-bg" aria-hidden="true" />

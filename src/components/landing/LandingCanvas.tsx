@@ -14,10 +14,10 @@ interface LandingCanvasProps {
 
 export const LandingCanvas = forwardRef<LandingCanvasHandle, LandingCanvasProps>(
   ({ onImagesLoaded }, ref) => {
-    const { images, imagesLoaded } = useAnimationContext();
+    const { images, imagesLoaded, getNearestLoadedFrame, isFrameLoaded } = useAnimationContext();
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const contextRef = useRef<CanvasRenderingContext2D | null>(null);
-    const videoFramesRef = useRef({ frame: 0 });
+    const videoFramesRef = useRef({ frame: 0, displayFrame: 0 });
 
     const frameCount = 385;
 
@@ -46,8 +46,8 @@ export const LandingCanvas = forwardRef<LandingCanvasHandle, LandingCanvasProps>
       context.fillStyle = "#000000";
       context.fillRect(0, 0, canvasWidth, canvasHeight);
 
-      // Use shared images array
-      const img = images[videoFramesRef.current.frame];
+      // Use the display frame (which accounts for progressive loading)
+      const img = images[videoFramesRef.current.displayFrame];
       if (img && img.complete && img.naturalWidth > 0) {
         const imageAspect = img.naturalWidth / img.naturalHeight;
         const canvasAspect = canvasWidth / canvasHeight;
@@ -80,7 +80,16 @@ export const LandingCanvas = forwardRef<LandingCanvasHandle, LandingCanvasProps>
     };
 
     const setFrame = (frame: number) => {
-      videoFramesRef.current.frame = Math.max(0, Math.min(frame, frameCount - 1));
+      const targetFrame = Math.max(0, Math.min(frame, frameCount - 1));
+      videoFramesRef.current.frame = targetFrame;
+      
+      // If the exact frame isn't loaded yet, use the nearest loaded frame
+      if (isFrameLoaded(targetFrame)) {
+        videoFramesRef.current.displayFrame = targetFrame;
+      } else {
+        videoFramesRef.current.displayFrame = getNearestLoadedFrame(targetFrame);
+      }
+      
       render();
     };
 
