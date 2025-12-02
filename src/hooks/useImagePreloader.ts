@@ -43,7 +43,11 @@ export const useImagePreloader = (frameCount: number) => {
     }
     
     // Fallback to first loaded frame
-    return loadedFrames.size > 0 ? loadedFrames.values().next().value : 0;
+    if (loadedFrames.size > 0) {
+      const firstLoaded = loadedFrames.values().next().value;
+      return firstLoaded !== undefined ? firstLoaded : 0;
+    }
+    return 0;
   }, [frameCount]);
 
   // Phase 2: Load remaining frames in background
