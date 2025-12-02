@@ -31,6 +31,9 @@ export const LandingCanvas = forwardRef<LandingCanvasHandle, LandingCanvasProps>
       canvas.height = window.innerHeight * pixelRatio;
       canvas.style.width = "100%";
       canvas.style.height = "100%";
+      
+      // Reset transformation matrix before applying scale
+      context.setTransform(1, 0, 0, 1, 0, 0);
       context.scale(pixelRatio, pixelRatio);
     };
 
