@@ -4,6 +4,7 @@ import "./globals.css";
 import { AnimationProvider } from "@/contexts/AnimationContext";
 import { MenuProvider } from "@/contexts/MenuContext";
 import { FullScreenMenu } from "@/components/FullScreenMenu/FullScreenMenu";
+import FloatingContactIcons from "@/components/FloatingContactIcons";
 
 const spectral = Spectral({
   variable: "--font-spectral",
@@ -68,6 +69,7 @@ export default function RootLayout({
         <AnimationProvider>
           <MenuProvider>
             <FullScreenMenu />
+            <FloatingContactIcons />
             {children}
           </MenuProvider>
         </AnimationProvider>

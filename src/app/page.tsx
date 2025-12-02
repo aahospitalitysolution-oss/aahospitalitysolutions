@@ -7,6 +7,8 @@ import { useMenuContext } from "@/contexts/MenuContext";
 import { Landing } from "@/components/landing/Landing";
 import { MenuButton } from "@/components/MenuButton/MenuButton";
 import { AdaptiveItem } from "@/components/AdaptiveItem";
+import ContactSection from "@/components/ContactSection";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   const { loaderComplete, shouldPlayLoader, boxRef, blueRef, stageRef } =
@@ -57,7 +59,11 @@ export default function Home() {
       {/* Main Content */}
       <main id="main-content" className="content-wrapper">
         <Landing navRef={navRef} />
+        <ContactSection />
       </main>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
