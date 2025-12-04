@@ -51,12 +51,14 @@ export const Landing = ({ navRef }: LandingProps) => {
   // State to coordinate animation initialization
   const [heroPinned, setHeroPinned] = useState(false);
 
-  // Two-phase animation state
-  const [currentPhase, setCurrentPhase] = useState<
-    "resize" | "timeline" | "complete"
-  >("resize");
-  const [resizeProgress, setResizeProgress] = useState(0);
-  const [timelineProgress, setTimelineProgress] = useState(0);
+  // Refs for scroll-driven values (no React state updates during scroll)
+  const progressRef = useRef({ resize: 0, timeline: 0 });
+  const isCompleteRef = useRef(false);
+  const heroContainerRef = useRef<HTMLDivElement | null>(null);
+
+  // Refs for animation state tracking (class toggle guards)
+  const isAadityaAnimating = useRef(false);
+  const isAaryahiAnimating = useRef(false);
 
   useEffect(() => {
     // Only run on client
@@ -400,8 +402,43 @@ export const Landing = ({ navRef }: LandingProps) => {
           if (scrolled <= resizePhaseEnd) {
             // RESIZE PHASE (0 - 100vh)
             const resizeProgress = scrolled / resizePhaseEnd;
-            setResizeProgress(resizeProgress);
-            setCurrentPhase("resize");
+            progressRef.current.resize = resizeProgress;
+            progressRef.current.timeline = 0;
+            isCompleteRef.current = false;
+
+            // Update HeroImageContainer via CSS variables
+            if (heroContainerRef.current) {
+              const scale = 0.5 + resizeProgress * 0.5; // 0.5 → 1.0
+              // Overlay goes from 0 (no overlay) to 0.4 (charcoal blue overlay)
+              const overlayOpacity = resizeProgress * 0.4; // 0 → 0.4
+              // Y offset: start below text area, move to 0 as it becomes fullscreen
+              const textOffset = 180; // Approximate height for partner button area
+              const currentY = textOffset * (1 - resizeProgress); // textOffset → 0
+              
+              gsap.set(heroContainerRef.current, {
+                '--container-scale': scale,
+                '--overlay-opacity': overlayOpacity,
+                '--container-y': `${currentY}px`,
+              });
+            }
+            
+            // Animate Partner With Us button (fade out) and Reach Out button (fade in)
+            const buttonWrapper = heroRef.current?.querySelector('[data-partner-button]');
+            const navButtons = heroRef.current?.querySelector('[data-reach-out-button]');
+            
+            if (buttonWrapper) {
+              gsap.set(buttonWrapper, {
+                opacity: 1 - resizeProgress,
+                pointerEvents: resizeProgress > 0.5 ? 'none' : 'auto',
+              });
+            }
+            
+            if (navButtons) {
+              gsap.set(navButtons, {
+                opacity: resizeProgress,
+                pointerEvents: resizeProgress > 0.5 ? 'auto' : 'none',
+              });
+            }
 
             // Keep canvas at frame 0 during resize
             if (canvasRef.current) {
@@ -438,14 +475,48 @@ export const Landing = ({ navRef }: LandingProps) => {
             const timelineTotal = totalScrollDistance - resizePhaseEnd;
             const timelineProgress = timelineScrolled / timelineTotal;
 
-            setResizeProgress(1); // Keep at 100%
-            setTimelineProgress(timelineProgress);
-            setCurrentPhase(timelineProgress >= 1 ? "complete" : "timeline");
+            progressRef.current.resize = 1;
+            progressRef.current.timeline = timelineProgress;
+            isCompleteRef.current = timelineProgress >= 1;
+
+            // Update HeroImageContainer via CSS variables (keep at full scale with overlay)
+            if (heroContainerRef.current) {
+              gsap.set(heroContainerRef.current, {
+                '--container-scale': 1,
+                '--overlay-opacity': 0.4, // Keep overlay at full during timeline phase
+                '--container-y': '0px',
+              });
+            }
+            
+            // Keep Partner With Us hidden and Reach Out visible during timeline phase
+            const buttonWrapper = heroRef.current?.querySelector('[data-partner-button]');
+            const navButtons = heroRef.current?.querySelector('[data-reach-out-button]');
+            
+            if (buttonWrapper) {
+              gsap.set(buttonWrapper, {
+                opacity: 0,
+                pointerEvents: 'none',
+              });
+            }
+            
+            if (navButtons) {
+              gsap.set(navButtons, {
+                opacity: 1,
+                pointerEvents: 'auto',
+              });
+            }
 
             // Frame scrubbing during timeline phase
             const targetFrame = Math.round(timelineProgress * (frameCount - 1));
             if (canvasRef.current) {
               canvasRef.current.setFrame(targetFrame);
+              
+              // Freeze canvas when timeline completes, unfreeze when scrolling back
+              if (timelineProgress >= 1) {
+                canvasRef.current.freeze();
+              } else {
+                canvasRef.current.unfreeze();
+              }
             }
 
             // --- Animation Timeline ---
@@ -475,14 +546,18 @@ export const Landing = ({ navRef }: LandingProps) => {
               const aadityaStart = 0.2133;
               const aadityaEnd = 0.4266;
 
-              // Toggle animation class for internal SVG animations
-              if (
+              // Calculate if animation should be active
+              const shouldBeActive =
                 timelineProgress >= aadityaStart &&
-                timelineProgress <= aadityaEnd
-              ) {
-                aadityaRef.current.classList.add(styles.animateAaditya);
-              } else {
-                aadityaRef.current.classList.remove(styles.animateAaditya);
+                timelineProgress <= aadityaEnd;
+
+              // Only access classList when state changes (class toggle guard)
+              if (shouldBeActive !== isAadityaAnimating.current) {
+                isAadityaAnimating.current = shouldBeActive;
+                aadityaRef.current.classList.toggle(
+                  styles.animateAaditya,
+                  shouldBeActive
+                );
               }
 
               animateZoomBlock(
@@ -501,14 +576,18 @@ export const Landing = ({ navRef }: LandingProps) => {
               const aaryahiStart = 0.4266;
               const aaryahiEnd = 0.64;
 
-              // Toggle animation class for internal SVG animations
-              if (
+              // Calculate if animation should be active
+              const shouldBeActive =
                 timelineProgress >= aaryahiStart &&
-                timelineProgress <= aaryahiEnd
-              ) {
-                aaryahiRef.current.classList.add(styles.animateAaryahi);
-              } else {
-                aaryahiRef.current.classList.remove(styles.animateAaryahi);
+                timelineProgress <= aaryahiEnd;
+
+              // Only access classList when state changes (class toggle guard)
+              if (shouldBeActive !== isAaryahiAnimating.current) {
+                isAaryahiAnimating.current = shouldBeActive;
+                aaryahiRef.current.classList.toggle(
+                  styles.animateAaryahi,
+                  shouldBeActive
+                );
               }
 
               animateZoomBlock(
@@ -569,13 +648,8 @@ export const Landing = ({ navRef }: LandingProps) => {
           const viewportWidth = window.innerWidth;
           const isMobile = viewportWidth < 768;
 
-          // Update container dimensions based on new viewport
-          // The HeroImageContainer component will automatically respond to the
-          // resizeProgress state, but we need to ensure ScrollTrigger recalculates
-          // the animation parameters for the new viewport size
-
-          // Force a re-render to update any viewport-dependent calculations
-          setResizeProgress((prev) => prev); // Trigger state update without changing value
+          // ScrollTrigger.refresh() will recalculate positions and trigger onUpdate
+          // which will update CSS variables via GSAP.set
 
           // Log resize event for debugging
           if (process.env.NODE_ENV === "development") {
@@ -645,8 +719,7 @@ export const Landing = ({ navRef }: LandingProps) => {
           aaryahiRef={aaryahiRef}
           togetherRef={togetherRef}
           textBlock4Ref={textBlock4Ref}
-          resizeProgress={resizeProgress}
-          isResizePhase={currentPhase === "resize"}
+          heroContainerRef={heroContainerRef}
           // No longer needed, handled globally
           onImagesLoaded={() => {}}
         />

@@ -14,10 +14,9 @@ interface LandingHeroProps {
   aaryahiRef: React.RefObject<HTMLDivElement | null>;
   togetherRef: React.RefObject<HTMLDivElement | null>;
   textBlock4Ref: React.RefObject<HTMLDivElement | null>;
+  heroContainerRef: React.RefObject<HTMLDivElement | null>;
   onImagesLoaded?: () => void;
   variant?: "top" | "bottom" | "both";
-  resizeProgress: number;
-  isResizePhase: boolean;
 }
 
 export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
@@ -29,10 +28,9 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
       aaryahiRef,
       togetherRef,
       textBlock4Ref,
+      heroContainerRef,
       onImagesLoaded,
       variant = "bottom",
-      resizeProgress,
-      isResizePhase,
     },
     ref
   ) => {
@@ -60,57 +58,8 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
       return () => observer.disconnect();
     }, [headerRef]);
 
-    // Animate text color from blue to white during resize phase
-    useEffect(() => {
-      if (typeof window === "undefined") return;
-
-      const animateTextColor = async () => {
-        const { default: gsap } = await import("gsap");
-
-        const slogan = sloganRef.current;
-        const heading = headingRef.current;
-
-        if (!slogan || !heading) return;
-
-        // Interpolate color from charcoal-blue to white (parchment)
-        // Using RGB interpolation for smooth transition
-        const startColor = { r: 40, g: 83, b: 107 }; // #28536b
-        const endColor = { r: 246, g: 240, b: 237 }; // #f6f0ed (parchment/white)
-
-        const r = Math.round(
-          startColor.r + (endColor.r - startColor.r) * resizeProgress
-        );
-        const g = Math.round(
-          startColor.g + (endColor.g - startColor.g) * resizeProgress
-        );
-        const b = Math.round(
-          startColor.b + (endColor.b - startColor.b) * resizeProgress
-        );
-
-        const color = `rgb(${r}, ${g}, ${b})`;
-
-        gsap.set([slogan, heading], {
-          color: color,
-        });
-
-        if (buttonWrapperRef.current) {
-          gsap.set(buttonWrapperRef.current, {
-            opacity: 1 - resizeProgress,
-            pointerEvents: resizeProgress > 0.5 ? "none" : "auto",
-          });
-        }
-
-        // Fade in nav buttons as canvas scrolls in (opposite of buttonWrapper)
-        if (navButtonsRef.current) {
-          gsap.set(navButtonsRef.current, {
-            opacity: resizeProgress,
-            pointerEvents: resizeProgress > 0.5 ? "auto" : "none",
-          });
-        }
-      };
-
-      animateTextColor();
-    }, [resizeProgress]);
+    // Note: Text color animation and button fading previously driven by resizeProgress
+    // are now handled via CSS variables set by GSAP in Landing.tsx
 
     return (
       <MorphSection
@@ -122,8 +71,7 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
         height="100vh"
       >
         <HeroImageContainer
-          resizeProgress={resizeProgress}
-          isResizePhase={isResizePhase}
+          containerRef={heroContainerRef}
           textHeight={textHeight}
         >
           <LandingCanvas ref={canvasRef} onImagesLoaded={onImagesLoaded} />
@@ -137,7 +85,7 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
             <h1 ref={headingRef} className={styles.heroHeading}>
               Strategic excellence for hospitality owners and operators
             </h1>
-            <div ref={buttonWrapperRef}>
+            <div ref={buttonWrapperRef} data-partner-button>
               <SmartButton
                 text="Partner With Us"
                 alignment="center"
@@ -152,6 +100,7 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
           {/* Reach Out button that appears when canvas scrolls in */}
           <div
             ref={navButtonsRef}
+            data-reach-out-button
             style={{
               position: "fixed",
               top: 0,

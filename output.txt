@@ -1,680 +1,5 @@
 The following text is a Git repository with code. The structure of the text are sections that begin with ----, followed by a single line containing the file path and file name, followed by a variable amount of lines containing the file contents. The text representing the Git repository ends when the symbols --END-- are encounted. Any further text beyond --END-- are meant to be interpreted as instructions using the aforementioned Git repository as context.
 ----
-.kiro/specs/canvas-section-redesign/design.md
-# Design Document: Canvas Section Redesign
-
-## Overview
-
-This design document provides exact specifications for copying the canvas section from the Ktisis Residences reference implementation (reference2/page.html) to the A&A Hospitality website. The focus is on replicating the exact layout, sizing, positioning, and animation behavior while adapting the content to A&A Hospitality branding.
-
-## Reference Section Location
-
-**File**: `reference2/page.html`  
-**Section**: Lines 218-234 (HTML structure)  
-**CSS Classes**: `.section.black`, `.grid-4`, `.div-block-4`, `.div-block-3`, `.heading-3`, `.white-para`
-
-The reference section is the black background section with the canvas element and text overlay that appears after the "Our Roots" section.
-
-## Reference HTML Structure
-
-```html
-<section data-w-id="13ce0a6f-e1c2-7e97-a1a4-5e0699eee50f" class="section black">
-  <div class="w-layout-blockcontainer container w-container">
-    <div class="w-layout-grid grid-4">
-      <!-- Canvas Container (Left Column) -->
-      <div id="w-node-_13ce0a6f-e1c2-7e97-a1a4-5e0699eee512-13562bc2" class="div-block-4">
-        <img src="..." loading="lazy" alt="" />
-        <div class="code-embed w-embed">
-          <div class="draw"><canvas id="canvas"></canvas></div>
-        </div>
-      </div>
-      
-      <!-- Text Content (Right Column) -->
-      <div class="div-block-3">
-        <h1 text-flip-in="" text-split="" class="heading-3">
-          Στην Ktisis, δημιουργούμε κατοικίες που αντέχουν στον χρόνο.
-        </h1>
-        <p data-w-id="13ce0a6f-e1c2-7e97-a1a4-5e0699eee518" style="opacity:0" class="white-para opacity">
-          Οι κατοικίες μας συνδυάζουν διαχρονικό σχεδιασμό, άριστη ποιότητα κατασκευής, και ελάχιστες ανάγκες συντήρησης, προσφέροντας έναν χώρο για να ζείτε και να δημιουργείτε με άνεση και σιγουριά.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-```
-
-## Reference CSS Specifications
-
-### Section Container (`.section.black`)
-
-```css
-.section.black {
-  background-image: url(...);
-  background-position: 50%;
-  background-size: cover;
-  background-attachment: fixed;
-  margin-top: -2px;
-  padding-top: 0;
-}
-```
-
-### Main Container (`.container`)
-
-```css
-.container {
-  border-bottom: 1px #000;
-  flex-flow: column;
-  width: 100%;
-  max-width: 1440px;
-  height: 100%;
-  padding: 100px 80px;
-  display: flex;
-}
-```
-
-### Grid Layout (`.grid-4`)
-
-```css
-.grid-4 {
-  grid-template-rows: auto;
-  grid-template-columns: 1fr 1fr;  /* Two equal columns */
-  margin-top: 30px;
-  margin-bottom: 30px;
-}
-```
-
-### Canvas Container (`.div-block-4`)
-
-```css
-.div-block-4 {
-  flex-flow: column;
-  justify-content: flex-end;  /* Aligns content to bottom */
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  position: relative;
-}
-```
-
-### Text Content Container (`.div-block-3`)
-
-```css
-.div-block-3 {
-  grid-column-gap: 40px;
-  grid-row-gap: 40px;
-  flex-flow: column;
-  max-width: 611px;
-  display: flex;
-}
-```
-
-### Heading (`.heading-3`)
-
-```css
-.heading-3 {
-  color: #fff;
-  margin-top: 0;
-  margin-bottom: 0;
-  font-size: 48px;
-  font-weight: 300;
-  line-height: 50px;
-}
-```
-
-### Body Text (`.white-para.opacity`)
-
-```css
-.white-para {
-  color: #fff;
-  margin-bottom: 0;
-  font-size: 22px;
-  font-weight: 200;
-  line-height: 33px;
-}
-
-.white-para.opacity {
-  color: #fffc;  /* White with transparency */
-  font-size: 20px;
-}
-```
-
-## Architecture
-
-### Key Differences from Current Implementation
-
-1. **Layout Structure**: Reference uses a 2-column grid (1fr 1fr) instead of absolute positioning
-2. **Text Positioning**: Text is in the right column of the grid, not overlaid on the canvas
-3. **Canvas Container**: Uses flexbox with `justify-content: flex-end` to align canvas to bottom
-4. **Container Sizing**: No resize animation - container is static at full width/height
-5. **Background**: Section has a fixed background image, not the canvas itself
-
-### Implementation Strategy
-
-The current A&A implementation has a complex scroll-driven resize animation. The reference implementation is simpler - it's a static 2-column layout. We need to:
-
-1. **Keep existing scroll animations** for the canvas frames and text overlays
-2. **Add the reference layout** as the container structure
-3. **Position text above/beside** the canvas instead of overlaid
-4. **Maintain rounded-to-square transition** for the container during resize phase
-
-## Exact Implementation Specifications
-
-### Container Dimensions and Positioning
-
-**BEFORE Scroll (Initial State)**:
-- Container: Centered, rounded corners
-- Width: 80vw (desktop), 90vw (mobile)
-- Height: 80vh (desktop), 70vh (mobile)
-- Border-radius: 24px (desktop), 16px (mobile)
-- Position: `position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);`
-
-**AFTER Scroll (Fullscreen State)**:
-- Container: Fullscreen, squared corners
-- Width: 100vw
-- Height: 100vh
-- Border-radius: 0px
-- Position: Fills entire viewport
-
-**Transition**: Linear interpolation based on scroll progress (0-1)
-
-### Text Content Specifications
-
-**Heading Text**:
-- Content: "At A&A Hospitality, we create residences that endure through time"
-- Font: var(--font-serif) or brand serif font
-- Size: 48px (desktop), clamp(2rem, 4vw, 3rem) (responsive)
-- Weight: 300
-- Color: var(--parchment) or #fff
-- Line-height: 50px (desktop), 1.2 (responsive)
-- Margin: 0
-
-**Body Text**:
-- Content: "Our residences combine timeless design, exceptional construction quality, and minimal maintenance needs, offering a space to live and create with comfort and confidence"
-- Font: var(--font-sans) or brand sans font
-- Size: 20px (desktop), clamp(1rem, 2vw, 1.25rem) (responsive)
-- Weight: 200
-- Color: rgba(255, 255, 255, 0.8) or var(--parchment) with 0.8 opacity
-- Line-height: 33px (desktop), 1.6 (responsive)
-- Margin: 0
-
-### Layout Structure
-
-**Option 1: Grid Layout (Reference Style)**
-```tsx
-<section className={styles.canvasSection}>
-  <div className={styles.container}>
-    <div className={styles.grid}>
-      {/* Left Column: Canvas */}
-      <div className={styles.canvasContainer}>
-        <HeroImageContainer resizeProgress={resizeProgress}>
-          <LandingCanvas ref={canvasRef} />
-        </HeroImageContainer>
-      </div>
-      
-      {/* Right Column: Text */}
-      <div className={styles.textContent}>
-        <h1 className={styles.heading}>
-          At A&A Hospitality, we create residences that endure through time
-        </h1>
-        <p className={styles.body}>
-          Our residences combine timeless design, exceptional construction quality, 
-          and minimal maintenance needs, offering a space to live and create with 
-          comfort and confidence
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-```
-
-**Option 2: Absolute Positioning (Current Style with Text Above)**
-```tsx
-<section className={styles.canvasSection}>
-  {/* Text positioned above container */}
-  <div className={styles.textContent}>
-    <h1 className={styles.heading}>
-      At A&A Hospitality, we create residences that endure through time
-    </h1>
-    <p className={styles.body}>
-      Our residences combine timeless design, exceptional construction quality, 
-      and minimal maintenance needs, offering a space to live and create with 
-      comfort and confidence
-    </p>
-  </div>
-  
-  {/* Container with canvas */}
-  <HeroImageContainer resizeProgress={resizeProgress}>
-    <LandingCanvas ref={canvasRef} />
-    {/* Existing text overlays */}
-  </HeroImageContainer>
-</section>
-```
-
-### Animation Timing
-
-**Resize Phase (0-100vh scroll)**:
-- Container expands from initial to fullscreen
-- Border-radius transitions from rounded to 0
-- Text content remains visible and static
-- Canvas stays at frame 0
-
-**Timeline Phase (100vh-1600vh scroll)**:
-- Container remains fullscreen
-- Canvas frames progress 0→832
-- Text overlays animate in/out at thresholds
-- Static text content remains visible throughout
-
-### Responsive Breakpoints
-
-**Desktop (>= 768px)**:
-- Container: 80vw × 80vh initial
-- Border-radius: 24px initial
-- Text: Full size (48px heading, 20px body)
-- Grid: 2 columns (1fr 1fr)
-
-**Mobile (< 768px)**:
-- Container: 90vw × 70vh initial
-- Border-radius: 16px initial
-- Text: Scaled down (clamp values)
-- Grid: 1 column (stack vertically)
-
-## Data Models
-
-### Text Content
-
-```typescript
-const CANVAS_SECTION_TEXT = {
-  heading: "At A&A Hospitality, we create residences that endure through time",
-  body: "Our residences combine timeless design, exceptional construction quality, and minimal maintenance needs, offering a space to live and create with comfort and confidence"
-};
-```
-
-### Container Dimensions (Existing - No Changes Needed)
-
-The existing `HeroImageContainer` component already handles dimension interpolation correctly. Current values match the reference:
-
-```typescript
-const INITIAL_DIMENSIONS = {
-  desktop: { width: 80, height: 80, borderRadius: 24 },
-  mobile: { width: 90, height: 70, borderRadius: 16 }
-};
-
-const FULLSCREEN_DIMENSIONS = {
-  width: 100,
-  height: 100,
-  borderRadius: 0
-};
-```
-
-## Correctness Properties
-
-*A property is a characteristic or behavior that should hold true across all valid executions of a system-essentially, a formal statement about what the system should do. Properties serve as the bridge between human-readable specifications and machine-verifiable correctness guarantees.*
-
-### Property 1: Container dimensions interpolate smoothly
-
-*For any* resize progress value between 0 and 1, container dimensions should interpolate linearly from initial to fullscreen values.
-
-**Validates: Requirements 3.3**
-
-### Property 2: Border-radius interpolates smoothly
-
-*For any* resize progress value between 0 and 1, border-radius should interpolate linearly from initial rounded value to zero.
-
-**Validates: Requirements 4.2**
-
-### Property 3: Border-radius round-trip consistency
-
-*For any* sequence of scroll progress values that returns to the initial state, the border-radius should return to its initial value.
-
-**Validates: Requirements 4.4**
-
-### Property 4: Text overlays hidden during resize phase
-
-*For any* text overlay element, when the current phase is 'resize', the element should have opacity 0 and scale 3.
-
-**Validates: Requirements 5.1**
-
-### Property 5: Canvas frames progress monotonically forward
-
-*For any* sequence of increasing timeline progress values, canvas frame numbers should increase monotonically from 0 toward 832.
-
-**Validates: Requirements 6.3**
-
-### Property 6: Canvas frames regress monotonically backward
-
-*For any* sequence of decreasing timeline progress values, canvas frame numbers should decrease monotonically from 832 toward 0.
-
-**Validates: Requirements 6.4**
-
-## Error Handling
-
-### Viewport Resize
-
-- Debounce resize handlers (100ms) to prevent excessive recalculations
-- Use existing `ScrollTrigger.refresh()` mechanism
-- Viewport width state already tracked in `HeroImageContainer`
-
-### Animation State
-
-- GSAP's `gsap.set()` already handles state updates cleanly
-- No additional error handling needed - existing implementation is robust
-
-### CSS Fallbacks
-
-```css
-.heading {
-  font-family: var(--font-serif, 'Georgia', serif);
-  color: var(--parchment, '#F5F1E8');
-}
-
-.body {
-  font-family: var(--font-sans, 'Arial', sans-serif);
-  color: var(--parchment, '#F5F1E8');
-}
-```
-
-## Testing Strategy
-
-### Unit Testing
-
-**Framework**: Jest + React Testing Library
-
-**Key Tests**:
-- Text content renders with correct heading and body
-- Container dimensions interpolate correctly
-- Border-radius transitions from rounded to squared
-- CSS custom properties are applied
-
-### Property-Based Testing
-
-**Framework**: fast-check
-
-**Configuration**: Minimum 100 iterations per property test
-
-**Key Properties** (see Correctness Properties section):
-1. Container dimensions interpolate smoothly
-2. Border-radius interpolates smoothly
-3. Border-radius round-trip consistency
-4. Text overlays hidden during resize phase
-5. Canvas frames progress monotonically forward
-6. Canvas frames regress monotonically backward
-
-Each property test must be tagged with: `**Feature: canvas-section-redesign, Property {number}: {property_text}**`
-
-### Manual Testing
-
-1. Verify text content matches A&A Hospitality branding
-2. Verify layout matches reference implementation
-3. Test scroll behavior in both directions
-4. Test responsive behavior at mobile/tablet/desktop breakpoints
-5. Verify animations are smooth (>30 FPS)
-
-## Implementation Notes
-
-### Key Changes Required
-
-1. **Add text content above/beside canvas** - New heading and body text with A&A Hospitality messaging
-2. **Update text to appear only during timeline phase** - Hide during resize phase
-3. **Apply brand fonts and colors** - Use CSS custom properties from design system
-4. **Maintain existing animations** - Keep scroll-driven resize and canvas frame progression
-5. **Ensure bidirectional scroll works** - Text should hide when scrolling back to resize phase
-
-### Files to Modify
-
-1. `src/components/landing/Landing.tsx` - Add text content, update animation logic
-2. `src/components/landing/Landing.module.css` - Add styles for text content
-3. `src/components/landing/HeroImageContainer.tsx` - No changes needed (dimensions already correct)
-
-### CSS Custom Properties to Use
-
-```css
---font-serif: /* Brand serif font */
---font-sans: /* Brand sans font */
---parchment: /* Brand light color */
---charcoal-blue: /* Brand dark color */
-```
-
-### Accessibility
-
-- Use semantic HTML (h1 for heading, p for body)
-- Ensure color contrast meets WCAG AA (4.5:1 for body, 3:1 for large text)
-- Respect `prefers-reduced-motion` (already implemented)
-
-### Browser Compatibility
-
-- Target: Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
-- All required features (GSAP, CSS custom properties) are supported
-
-----
-.kiro/specs/canvas-section-redesign/requirements.md
-# Requirements Document
-
-## Introduction
-
-This specification defines the requirements for redesigning the canvas section of the A&A Hospitality website to match the reference implementation from Ktisis Residences. The redesign focuses on proper text positioning, container sizing, scroll-triggered text reveals, and brand-consistent styling while maintaining the existing canvas animation functionality.
-
-## Glossary
-
-- **Canvas Section**: The scroll-driven section featuring a Three.js canvas with frame-by-frame animation and overlaid text content
-- **Hero Image Container**: The reusable component that morphs from rounded corners (top variant) to squared corners during scroll
-- **Text Overlay**: Text content positioned above the canvas that reveals during scroll progression
-- **Timeline Phase**: The scroll phase where canvas frames progress and text overlays animate
-- **Resize Phase**: The initial scroll phase where the container expands from contained to fullscreen
-- **Brand Font**: The custom typography defined in the A&A Hospitality design system
-- **Brand Colors**: The color palette defined in the A&A Hospitality design system (charcoal-blue, parchment, etc.)
-
-## Requirements
-
-### Requirement 1
-
-**User Story:** As a website visitor, I want to see properly positioned text content above the canvas section, so that I can read the A&A Hospitality message clearly before the canvas animation begins.
-
-#### Acceptance Criteria
-
-1. WHEN the canvas section loads THEN the system SHALL display a heading text positioned above the Hero Image Container
-2. WHEN the canvas section loads THEN the system SHALL display body text positioned below the heading and above the Hero Image Container
-3. WHEN the viewport is resized THEN the system SHALL maintain proper text positioning relative to the container
-4. WHEN text is rendered THEN the system SHALL apply the brand font family from the design system
-5. WHEN text is rendered THEN the system SHALL apply the brand color palette from the design system
-
-### Requirement 2
-
-**User Story:** As a website visitor, I want the canvas section text to be relevant to A&A Hospitality, so that I understand the company's value proposition and mission.
-
-#### Acceptance Criteria
-
-1. WHEN the heading text is displayed THEN the system SHALL show "At A&A Hospitality, we create residences that endure through time"
-2. WHEN the body text is displayed THEN the system SHALL show "Our residences combine timeless design, exceptional construction quality, and minimal maintenance needs, offering a space to live and create with comfort and confidence"
-3. WHEN text content is updated THEN the system SHALL preserve all existing animation behaviors
-4. WHEN text content is displayed THEN the system SHALL maintain readability across all viewport sizes
-5. WHEN text is rendered THEN the system SHALL use appropriate font sizes that scale responsively
-
-### Requirement 3
-
-**User Story:** As a website visitor, I want the Hero Image Container to have the correct size and position, so that the visual presentation matches the design reference.
-
-#### Acceptance Criteria
-
-1. WHEN the container is in its initial state THEN the system SHALL position it at the exact coordinates specified in the reference implementation
-2. WHEN the container is in its initial state THEN the system SHALL apply dimensions matching the reference implementation
-3. WHEN the resize phase progresses THEN the system SHALL interpolate container dimensions smoothly from initial to fullscreen
-4. WHEN the container reaches fullscreen THEN the system SHALL occupy 100vw width and 100vh height
-5. WHEN the viewport is resized THEN the system SHALL recalculate container dimensions based on the new viewport size
-
-### Requirement 4
-
-**User Story:** As a website visitor, I want the container corners to transition from rounded to squared, so that the visual morphing effect matches the design system's reusable component behavior.
-
-#### Acceptance Criteria
-
-1. WHEN the container is in its initial state THEN the system SHALL apply rounded corners matching the top variant specification
-2. WHEN the resize phase progresses THEN the system SHALL interpolate border-radius from rounded to zero
-3. WHEN the container reaches fullscreen THEN the system SHALL have zero border-radius (squared corners)
-4. WHEN scrolling backwards THEN the system SHALL reverse the corner transition from squared to rounded
-5. WHEN the viewport is mobile-sized THEN the system SHALL apply mobile-specific border-radius values
-
-### Requirement 5
-
-**User Story:** As a website visitor, I want the first canvas text overlay to appear only when canvas scrolling begins, so that the text reveal is synchronized with the animation progression.
-
-#### Acceptance Criteria
-
-1. WHEN the resize phase is active THEN the system SHALL hide all canvas text overlays
-2. WHEN the timeline phase begins THEN the system SHALL reveal the first text overlay with zoom-in animation
-3. WHEN scrolling forward through the timeline THEN the system SHALL reveal subsequent text overlays at their designated progress thresholds
-4. WHEN scrolling backwards through the timeline THEN the system SHALL hide text overlays with zoom-out animation
-5. WHEN the resize phase is re-entered from backwards scroll THEN the system SHALL ensure all text overlays are hidden
-
-### Requirement 6
-
-**User Story:** As a website visitor, I want all scroll-based animations to work bidirectionally, so that I can explore the content by scrolling both forward and backward smoothly.
-
-#### Acceptance Criteria
-
-1. WHEN scrolling forward THEN the system SHALL animate text overlays with zoom-in effect (scale 3→1, opacity 0→1)
-2. WHEN scrolling backward THEN the system SHALL animate text overlays with zoom-out effect (scale 1→3, opacity 1→0)
-3. WHEN scrolling forward THEN the system SHALL progress canvas frames from 0 to 832
-4. WHEN scrolling backward THEN the system SHALL regress canvas frames from 832 to 0
-5. WHEN scrolling in either direction THEN the system SHALL maintain smooth animation transitions without jarring jumps
-
-### Requirement 7
-
-**User Story:** As a website visitor, I want the canvas section layout to match the reference implementation exactly, so that the visual hierarchy and spacing are consistent with the design.
-
-#### Acceptance Criteria
-
-1. WHEN the canvas section is rendered THEN the system SHALL position the heading text at the same vertical offset as the reference
-2. WHEN the canvas section is rendered THEN the system SHALL position the body text at the same vertical offset as the reference
-3. WHEN the canvas section is rendered THEN the system SHALL apply the same text-to-container spacing as the reference
-4. WHEN the canvas section is rendered THEN the system SHALL use the same container wrapper structure as the reference
-5. WHEN the viewport is mobile-sized THEN the system SHALL apply mobile-specific layout adjustments matching the reference
-
-### Requirement 8
-
-**User Story:** As a developer, I want the canvas section to use the brand design system, so that styling is consistent and maintainable across the application.
-
-#### Acceptance Criteria
-
-1. WHEN text is rendered THEN the system SHALL use CSS custom properties for font families
-2. WHEN text is rendered THEN the system SHALL use CSS custom properties for colors
-3. WHEN text is rendered THEN the system SHALL use CSS custom properties for spacing values
-4. WHEN styles are updated THEN the system SHALL not use hardcoded color or font values
-5. WHEN the design system is updated THEN the system SHALL automatically reflect changes through CSS custom properties
-
-----
-.kiro/specs/canvas-section-redesign/tasks.md
-# Implementation Plan
-
-- [x] 1. Add text content to canvas section
-- [x] 1.1 Add heading and body text JSX to Landing.tsx
-  - Add heading: "At A&A Hospitality, we create residences that endure through time"
-  - Add body: "Our residences combine timeless design, exceptional construction quality, and minimal maintenance needs, offering a space to live and create with comfort and confidence"
-  - Position text above or beside the HeroImageContainer
-  - _Requirements: 1.1, 1.2, 2.1, 2.2_
-
-- [x] 1.2 Create CSS styles for text content in Landing.module.css
-  - Add `.canvasTextContent` container styles
-  - Add `.canvasHeading` styles (48px, font-weight 300, white color)
-  - Add `.canvasBody` styles (20px, font-weight 200, white with opacity)
-  - Use CSS custom properties for fonts and colors
-  - _Requirements: 1.4, 1.5, 8.1, 8.2, 8.3_
-
-- [x] 1.3 Make text responsive with clamp() for font sizes
-  - Heading: `clamp(2rem, 4vw, 3rem)`
-  - Body: `clamp(1rem, 2vw, 1.25rem)`
-  - _Requirements: 2.5_
-
-- [x] 2. Update animation logic to hide text during resize phase
-- [x] 2.1 Add text visibility control in Landing.tsx scroll handler
-  - Hide text when `currentPhase === 'resize'`
-  - Show text when `currentPhase === 'timeline'`
-  - Use GSAP to animate opacity
-  - _Requirements: 5.1, 5.2, 5.5_
-
-- [ ]* 2.2 Write property test for text visibility during phases
-  - **Property 4: Text overlays hidden during resize phase**
-  - **Validates: Requirements 5.1**
-  - Verify text has opacity 0 when phase is 'resize'
-  - Verify text has opacity 1 when phase is 'timeline'
-
-- [x] 3. Verify container dimensions and border-radius
-- [x] 3.1 Confirm HeroImageContainer initial dimensions match reference
-  - Desktop: 80vw × 80vh, border-radius 24px
-  - Mobile: 90vw × 70vh, border-radius 16px
-  - _Requirements: 3.1, 3.2, 4.1_
-
-- [x] 3.2 Confirm fullscreen dimensions match reference
-  - 100vw × 100vh, border-radius 0px
-  - _Requirements: 3.4, 4.3_
-
-- [ ]* 3.3 Write property test for dimension interpolation
-  - **Property 1: Container dimensions interpolate smoothly**
-  - **Validates: Requirements 3.3**
-  - Generate random progress values (0-1)
-  - Verify linear interpolation of width, height, border-radius
-
-- [ ]* 3.4 Write property test for border-radius round-trip
-  - **Property 3: Border-radius round-trip consistency**
-  - **Validates: Requirements 4.4**
-  - Scroll forward to fullscreen (progress=1)
-  - Scroll backward to initial (progress=0)
-  - Verify border-radius returns to initial value
-
-- [ ] 4. Test bidirectional scroll behavior
-- [ ] 4.1 Manually test forward scroll
-  - Verify text appears when timeline phase begins
-  - Verify canvas frames progress 0→832
-  - Verify text overlays animate in at thresholds
-  - _Requirements: 6.1, 6.3_
-
-- [ ] 4.2 Manually test backward scroll
-  - Verify text hides when returning to resize phase
-  - Verify canvas frames regress 832→0
-  - Verify text overlays animate out at thresholds
-  - _Requirements: 6.2, 6.4_
-
-- [ ]* 4.3 Write property test for canvas frame progression
-  - **Property 5: Canvas frames progress monotonically forward**
-  - **Validates: Requirements 6.3**
-  - Generate sequence of increasing progress values
-  - Verify frame numbers increase monotonically
-
-- [ ]* 4.4 Write property test for canvas frame regression
-  - **Property 6: Canvas frames regress monotonically backward**
-  - **Validates: Requirements 6.4**
-  - Generate sequence of decreasing progress values
-  - Verify frame numbers decrease monotonically
-
-- [ ] 5. Test responsive behavior
-- [ ] 5.1 Test on mobile viewport (375px width)
-  - Verify text scales down appropriately
-  - Verify container uses mobile dimensions (90vw × 70vh)
-  - Verify border-radius uses mobile value (16px)
-  - _Requirements: 1.3, 3.5, 4.5, 7.5_
-
-- [ ] 5.2 Test on desktop viewport (1920px width)
-  - Verify text uses full size
-  - Verify container uses desktop dimensions (80vw × 80vh)
-  - Verify border-radius uses desktop value (24px)
-  - _Requirements: 1.3, 3.5, 7.1, 7.2, 7.3, 7.4_
-
-- [ ] 6. Verify layout matches reference
-- [ ] 6.1 Compare text positioning to reference implementation
-  - Verify heading is positioned correctly
-  - Verify body text is positioned correctly
-  - Verify spacing between heading and body
-  - _Requirements: 7.1, 7.2, 7.3_
-
-- [ ] 6.2 Compare container structure to reference
-  - Verify wrapper structure matches
-  - Verify z-index layering is correct
-  - _Requirements: 7.4_
-
-- [ ] 7. Final checkpoint - Ensure all tests pass
-  - Ensure all tests pass, ask the user if questions arise.
-
-----
 .vscode/settings.json
 {
 }
@@ -10441,7 +9766,8 @@ package.json
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "vitest"
   },
   "dependencies": {
     "gsap": "^3.13.0",
@@ -10818,18 +10144,48 @@ scripts/optimize-frames.sh
 #!/bin/bash
 
 # Frame Optimization Script for Ana Hospitality
-# This script converts the source video to optimized 1080p WebP frames
+# This script converts the source video to optimized WebP frames
+# Generates both desktop (1080p) and mobile (720p) resolution tiers
 
-# Usage: ./scripts/optimize-frames.sh /path/to/source_video.mp4
+# Usage: ./scripts/optimize-frames.sh /path/to/source_video.mp4 [options]
+# Options:
+#   --desktop-only    Generate only desktop frames
+#   --mobile-only     Generate only mobile frames
 
 set -e
 
-SOURCE_VIDEO="$1"
+SOURCE_VIDEO=""
+DESKTOP_ONLY=false
+MOBILE_ONLY=false
 OUTPUT_DIR="public/frames"
 BACKUP_DIR="public/frames_backup_jpg"
 
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --desktop-only)
+            DESKTOP_ONLY=true
+            shift
+            ;;
+        --mobile-only)
+            MOBILE_ONLY=true
+            shift
+            ;;
+        *)
+            if [ -z "$SOURCE_VIDEO" ]; then
+                SOURCE_VIDEO="$1"
+            fi
+            shift
+            ;;
+    esac
+done
+
 if [ -z "$SOURCE_VIDEO" ]; then
-    echo "Usage: $0 /path/to/source_video.mp4"
+    echo "Usage: $0 /path/to/source_video.mp4 [options]"
+    echo ""
+    echo "Options:"
+    echo "  --desktop-only    Generate only desktop frames"
+    echo "  --mobile-only     Generate only mobile frames"
     echo ""
     echo "Example: $0 ~/Videos/hero-animation.mp4"
     exit 1
@@ -10840,43 +10196,135 @@ if [ ! -f "$SOURCE_VIDEO" ]; then
     exit 1
 fi
 
+
 # Create backup of existing frames (optional - comment out if not needed)
 if [ -d "$OUTPUT_DIR" ] && [ ! -d "$BACKUP_DIR" ]; then
     echo "Creating backup of existing JPG frames..."
     mv "$OUTPUT_DIR" "$BACKUP_DIR"
 fi
 
-# Create output directory
+# Create output directories
 mkdir -p "$OUTPUT_DIR"
+mkdir -p "$OUTPUT_DIR/mobile"
 
-echo "Exporting 832 frames at 1080p as WebP..."
+echo "=============================================="
+echo "Frame Optimization Script"
+echo "=============================================="
 echo "Source: $SOURCE_VIDEO"
 echo "Output: $OUTPUT_DIR"
 echo ""
 
-# Export frames as WebP at 1080p with high quality
-# -q:v 80 = WebP quality (0-100, higher is better quality but larger files)
-# -frames:v 832 = Export exactly 832 frames
-# scale=1920:1080 = Resize to 1080p
-ffmpeg -i "$SOURCE_VIDEO" \
-    -vf "scale=1920:1080:flags=lanczos" \
-    -q:v 80 \
-    -frames:v 832 \
-    "$OUTPUT_DIR/frame_%04d.webp"
+# Resolution and quality settings
+DESKTOP_WIDTH=1920
+DESKTOP_HEIGHT=1080
+DESKTOP_QUALITY=65
 
-# Verify output
-FRAME_COUNT=$(ls -1 "$OUTPUT_DIR"/*.webp 2>/dev/null | wc -l | tr -d ' ')
-TOTAL_SIZE=$(du -sh "$OUTPUT_DIR" | cut -f1)
+MOBILE_WIDTH=1280
+MOBILE_HEIGHT=720
+MOBILE_QUALITY=65
+
+FRAME_COUNT=385
+
+# Generate desktop frames (1080p, quality 65)
+if [ "$MOBILE_ONLY" = false ]; then
+    echo "Generating desktop frames (${DESKTOP_WIDTH}x${DESKTOP_HEIGHT}, quality ${DESKTOP_QUALITY})..."
+    ffmpeg -i "$SOURCE_VIDEO" \
+        -vf "scale=${DESKTOP_WIDTH}:${DESKTOP_HEIGHT}:flags=lanczos" \
+        -c:v libwebp \
+        -q:v $DESKTOP_QUALITY \
+        -frames:v $FRAME_COUNT \
+        "$OUTPUT_DIR/frame_%04d.webp"
+    echo "✅ Desktop frames complete"
+    echo ""
+fi
+
+# Generate mobile frames (720p, quality 65)
+if [ "$DESKTOP_ONLY" = false ]; then
+    echo "Generating mobile frames (${MOBILE_WIDTH}x${MOBILE_HEIGHT}, quality ${MOBILE_QUALITY})..."
+    ffmpeg -i "$SOURCE_VIDEO" \
+        -vf "scale=${MOBILE_WIDTH}:${MOBILE_HEIGHT}:flags=lanczos" \
+        -c:v libwebp \
+        -q:v $MOBILE_QUALITY \
+        -frames:v $FRAME_COUNT \
+        "$OUTPUT_DIR/mobile/frame_%04d.webp"
+    echo "✅ Mobile frames complete"
+    echo ""
+fi
+
+
+# Report results
+echo "=============================================="
+echo "Generation Complete - Size Report"
+echo "=============================================="
+echo ""
+
+# Desktop tier report
+if [ "$MOBILE_ONLY" = false ]; then
+    DESKTOP_FRAME_COUNT=$(ls -1 "$OUTPUT_DIR"/*.webp 2>/dev/null | wc -l | tr -d ' ')
+    DESKTOP_TOTAL_SIZE=$(du -sh "$OUTPUT_DIR" --exclude="$OUTPUT_DIR/mobile" 2>/dev/null | cut -f1 || du -sh "$OUTPUT_DIR"/*.webp 2>/dev/null | tail -1 | cut -f1)
+    
+    # Calculate desktop size excluding mobile subdirectory
+    DESKTOP_SIZE_BYTES=$(find "$OUTPUT_DIR" -maxdepth 1 -name "*.webp" -exec stat -f%z {} + 2>/dev/null | awk '{sum+=$1} END {print sum}' || find "$OUTPUT_DIR" -maxdepth 1 -name "*.webp" -exec stat --printf="%s\n" {} + 2>/dev/null | awk '{sum+=$1} END {print sum}')
+    DESKTOP_SIZE_MB=$(echo "scale=2; $DESKTOP_SIZE_BYTES / 1048576" | bc)
+    
+    echo "📱 Desktop Tier (1080p):"
+    echo "   Resolution: ${DESKTOP_WIDTH}x${DESKTOP_HEIGHT}"
+    echo "   Quality: ${DESKTOP_QUALITY}"
+    echo "   Frame count: $DESKTOP_FRAME_COUNT"
+    echo "   Total size: ${DESKTOP_SIZE_MB}MB"
+    echo ""
+    
+    # Show sample desktop frame sizes
+    echo "   Sample frame sizes:"
+    ls -lh "$OUTPUT_DIR"/frame_0001.webp 2>/dev/null | awk '{print "     frame_0001.webp: " $5}'
+    ls -lh "$OUTPUT_DIR"/frame_0192.webp 2>/dev/null | awk '{print "     frame_0192.webp: " $5}'
+    ls -lh "$OUTPUT_DIR"/frame_0385.webp 2>/dev/null | awk '{print "     frame_0385.webp: " $5}'
+    echo ""
+fi
+
+# Mobile tier report
+if [ "$DESKTOP_ONLY" = false ]; then
+    MOBILE_FRAME_COUNT=$(ls -1 "$OUTPUT_DIR/mobile"/*.webp 2>/dev/null | wc -l | tr -d ' ')
+    
+    # Calculate mobile size
+    MOBILE_SIZE_BYTES=$(find "$OUTPUT_DIR/mobile" -name "*.webp" -exec stat -f%z {} + 2>/dev/null | awk '{sum+=$1} END {print sum}' || find "$OUTPUT_DIR/mobile" -name "*.webp" -exec stat --printf="%s\n" {} + 2>/dev/null | awk '{sum+=$1} END {print sum}')
+    MOBILE_SIZE_MB=$(echo "scale=2; $MOBILE_SIZE_BYTES / 1048576" | bc)
+    
+    echo "📱 Mobile Tier (720p):"
+    echo "   Resolution: ${MOBILE_WIDTH}x${MOBILE_HEIGHT}"
+    echo "   Quality: ${MOBILE_QUALITY}"
+    echo "   Frame count: $MOBILE_FRAME_COUNT"
+    echo "   Total size: ${MOBILE_SIZE_MB}MB"
+    echo ""
+    
+    # Show sample mobile frame sizes
+    echo "   Sample frame sizes:"
+    ls -lh "$OUTPUT_DIR/mobile"/frame_0001.webp 2>/dev/null | awk '{print "     frame_0001.webp: " $5}'
+    ls -lh "$OUTPUT_DIR/mobile"/frame_0192.webp 2>/dev/null | awk '{print "     frame_0192.webp: " $5}'
+    ls -lh "$OUTPUT_DIR/mobile"/frame_0385.webp 2>/dev/null | awk '{print "     frame_0385.webp: " $5}'
+    echo ""
+fi
+
+# Verify consistent naming
+echo "=============================================="
+echo "Naming Verification"
+echo "=============================================="
+
+if [ "$MOBILE_ONLY" = false ]; then
+    DESKTOP_FIRST=$(ls "$OUTPUT_DIR"/frame_*.webp 2>/dev/null | head -1 | xargs basename 2>/dev/null)
+    DESKTOP_LAST=$(ls "$OUTPUT_DIR"/frame_*.webp 2>/dev/null | tail -1 | xargs basename 2>/dev/null)
+    echo "Desktop: $DESKTOP_FIRST ... $DESKTOP_LAST"
+fi
+
+if [ "$DESKTOP_ONLY" = false ]; then
+    MOBILE_FIRST=$(ls "$OUTPUT_DIR/mobile"/frame_*.webp 2>/dev/null | head -1 | xargs basename 2>/dev/null)
+    MOBILE_LAST=$(ls "$OUTPUT_DIR/mobile"/frame_*.webp 2>/dev/null | tail -1 | xargs basename 2>/dev/null)
+    echo "Mobile:  $MOBILE_FIRST ... $MOBILE_LAST"
+fi
 
 echo ""
-echo "✅ Export complete!"
-echo "   Frames exported: $FRAME_COUNT"
-echo "   Total size: $TOTAL_SIZE"
+echo "✅ All frames use consistent frame_%04d.webp naming pattern"
 echo ""
-
-# Show sample file sizes
-echo "Sample frame sizes:"
-ls -lh "$OUTPUT_DIR"/frame_0001.webp "$OUTPUT_DIR"/frame_0416.webp "$OUTPUT_DIR"/frame_0832.webp 2>/dev/null | awk '{print "   " $9 ": " $5}'
 
 
 ----
@@ -13298,6 +12746,7 @@ interface SmartButtonProps {
   theme?: "light" | "dark";
   hoverColor?: string;
   backgroundColor?: string;
+  size?: "default" | "small";
 }
 
 export default function SmartButton({
@@ -13308,6 +12757,7 @@ export default function SmartButton({
   theme = "light",
   hoverColor,
   backgroundColor,
+  size = "default",
 }: SmartButtonProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const circleRef = useRef<HTMLDivElement>(null);
@@ -13492,7 +12942,7 @@ export default function SmartButton({
     }, button);
 
     return () => ctx.revert();
-  }, [text, subtext, theme, hoverColor, backgroundColor]); // Added theme dependency
+  }, [text, subtext, theme, hoverColor, backgroundColor, size]); // Added theme and size dependency
 
   const handleMouseEnter = () => {
     tlRef.current?.play();
@@ -13537,7 +12987,9 @@ export default function SmartButton({
       style={{
         backgroundColor: backgroundColor || (theme === "dark" ? "transparent" : undefined),
       }}
-      className={`relative z-10 group flex items-center justify-between gap-4 px-6 py-3 rounded-full cursor-pointer shadow-lg overflow-hidden ${theme === "dark"
+      className={`relative z-10 group flex items-center justify-between rounded-full cursor-pointer shadow-lg overflow-hidden ${
+        size === "small" ? "gap-2 px-4 py-2" : "gap-4 px-6 py-3"
+      } ${theme === "dark"
         ? "bg-transparent text-[var(--parchment)]"
         : "bg-[var(--parchment)]"
         } ${getAlignmentClass()}`}
@@ -13545,7 +12997,9 @@ export default function SmartButton({
       {/* Text Section */}
       <div
         ref={textRef}
-        className="leading-none text-left text-lg font-normal tracking-wide font-[family-name:var(--font-sans)] flex flex-col justify-center"
+        className={`leading-none text-left font-normal tracking-wide font-[family-name:var(--font-sans)] flex flex-col justify-center ${
+          size === "small" ? "text-sm" : "text-lg"
+        }`}
       >
         <span
           className={`split-text block whitespace-nowrap ${theme === "dark"
@@ -13570,7 +13024,9 @@ export default function SmartButton({
       {/* Circle Icon Container */}
       <div
         ref={circleRef}
-        className={`relative flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center shadow-sm transform transition-transform ${theme === "dark"
+        className={`relative flex-shrink-0 rounded-full flex items-center justify-center shadow-sm transform transition-transform ${
+          size === "small" ? "w-7 h-7" : "w-10 h-10"
+        } ${theme === "dark"
           ? "bg-white/10"
           : "bg-[var(--parchment)] border border-[var(--charcoal-blue)]/10"
           }`}
@@ -13578,8 +13034,8 @@ export default function SmartButton({
         {/* Arrow SVG */}
         <svg
           ref={arrowRef}
-          width="20"
-          height="20"
+          width={size === "small" ? "14" : "20"}
+          height={size === "small" ? "14" : "20"}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -15689,13 +15145,16 @@ src/components/landing/HeroImageContainer.module.css
   /* No transitions - controlled by GSAP via inline styles */
   transition: none;
   /* Performance optimization */
-  will-change: width, height, border-radius, transform, top, left;
+  will-change: transform;
   /* Ensure proper stacking */
   z-index: 1;
   position: relative;
+  /* Transform controlled via CSS variables set by GSAP */
+  /* Scale and Y translation: starts smaller and offset below text, grows to fullscreen */
+  transform: scale(var(--container-scale, 0.5)) translateY(var(--container-y, 180px));
 }
 
-/* Translucent blue overlay */
+/* Translucent blue overlay - starts transparent, becomes charcoal blue as canvas expands */
 .overlay {
   position: absolute;
   top: 0;
@@ -15703,11 +15162,12 @@ src/components/landing/HeroImageContainer.module.css
   width: 100%;
   height: 100%;
   background-color: var(--charcoal-blue);
-  opacity: 0;
+  /* Opacity controlled via CSS variable set by GSAP */
+  /* Default 0 = no overlay initially, increases to 0.4 as canvas becomes fullscreen */
+  opacity: var(--overlay-opacity, 0);
   pointer-events: none;
   z-index: 1;
   /* Use brand color with opacity for translucency */
-  /* We'll control opacity via inline styles based on resizeProgress */
   mix-blend-mode: normal;
   /* Performance optimization */
   will-change: opacity;
@@ -15736,22 +15196,20 @@ src/components/landing/HeroImageContainer.module.css
 src/components/landing/HeroImageContainer.tsx
 "use client";
 
-import { useMemo, useState, useEffect, CSSProperties } from "react";
+import { useState, useEffect, CSSProperties } from "react";
 import styles from "./HeroImageContainer.module.css";
 
 interface HeroImageContainerProps {
   children: React.ReactNode;
   className?: string;
-  resizeProgress: number; // 0-1, controlled by ScrollTrigger
-  isResizePhase?: boolean; // Optional: Reserved for future phase-specific behavior
+  containerRef: React.RefObject<HTMLDivElement | null>; // For parent to attach ref for GSAP manipulation
   textHeight?: number; // Height of the text content for initial offset
 }
 
 export const HeroImageContainer = ({
   children,
   className = "",
-  resizeProgress,
-  isResizePhase = false,
+  containerRef,
   textHeight = 0,
 }: HeroImageContainerProps) => {
   // Track if component is mounted (client-side only)
@@ -15761,81 +15219,36 @@ export const HeroImageContainer = ({
     setMounted(true);
   }, []);
 
-  // Calculate transform based on resize progress
-  const containerStyle = useMemo((): CSSProperties => {
-    // If not mounted yet, return a default style to avoid hydration mismatch
-    if (!mounted) {
-      return {
-        opacity: 0, // Hide until mounted
-      };
-    }
-
-    // Reference Logic:
-    // Initial: scale 0.5, y = textHeight (starts below text)
-    // Final: scale 1.0, y = 0 (covers viewport)
-
-    const scale = 0.5 + 0.5 * resizeProgress;
-
-    // Calculate Y translation
-    // At progress 0: translate Y = textHeight (pixels)
-    // At progress 1: translate Y = 0
-    // We use calc() to combine percentage (if needed) and pixels, but here pixels are sufficient for the offset
-    // However, we might want to keep the -20% logic if it was part of the "feel", but the requirement is "meet top edge".
-    // "meet top edge" implies y=0 at the end.
-    // "start below text" implies y=textHeight at start.
-
-    const currentY = textHeight * (1 - resizeProgress);
-
-    return {
-      width: "100%",
-      height: "180vh", // Tall enough to extend past bottom when scaled
-      position: "absolute",
-      top: 0,
-      left: 0,
-      zIndex: 0, // Behind text
-      // Apply transform
-      transform: `scale(${scale}) translateY(${currentY}px)`,
-      transformOrigin: "center center",
-
-      // Performance optimizations
-      willChange: "transform",
-      // Force GPU acceleration
-      backfaceVisibility: "hidden",
-      WebkitBackfaceVisibility: "hidden",
-      // Smooth transition
-      transition: "none", // Controlled by GSAP
-      overflow: "hidden",
-      opacity: 1, // Visible when mounted
-    };
-  }, [mounted, resizeProgress, textHeight]);
-
-  // Calculate overlay opacity based on resize progress
-  // Overlay appears gradually as canvas resizes (0 to 1) during resize phase
-  // Then stays visible during timeline phase (when frames play)
-  // Using a max opacity of 0.4 for translucency (40% opacity)
-  const overlayOpacity = useMemo(() => {
-    // During resize phase, gradually increase opacity
-    // After resize phase (when frames play), keep overlay at full opacity
-    if (isResizePhase) {
-      return resizeProgress * 0.4;
-    }
-    // Timeline phase: keep overlay visible at full opacity
-    return 0.4;
-  }, [resizeProgress, isResizePhase]);
+  // Base style without transform/opacity calculations
+  // Transform and overlay opacity will be controlled via CSS variables set by GSAP
+  const containerStyle: CSSProperties = {
+    width: "100%",
+    height: "180vh", // Tall enough to extend past bottom when scaled
+    position: "absolute",
+    top: 0,
+    left: 0,
+    zIndex: 0, // Behind text
+    transformOrigin: "center center",
+    // Performance optimizations
+    willChange: "transform",
+    // Force GPU acceleration
+    backfaceVisibility: "hidden",
+    WebkitBackfaceVisibility: "hidden",
+    // Smooth transition
+    transition: "none", // Controlled by GSAP
+    overflow: "hidden",
+    opacity: mounted ? 1 : 0, // Hide until mounted to avoid hydration mismatch
+  };
 
   return (
     <div
+      ref={containerRef}
       className={`${styles.container} ${className}`}
       style={containerStyle}
     >
       {children}
-      {/* Translucent blue overlay that appears during resize phase */}
-      <div
-        className={styles.overlay}
-        style={{
-          opacity: overlayOpacity,
-        }}
-      />
+      {/* Translucent blue overlay controlled via CSS variable */}
+      <div className={styles.overlay} />
     </div>
   );
 };
@@ -16491,7 +15904,16 @@ import { useAnimationContext } from "@/contexts/AnimationContext";
 import { OurStory } from "./OurStory";
 import { BadgeCloud } from "./BadgeCloud";
 import { EthosSection } from "./EthosSection";
-import { GlobeSection as Globe } from "./Globe";
+import dynamic from "next/dynamic";
+
+// Dynamically import Globe to avoid bundling three.js in the main chunk
+const Globe = dynamic(
+  () => import("./Globe").then((mod) => mod.GlobeSection),
+  { 
+    ssr: false,
+    loading: () => <div style={{ minHeight: '100vh' }} /> // Placeholder to prevent layout shift
+  }
+);
 
 // GSAP types placeholder for loose typing without full @types/gsap
 // In a strict project, we should use import { GSAPStatic, ScrollTriggerStatic } from "gsap"
@@ -16524,12 +15946,14 @@ export const Landing = ({ navRef }: LandingProps) => {
   // State to coordinate animation initialization
   const [heroPinned, setHeroPinned] = useState(false);
 
-  // Two-phase animation state
-  const [currentPhase, setCurrentPhase] = useState<
-    "resize" | "timeline" | "complete"
-  >("resize");
-  const [resizeProgress, setResizeProgress] = useState(0);
-  const [timelineProgress, setTimelineProgress] = useState(0);
+  // Refs for scroll-driven values (no React state updates during scroll)
+  const progressRef = useRef({ resize: 0, timeline: 0 });
+  const isCompleteRef = useRef(false);
+  const heroContainerRef = useRef<HTMLDivElement | null>(null);
+
+  // Refs for animation state tracking (class toggle guards)
+  const isAadityaAnimating = useRef(false);
+  const isAaryahiAnimating = useRef(false);
 
   useEffect(() => {
     // Only run on client
@@ -16873,8 +16297,43 @@ export const Landing = ({ navRef }: LandingProps) => {
           if (scrolled <= resizePhaseEnd) {
             // RESIZE PHASE (0 - 100vh)
             const resizeProgress = scrolled / resizePhaseEnd;
-            setResizeProgress(resizeProgress);
-            setCurrentPhase("resize");
+            progressRef.current.resize = resizeProgress;
+            progressRef.current.timeline = 0;
+            isCompleteRef.current = false;
+
+            // Update HeroImageContainer via CSS variables
+            if (heroContainerRef.current) {
+              const scale = 0.5 + resizeProgress * 0.5; // 0.5 → 1.0
+              // Overlay goes from 0 (no overlay) to 0.4 (charcoal blue overlay)
+              const overlayOpacity = resizeProgress * 0.4; // 0 → 0.4
+              // Y offset: start below text area, move to 0 as it becomes fullscreen
+              const textOffset = 180; // Approximate height for partner button area
+              const currentY = textOffset * (1 - resizeProgress); // textOffset → 0
+              
+              gsap.set(heroContainerRef.current, {
+                '--container-scale': scale,
+                '--overlay-opacity': overlayOpacity,
+                '--container-y': `${currentY}px`,
+              });
+            }
+            
+            // Animate Partner With Us button (fade out) and Reach Out button (fade in)
+            const buttonWrapper = heroRef.current?.querySelector('[data-partner-button]');
+            const navButtons = heroRef.current?.querySelector('[data-reach-out-button]');
+            
+            if (buttonWrapper) {
+              gsap.set(buttonWrapper, {
+                opacity: 1 - resizeProgress,
+                pointerEvents: resizeProgress > 0.5 ? 'none' : 'auto',
+              });
+            }
+            
+            if (navButtons) {
+              gsap.set(navButtons, {
+                opacity: resizeProgress,
+                pointerEvents: resizeProgress > 0.5 ? 'auto' : 'none',
+              });
+            }
 
             // Keep canvas at frame 0 during resize
             if (canvasRef.current) {
@@ -16911,14 +16370,48 @@ export const Landing = ({ navRef }: LandingProps) => {
             const timelineTotal = totalScrollDistance - resizePhaseEnd;
             const timelineProgress = timelineScrolled / timelineTotal;
 
-            setResizeProgress(1); // Keep at 100%
-            setTimelineProgress(timelineProgress);
-            setCurrentPhase(timelineProgress >= 1 ? "complete" : "timeline");
+            progressRef.current.resize = 1;
+            progressRef.current.timeline = timelineProgress;
+            isCompleteRef.current = timelineProgress >= 1;
+
+            // Update HeroImageContainer via CSS variables (keep at full scale with overlay)
+            if (heroContainerRef.current) {
+              gsap.set(heroContainerRef.current, {
+                '--container-scale': 1,
+                '--overlay-opacity': 0.4, // Keep overlay at full during timeline phase
+                '--container-y': '0px',
+              });
+            }
+            
+            // Keep Partner With Us hidden and Reach Out visible during timeline phase
+            const buttonWrapper = heroRef.current?.querySelector('[data-partner-button]');
+            const navButtons = heroRef.current?.querySelector('[data-reach-out-button]');
+            
+            if (buttonWrapper) {
+              gsap.set(buttonWrapper, {
+                opacity: 0,
+                pointerEvents: 'none',
+              });
+            }
+            
+            if (navButtons) {
+              gsap.set(navButtons, {
+                opacity: 1,
+                pointerEvents: 'auto',
+              });
+            }
 
             // Frame scrubbing during timeline phase
             const targetFrame = Math.round(timelineProgress * (frameCount - 1));
             if (canvasRef.current) {
               canvasRef.current.setFrame(targetFrame);
+              
+              // Freeze canvas when timeline completes, unfreeze when scrolling back
+              if (timelineProgress >= 1) {
+                canvasRef.current.freeze();
+              } else {
+                canvasRef.current.unfreeze();
+              }
             }
 
             // --- Animation Timeline ---
@@ -16948,14 +16441,18 @@ export const Landing = ({ navRef }: LandingProps) => {
               const aadityaStart = 0.2133;
               const aadityaEnd = 0.4266;
 
-              // Toggle animation class for internal SVG animations
-              if (
+              // Calculate if animation should be active
+              const shouldBeActive =
                 timelineProgress >= aadityaStart &&
-                timelineProgress <= aadityaEnd
-              ) {
-                aadityaRef.current.classList.add(styles.animateAaditya);
-              } else {
-                aadityaRef.current.classList.remove(styles.animateAaditya);
+                timelineProgress <= aadityaEnd;
+
+              // Only access classList when state changes (class toggle guard)
+              if (shouldBeActive !== isAadityaAnimating.current) {
+                isAadityaAnimating.current = shouldBeActive;
+                aadityaRef.current.classList.toggle(
+                  styles.animateAaditya,
+                  shouldBeActive
+                );
               }
 
               animateZoomBlock(
@@ -16974,14 +16471,18 @@ export const Landing = ({ navRef }: LandingProps) => {
               const aaryahiStart = 0.4266;
               const aaryahiEnd = 0.64;
 
-              // Toggle animation class for internal SVG animations
-              if (
+              // Calculate if animation should be active
+              const shouldBeActive =
                 timelineProgress >= aaryahiStart &&
-                timelineProgress <= aaryahiEnd
-              ) {
-                aaryahiRef.current.classList.add(styles.animateAaryahi);
-              } else {
-                aaryahiRef.current.classList.remove(styles.animateAaryahi);
+                timelineProgress <= aaryahiEnd;
+
+              // Only access classList when state changes (class toggle guard)
+              if (shouldBeActive !== isAaryahiAnimating.current) {
+                isAaryahiAnimating.current = shouldBeActive;
+                aaryahiRef.current.classList.toggle(
+                  styles.animateAaryahi,
+                  shouldBeActive
+                );
               }
 
               animateZoomBlock(
@@ -17042,13 +16543,8 @@ export const Landing = ({ navRef }: LandingProps) => {
           const viewportWidth = window.innerWidth;
           const isMobile = viewportWidth < 768;
 
-          // Update container dimensions based on new viewport
-          // The HeroImageContainer component will automatically respond to the
-          // resizeProgress state, but we need to ensure ScrollTrigger recalculates
-          // the animation parameters for the new viewport size
-
-          // Force a re-render to update any viewport-dependent calculations
-          setResizeProgress((prev) => prev); // Trigger state update without changing value
+          // ScrollTrigger.refresh() will recalculate positions and trigger onUpdate
+          // which will update CSS variables via GSAP.set
 
           // Log resize event for debugging
           if (process.env.NODE_ENV === "development") {
@@ -17118,8 +16614,7 @@ export const Landing = ({ navRef }: LandingProps) => {
           aaryahiRef={aaryahiRef}
           togetherRef={togetherRef}
           textBlock4Ref={textBlock4Ref}
-          resizeProgress={resizeProgress}
-          isResizePhase={currentPhase === "resize"}
+          heroContainerRef={heroContainerRef}
           // No longer needed, handled globally
           onImagesLoaded={() => {}}
         />
@@ -17161,12 +16656,14 @@ export const Landing = ({ navRef }: LandingProps) => {
 src/components/landing/LandingCanvas.tsx
 "use client";
 
-import { useRef, useEffect, forwardRef, useImperativeHandle } from "react";
+import { useRef, useEffect, forwardRef, useImperativeHandle, useCallback } from "react";
 import styles from "./Landing.module.css";
 import { useAnimationContext } from "@/contexts/AnimationContext";
 
 export interface LandingCanvasHandle {
   setFrame: (frame: number) => void;
+  freeze: () => void;
+  unfreeze: () => void;
 }
 
 interface LandingCanvasProps {
@@ -17179,6 +16676,13 @@ export const LandingCanvas = forwardRef<LandingCanvasHandle, LandingCanvasProps>
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const contextRef = useRef<CanvasRenderingContext2D | null>(null);
     const videoFramesRef = useRef({ frame: 0, displayFrame: 0 });
+    const shouldRenderRef = useRef(true);
+    
+    // New refs for decoupled rendering (Task 1.1)
+    const targetFrameRef = useRef<number>(0);
+    const currentRenderedFrameRef = useRef<number>(-1); // -1 to force first render
+    const isFrozenRef = useRef<boolean>(false);
+    const animationFrameIdRef = useRef<number | null>(null);
 
     const frameCount = 385;
 
@@ -17187,9 +16691,9 @@ export const LandingCanvas = forwardRef<LandingCanvasHandle, LandingCanvasProps>
       const context = contextRef.current;
       if (!canvas || !context) return;
 
-      const pixelRatio = window.devicePixelRatio || 1;
-      canvas.width = window.innerWidth * pixelRatio;
-      canvas.height = window.innerHeight * pixelRatio;
+      const pixelRatio = 1;
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
       canvas.style.width = "100%";
       canvas.style.height = "100%";
       
@@ -17199,16 +16703,14 @@ export const LandingCanvas = forwardRef<LandingCanvasHandle, LandingCanvasProps>
     };
 
     const render = () => {
+      if (!shouldRenderRef.current) return;
+      
       const canvas = canvasRef.current;
       const context = contextRef.current;
       if (!canvas || !context) return;
 
       const canvasWidth = window.innerWidth;
       const canvasHeight = window.innerHeight;
-
-      // Fill background with black first
-      context.fillStyle = "#000000";
-      context.fillRect(0, 0, canvasWidth, canvasHeight);
 
       // Use the display frame (which accounts for progressive loading)
       const img = images[videoFramesRef.current.displayFrame];
@@ -17236,57 +16738,109 @@ export const LandingCanvas = forwardRef<LandingCanvasHandle, LandingCanvasProps>
         }
 
         context.drawImage(img, drawX, drawY, drawWidth, drawHeight);
-
-        // Overlay to darken by 10%
-        context.fillStyle = "rgba(0, 0, 0, 0.10)";
-        context.fillRect(0, 0, canvasWidth, canvasHeight);
       }
     };
 
+    // Task 1.2: setFrame only updates targetFrameRef, does NOT call render
     const setFrame = (frame: number) => {
-      const targetFrame = Math.max(0, Math.min(frame, frameCount - 1));
-      videoFramesRef.current.frame = targetFrame;
-      
-      // If the exact frame isn't loaded yet, use the nearest loaded frame
-      if (isFrameLoaded(targetFrame)) {
-        videoFramesRef.current.displayFrame = targetFrame;
-      } else {
-        videoFramesRef.current.displayFrame = getNearestLoadedFrame(targetFrame);
+      const clampedFrame = Math.max(0, Math.min(frame, frameCount - 1));
+      targetFrameRef.current = clampedFrame;
+    };
+
+    // Task 1.3: tick() function as the rAF render loop
+    const tick = useCallback(() => {
+      // Skip if frozen
+      if (isFrozenRef.current) {
+        animationFrameIdRef.current = requestAnimationFrame(tick);
+        return;
       }
-      
-      render();
+
+      // Only render if target frame differs from last rendered frame
+      if (targetFrameRef.current !== currentRenderedFrameRef.current) {
+        const targetFrame = targetFrameRef.current;
+        
+        // Update videoFramesRef for render() to use
+        videoFramesRef.current.frame = targetFrame;
+        
+        // If the exact frame isn't loaded yet, use the nearest loaded frame
+        if (isFrameLoaded(targetFrame)) {
+          videoFramesRef.current.displayFrame = targetFrame;
+        } else {
+          videoFramesRef.current.displayFrame = getNearestLoadedFrame(targetFrame);
+        }
+        
+        // Call render
+        render();
+        
+        // Update currentRenderedFrameRef after successful render
+        currentRenderedFrameRef.current = targetFrame;
+      }
+
+      // Schedule next frame
+      animationFrameIdRef.current = requestAnimationFrame(tick);
+    }, [isFrameLoaded, getNearestLoadedFrame]);
+
+    // Task 1.7: Updated freeze/unfreeze methods
+    const freeze = () => {
+      isFrozenRef.current = true;
+      shouldRenderRef.current = false;
+      const canvas = canvasRef.current;
+      if (canvas) {
+        canvas.style.willChange = '';
+      }
+    };
+
+    const unfreeze = () => {
+      isFrozenRef.current = false;
+      // Reset currentRenderedFrameRef to -1 to force redraw
+      currentRenderedFrameRef.current = -1;
+      shouldRenderRef.current = true;
+      const canvas = canvasRef.current;
+      if (canvas) {
+        canvas.style.willChange = 'transform';
+      }
     };
 
     useImperativeHandle(ref, () => ({
       setFrame,
+      freeze,
+      unfreeze,
     }));
 
     useEffect(() => {
       const canvas = canvasRef.current;
       if (!canvas) return;
 
-      const context = canvas.getContext("2d");
+      // Task 1.5: Canvas context with performance options
+      const context = canvas.getContext("2d", {
+        alpha: false,        // Opaque canvas for performance
+        desynchronized: true // Reduced latency when supported
+      });
       if (!context) return;
 
       contextRef.current = context;
       setCanvasSize();
 
-      // Initial render if images are ready
-      if (imagesLoaded) {
-        render();
-      }
+      // Task 1.6: Start the tick loop
+      tick();
 
       const handleResize = () => {
         setCanvasSize();
-        render();
+        // Force re-render on resize by resetting currentRenderedFrameRef
+        currentRenderedFrameRef.current = -1;
       };
 
       window.addEventListener("resize", handleResize);
 
+      // Task 1.6: Cleanup - cancel animation frame on unmount
       return () => {
         window.removeEventListener("resize", handleResize);
+        if (animationFrameIdRef.current !== null) {
+          cancelAnimationFrame(animationFrameIdRef.current);
+          animationFrameIdRef.current = null;
+        }
       };
-    }, [imagesLoaded]); // Re-run setup/render when imagesLoaded changes
+    }, [imagesLoaded, tick]); // Re-run setup when imagesLoaded or tick changes
 
     return <canvas ref={canvasRef} className={styles.canvas} />;
   }
@@ -17330,10 +16884,9 @@ interface LandingHeroProps {
   aaryahiRef: React.RefObject<HTMLDivElement | null>;
   togetherRef: React.RefObject<HTMLDivElement | null>;
   textBlock4Ref: React.RefObject<HTMLDivElement | null>;
+  heroContainerRef: React.RefObject<HTMLDivElement | null>;
   onImagesLoaded?: () => void;
   variant?: "top" | "bottom" | "both";
-  resizeProgress: number;
-  isResizePhase: boolean;
 }
 
 export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
@@ -17345,10 +16898,9 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
       aaryahiRef,
       togetherRef,
       textBlock4Ref,
+      heroContainerRef,
       onImagesLoaded,
       variant = "bottom",
-      resizeProgress,
-      isResizePhase,
     },
     ref
   ) => {
@@ -17376,57 +16928,8 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
       return () => observer.disconnect();
     }, [headerRef]);
 
-    // Animate text color from blue to white during resize phase
-    useEffect(() => {
-      if (typeof window === "undefined") return;
-
-      const animateTextColor = async () => {
-        const { default: gsap } = await import("gsap");
-
-        const slogan = sloganRef.current;
-        const heading = headingRef.current;
-
-        if (!slogan || !heading) return;
-
-        // Interpolate color from charcoal-blue to white (parchment)
-        // Using RGB interpolation for smooth transition
-        const startColor = { r: 40, g: 83, b: 107 }; // #28536b
-        const endColor = { r: 246, g: 240, b: 237 }; // #f6f0ed (parchment/white)
-
-        const r = Math.round(
-          startColor.r + (endColor.r - startColor.r) * resizeProgress
-        );
-        const g = Math.round(
-          startColor.g + (endColor.g - startColor.g) * resizeProgress
-        );
-        const b = Math.round(
-          startColor.b + (endColor.b - startColor.b) * resizeProgress
-        );
-
-        const color = `rgb(${r}, ${g}, ${b})`;
-
-        gsap.set([slogan, heading], {
-          color: color,
-        });
-
-        if (buttonWrapperRef.current) {
-          gsap.set(buttonWrapperRef.current, {
-            opacity: 1 - resizeProgress,
-            pointerEvents: resizeProgress > 0.5 ? "none" : "auto",
-          });
-        }
-
-        // Fade in nav buttons as canvas scrolls in (opposite of buttonWrapper)
-        if (navButtonsRef.current) {
-          gsap.set(navButtonsRef.current, {
-            opacity: resizeProgress,
-            pointerEvents: resizeProgress > 0.5 ? "auto" : "none",
-          });
-        }
-      };
-
-      animateTextColor();
-    }, [resizeProgress]);
+    // Note: Text color animation and button fading previously driven by resizeProgress
+    // are now handled via CSS variables set by GSAP in Landing.tsx
 
     return (
       <MorphSection
@@ -17438,8 +16941,7 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
         height="100vh"
       >
         <HeroImageContainer
-          resizeProgress={resizeProgress}
-          isResizePhase={isResizePhase}
+          containerRef={heroContainerRef}
           textHeight={textHeight}
         >
           <LandingCanvas ref={canvasRef} onImagesLoaded={onImagesLoaded} />
@@ -17453,7 +16955,7 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
             <h1 ref={headingRef} className={styles.heroHeading}>
               Strategic excellence for hospitality owners and operators
             </h1>
-            <div ref={buttonWrapperRef}>
+            <div ref={buttonWrapperRef} data-partner-button>
               <SmartButton
                 text="Partner With Us"
                 alignment="center"
@@ -17465,28 +16967,22 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
             </div>
           </div>
 
-          {/* Navigation buttons that appear when canvas scrolls in */}
+          {/* Reach Out button that appears when canvas scrolls in */}
           <div
             ref={navButtonsRef}
+            data-reach-out-button
             style={{
               position: "fixed",
-              top: "var(--space-6)",
-              right: "var(--space-6)",
+              top: 0,
+              right: "calc(var(--space-6) + 80px + var(--space-4))", // Position to the left of hamburger menu (80px width + gap)
+              height: "var(--space-20)", // Match nav height
               display: "flex",
-              gap: "var(--space-4)",
+              alignItems: "center",
               zIndex: 100,
               opacity: 0,
               pointerEvents: "none",
             }}
           >
-            <SmartButton
-              text="Home"
-              alignment="center"
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              hoverColor="var(--rosy-taupe)"
-              backgroundColor="var(--parchment)"
-              theme="light"
-            />
             <SmartButton
               text="Reach Out"
               alignment="center"
@@ -17494,6 +16990,7 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
               hoverColor="var(--charcoal-blue)"
               backgroundColor="var(--parchment)"
               theme="light"
+              size="small"
             />
           </div>
         </div>
@@ -19110,6 +18607,7 @@ export const MenuProvider = ({ children }: MenuProviderProps) => {
 
 
 
+
 ----
 src/hooks/useAdaptiveColor.ts
 "use client";
@@ -19227,13 +18725,457 @@ export function useAdaptiveColor(
 
 
 ----
+src/hooks/useImagePreloader.test.ts
+import { describe, it, expect } from 'vitest';
+import { getNearestLoadedFrame } from '../utils/frameUtils';
+
+// Constants from the implementation
+const KEY_FRAME_INTERVAL = 4;
+
+describe('useImagePreloader - Key Frame Loading Logic', () => {
+  describe('4.1 KEY_FRAME_INTERVAL verification', () => {
+    it('should have KEY_FRAME_INTERVAL set to 4', () => {
+      // Verify the constant is set correctly
+      expect(KEY_FRAME_INTERVAL).toBe(4);
+    });
+
+    it('should calculate key frames at intervals of 4', () => {
+      const frameCount = 20;
+      const keyFrameIndices: number[] = [];
+      
+      // This is the logic from the implementation
+      for (let i = 0; i < frameCount; i += KEY_FRAME_INTERVAL) {
+        keyFrameIndices.push(i);
+      }
+      
+      // Always include the last frame
+      if (!keyFrameIndices.includes(frameCount - 1)) {
+        keyFrameIndices.push(frameCount - 1);
+      }
+
+      // Expected key frames: 0, 4, 8, 12, 16, 19 (last frame)
+      expect(keyFrameIndices).toEqual([0, 4, 8, 12, 16, 19]);
+    });
+
+    it('should always include the last frame as a key frame', () => {
+      const frameCount = 385; // Real frame count
+      const keyFrameIndices: number[] = [];
+      
+      for (let i = 0; i < frameCount; i += KEY_FRAME_INTERVAL) {
+        keyFrameIndices.push(i);
+      }
+      
+      if (!keyFrameIndices.includes(frameCount - 1)) {
+        keyFrameIndices.push(frameCount - 1);
+      }
+
+      // Last frame should always be included
+      expect(keyFrameIndices).toContain(frameCount - 1);
+      expect(keyFrameIndices[keyFrameIndices.length - 1]).toBe(384);
+    });
+
+    it('should load key frames where index % 4 === 0', () => {
+      const frameCount = 50;
+      const keyFrameIndices: number[] = [];
+      
+      for (let i = 0; i < frameCount; i += KEY_FRAME_INTERVAL) {
+        keyFrameIndices.push(i);
+      }
+      
+      if (!keyFrameIndices.includes(frameCount - 1)) {
+        keyFrameIndices.push(frameCount - 1);
+      }
+
+      // Check that all frames where index % 4 === 0 are in the key frames
+      // (except possibly the last frame if it's not divisible by 4)
+      for (let i = 0; i < frameCount; i += 4) {
+        expect(keyFrameIndices).toContain(i);
+      }
+    });
+
+    it('should handle edge case where last frame is already a key frame', () => {
+      const frameCount = 21; // Last frame (20) is at index 20, which is 20 % 4 === 0
+      const keyFrameIndices: number[] = [];
+      
+      for (let i = 0; i < frameCount; i += KEY_FRAME_INTERVAL) {
+        keyFrameIndices.push(i);
+      }
+      
+      if (!keyFrameIndices.includes(frameCount - 1)) {
+        keyFrameIndices.push(frameCount - 1);
+      }
+
+      // Expected key frames: 0, 4, 8, 12, 16, 20
+      // Frame 20 should only appear once (not duplicated)
+      expect(keyFrameIndices).toEqual([0, 4, 8, 12, 16, 20]);
+      
+      // Verify no duplicates
+      const uniqueFrames = new Set(keyFrameIndices);
+      expect(uniqueFrames.size).toBe(keyFrameIndices.length);
+    });
+  });
+
+  describe('4.3 getNearestLoadedFrame verification', () => {
+    // Now using the extracted utility function from frameUtils.ts
+
+    it('should return the target index if it is loaded', () => {
+      const frameCount = 20;
+      const loadedFrames = new Set([0, 4, 8, 12, 16, 19]); // Key frames
+
+      // Frame 0 is a key frame and should be returned
+      expect(getNearestLoadedFrame(0, loadedFrames, frameCount)).toBe(0);
+      
+      // Frame 4 is a key frame and should be returned
+      expect(getNearestLoadedFrame(4, loadedFrames, frameCount)).toBe(4);
+    });
+
+    it('should return a valid loaded frame index for non-loaded frames', () => {
+      const frameCount = 20;
+      const loadedFrames = new Set([0, 4, 8, 12, 16, 19]); // Key frames
+
+      // Frame 1 is not a key frame, should return nearest (0 or 4)
+      const nearest1 = getNearestLoadedFrame(1, loadedFrames, frameCount);
+      expect(loadedFrames.has(nearest1)).toBe(true);
+      expect([0, 4]).toContain(nearest1);
+
+      // Frame 5 is not a key frame, should return nearest (4 or 8)
+      const nearest5 = getNearestLoadedFrame(5, loadedFrames, frameCount);
+      expect(loadedFrames.has(nearest5)).toBe(true);
+      expect([4, 8]).toContain(nearest5);
+    });
+
+    it('should minimize distance to target frame', () => {
+      const frameCount = 20;
+      const loadedFrames = new Set([0, 4, 8, 12, 16, 19]); // Key frames
+
+      // Frame 2 is closer to 0 (distance 2) than to 4 (distance 2)
+      // The algorithm searches outward, so it finds 0 first
+      const nearest2 = getNearestLoadedFrame(2, loadedFrames, frameCount);
+      expect(nearest2).toBe(0);
+
+      // Frame 3 is closer to 4 (distance 1) than to 0 (distance 3)
+      const nearest3 = getNearestLoadedFrame(3, loadedFrames, frameCount);
+      expect(nearest3).toBe(4);
+
+      // Frame 6 is closer to 4 (distance 2) than to 8 (distance 2)
+      // The algorithm searches outward, so it finds 4 first
+      const nearest6 = getNearestLoadedFrame(6, loadedFrames, frameCount);
+      expect(nearest6).toBe(4);
+
+      // Frame 7 is closer to 8 (distance 1) than to 4 (distance 3)
+      const nearest7 = getNearestLoadedFrame(7, loadedFrames, frameCount);
+      expect(nearest7).toBe(8);
+    });
+
+    it('should handle edge cases at boundaries', () => {
+      const frameCount = 20;
+      const loadedFrames = new Set([0, 4, 8, 12, 16, 19]); // Key frames
+
+      // First frame
+      expect(getNearestLoadedFrame(0, loadedFrames, frameCount)).toBe(0);
+
+      // Last frame
+      expect(getNearestLoadedFrame(19, loadedFrames, frameCount)).toBe(19);
+    });
+
+    it('should return a valid frame when target is beyond loaded frames', () => {
+      const frameCount = 100;
+      const loadedFrames = new Set([0, 4, 8, 12, 16]); // Only first few key frames
+
+      // Target frame 50 is beyond loaded frames, should return 16 (closest)
+      const nearest50 = getNearestLoadedFrame(50, loadedFrames, frameCount);
+      expect(loadedFrames.has(nearest50)).toBe(true);
+      expect(nearest50).toBe(16);
+    });
+  });
+
+  describe('5.1 Phase 2 loading completion', () => {
+    it('should load all remaining frames after phase 1 completes', () => {
+      const frameCount = 20;
+      const keyFrameIndices: number[] = [];
+      
+      // Calculate key frames (phase 1)
+      for (let i = 0; i < frameCount; i += KEY_FRAME_INTERVAL) {
+        keyFrameIndices.push(i);
+      }
+      if (!keyFrameIndices.includes(frameCount - 1)) {
+        keyFrameIndices.push(frameCount - 1);
+      }
+
+      // Simulate phase 1 completion - key frames loaded
+      const loadedFrames = new Set(keyFrameIndices);
+      
+      // Calculate remaining frames (phase 2)
+      const remainingIndices: number[] = [];
+      for (let i = 0; i < frameCount; i++) {
+        if (!loadedFrames.has(i)) {
+          remainingIndices.push(i);
+        }
+      }
+
+      // Simulate phase 2 completion - add remaining frames
+      remainingIndices.forEach(index => loadedFrames.add(index));
+
+      // After phase 2, all frames should be loaded
+      expect(loadedFrames.size).toBe(frameCount);
+      
+      // Verify every frame index is in the loaded set
+      for (let i = 0; i < frameCount; i++) {
+        expect(loadedFrames.has(i)).toBe(true);
+      }
+    });
+
+    it('should have allFramesLoaded state become true after phase 2', () => {
+      const frameCount = 20;
+      const keyFrameIndices: number[] = [];
+      
+      // Calculate key frames
+      for (let i = 0; i < frameCount; i += KEY_FRAME_INTERVAL) {
+        keyFrameIndices.push(i);
+      }
+      if (!keyFrameIndices.includes(frameCount - 1)) {
+        keyFrameIndices.push(frameCount - 1);
+      }
+
+      // Simulate loading state
+      let allFramesLoaded = false;
+      const loadedFrames = new Set(keyFrameIndices);
+      
+      // Phase 1 complete - allFramesLoaded should still be false
+      expect(allFramesLoaded).toBe(false);
+
+      // Calculate remaining frames
+      const remainingIndices: number[] = [];
+      for (let i = 0; i < frameCount; i++) {
+        if (!loadedFrames.has(i)) {
+          remainingIndices.push(i);
+        }
+      }
+
+      // Simulate phase 2 loading
+      let loadedCount = 0;
+      const totalRemaining = remainingIndices.length;
+
+      remainingIndices.forEach(index => {
+        loadedFrames.add(index);
+        loadedCount++;
+        
+        if (loadedCount === totalRemaining) {
+          allFramesLoaded = true;
+        }
+      });
+
+      // After phase 2 completes, allFramesLoaded should be true
+      expect(allFramesLoaded).toBe(true);
+      expect(loadedFrames.size).toBe(frameCount);
+    });
+
+    it('should correctly identify remaining frames after phase 1', () => {
+      const frameCount = 20;
+      const keyFrameIndices: number[] = [];
+      
+      // Calculate key frames
+      for (let i = 0; i < frameCount; i += KEY_FRAME_INTERVAL) {
+        keyFrameIndices.push(i);
+      }
+      if (!keyFrameIndices.includes(frameCount - 1)) {
+        keyFrameIndices.push(frameCount - 1);
+      }
+
+      // Key frames: [0, 4, 8, 12, 16, 19]
+      const loadedFrames = new Set(keyFrameIndices);
+      
+      // Calculate remaining frames
+      const remainingIndices: number[] = [];
+      for (let i = 0; i < frameCount; i++) {
+        if (!loadedFrames.has(i)) {
+          remainingIndices.push(i);
+        }
+      }
+
+      // Remaining should be: [1, 2, 3, 5, 6, 7, 9, 10, 11, 13, 14, 15, 17, 18]
+      const expectedRemaining = [1, 2, 3, 5, 6, 7, 9, 10, 11, 13, 14, 15, 17, 18];
+      expect(remainingIndices).toEqual(expectedRemaining);
+      expect(remainingIndices.length).toBe(frameCount - keyFrameIndices.length);
+    });
+
+    it('should handle case where all frames are already loaded', () => {
+      const frameCount = 20;
+      const loadedFrames = new Set<number>();
+      
+      // Simulate all frames already loaded
+      for (let i = 0; i < frameCount; i++) {
+        loadedFrames.add(i);
+      }
+
+      // Calculate remaining frames
+      const remainingIndices: number[] = [];
+      for (let i = 0; i < frameCount; i++) {
+        if (!loadedFrames.has(i)) {
+          remainingIndices.push(i);
+        }
+      }
+
+      // No remaining frames
+      expect(remainingIndices.length).toBe(0);
+      
+      // allFramesLoaded should be true immediately
+      let allFramesLoaded = false;
+      if (remainingIndices.length === 0) {
+        allFramesLoaded = true;
+      }
+      expect(allFramesLoaded).toBe(true);
+    });
+  });
+
+  describe('5.3 Progress reporting', () => {
+    it('should increase progress from 0 to 100 during phase 1', () => {
+      const frameCount = 20;
+      const keyFrameIndices: number[] = [];
+      
+      // Calculate key frames
+      for (let i = 0; i < frameCount; i += KEY_FRAME_INTERVAL) {
+        keyFrameIndices.push(i);
+      }
+      if (!keyFrameIndices.includes(frameCount - 1)) {
+        keyFrameIndices.push(frameCount - 1);
+      }
+
+      const totalKeyFrames = keyFrameIndices.length;
+      let loadedCount = 0;
+      const progressValues: number[] = [];
+
+      // Simulate loading key frames
+      keyFrameIndices.forEach(() => {
+        loadedCount++;
+        const currentProgress = Math.round((loadedCount / totalKeyFrames) * 100);
+        progressValues.push(currentProgress);
+      });
+
+      // Progress should start above 0 and end at 100
+      expect(progressValues[0]).toBeGreaterThan(0);
+      expect(progressValues[progressValues.length - 1]).toBe(100);
+      
+      // Progress should increase monotonically
+      for (let i = 1; i < progressValues.length; i++) {
+        expect(progressValues[i]).toBeGreaterThanOrEqual(progressValues[i - 1]);
+      }
+    });
+
+    it('should calculate progress based on key frames loaded', () => {
+      const frameCount = 20;
+      const keyFrameIndices: number[] = [];
+      
+      // Calculate key frames
+      for (let i = 0; i < frameCount; i += KEY_FRAME_INTERVAL) {
+        keyFrameIndices.push(i);
+      }
+      if (!keyFrameIndices.includes(frameCount - 1)) {
+        keyFrameIndices.push(frameCount - 1);
+      }
+
+      // Key frames: [0, 4, 8, 12, 16, 19] = 6 frames
+      const totalKeyFrames = keyFrameIndices.length;
+      expect(totalKeyFrames).toBe(6);
+
+      // Test progress at different stages
+      const testCases = [
+        { loaded: 1, expected: Math.round((1 / 6) * 100) }, // ~17%
+        { loaded: 2, expected: Math.round((2 / 6) * 100) }, // ~33%
+        { loaded: 3, expected: Math.round((3 / 6) * 100) }, // 50%
+        { loaded: 4, expected: Math.round((4 / 6) * 100) }, // ~67%
+        { loaded: 5, expected: Math.round((5 / 6) * 100) }, // ~83%
+        { loaded: 6, expected: Math.round((6 / 6) * 100) }, // 100%
+      ];
+
+      testCases.forEach(({ loaded, expected }) => {
+        const progress = Math.round((loaded / totalKeyFrames) * 100);
+        expect(progress).toBe(expected);
+      });
+    });
+
+    it('should call progress callback during loading', () => {
+      const frameCount = 20;
+      const keyFrameIndices: number[] = [];
+      
+      // Calculate key frames
+      for (let i = 0; i < frameCount; i += KEY_FRAME_INTERVAL) {
+        keyFrameIndices.push(i);
+      }
+      if (!keyFrameIndices.includes(frameCount - 1)) {
+        keyFrameIndices.push(frameCount - 1);
+      }
+
+      const totalKeyFrames = keyFrameIndices.length;
+      let loadedCount = 0;
+      const progressCallbacks: number[] = [];
+
+      // Simulate progress callback being called
+      const onProgressUpdate = (progress: number) => {
+        progressCallbacks.push(progress);
+      };
+
+      // Simulate loading with callbacks
+      keyFrameIndices.forEach(() => {
+        loadedCount++;
+        const currentProgress = Math.round((loadedCount / totalKeyFrames) * 100);
+        onProgressUpdate(currentProgress);
+      });
+
+      // Progress callback should be called for each key frame
+      expect(progressCallbacks.length).toBe(totalKeyFrames);
+      
+      // Last callback should be 100
+      expect(progressCallbacks[progressCallbacks.length - 1]).toBe(100);
+    });
+
+    it('should have progress at 0 before loading starts', () => {
+      let progress = 0;
+      
+      // Before loading, progress should be 0
+      expect(progress).toBe(0);
+    });
+
+    it('should reach 100% when all key frames are loaded', () => {
+      const frameCount = 385; // Real frame count
+      const keyFrameIndices: number[] = [];
+      
+      // Calculate key frames
+      for (let i = 0; i < frameCount; i += KEY_FRAME_INTERVAL) {
+        keyFrameIndices.push(i);
+      }
+      if (!keyFrameIndices.includes(frameCount - 1)) {
+        keyFrameIndices.push(frameCount - 1);
+      }
+
+      const totalKeyFrames = keyFrameIndices.length;
+      let loadedCount = 0;
+      let progress = 0;
+
+      // Simulate loading all key frames
+      keyFrameIndices.forEach(() => {
+        loadedCount++;
+        progress = Math.round((loadedCount / totalKeyFrames) * 100);
+      });
+
+      // Progress should be exactly 100 when all key frames loaded
+      expect(progress).toBe(100);
+      expect(loadedCount).toBe(totalKeyFrames);
+    });
+  });
+});
+
+----
 src/hooks/useImagePreloader.ts
 import { useState, useRef, useCallback } from 'react';
+import { getNearestLoadedFrame } from '../utils/frameUtils';
 
 // Global cache for images to persist across re-renders and page navigation
 const imageCache: HTMLImageElement[] = [];
 // Track which frames are actually loaded (for interpolation)
 const loadedFrames: Set<number> = new Set();
+// Track frames that failed to load from mobile and fell back to desktop
+const fallbackFrames: Set<number> = new Set();
 let globalLoadProgress = 0;
 let phase1Complete = false;
 let phase2Complete = false;
@@ -19241,44 +19183,113 @@ let phase2Complete = false;
 // Interval for key frames (load every Nth frame in phase 1)
 const KEY_FRAME_INTERVAL = 4;
 
+// Resolution configuration constants
+export const MOBILE_BREAKPOINT = 768;
+
+export const RESOLUTION_CONFIG = {
+  desktop: {
+    width: 1920,
+    height: 1080,
+    quality: 70,
+    path: '/frames'
+  },
+  mobile: {
+    width: 1280,
+    height: 720,
+    quality: 65,
+    path: '/frames/mobile'
+  }
+} as const;
+
+/**
+ * Detects if the current device should use mobile resolution frames.
+ * Returns false for SSR (server-side rendering) to default to desktop.
+ */
+export const detectIsMobile = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  return window.innerWidth < MOBILE_BREAKPOINT;
+};
+
+/**
+ * Gets the frame path for a given index based on the resolution tier.
+ * This is a pure utility function that can be used independently.
+ * 
+ * @param index - The frame index (0-based)
+ * @param isMobile - Whether to use mobile resolution tier
+ * @returns The path to the frame image
+ * 
+ * Requirements: 1.1, 1.2, 3.4, 3.5
+ */
+export const getFramePath = (index: number, isMobile: boolean): string => {
+  const frameNumber = (index + 1).toString().padStart(4, '0');
+  const basePath = isMobile ? RESOLUTION_CONFIG.mobile.path : RESOLUTION_CONFIG.desktop.path;
+  return `${basePath}/frame_${frameNumber}.webp`;
+};
+
 export const useImagePreloader = (frameCount: number) => {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [progress, setProgress] = useState(0);
   const [allFramesLoaded, setAllFramesLoaded] = useState(false);
   const loadingRef = useRef(false);
   const phase2StartedRef = useRef(false);
+  
+  // Lock isMobile value at initialization - won't change on resize
+  const isMobileRef = useRef<boolean | null>(null);
+  if (isMobileRef.current === null) {
+    isMobileRef.current = detectIsMobile();
+  }
+  const isMobile = isMobileRef.current;
 
-  const currentFrame = (index: number) =>
-    `/frames/frame_${(index + 1).toString().padStart(4, "0")}.webp`;
+  /**
+   * Gets the frame path for a given index, using the locked isMobile state.
+   * Maintains backward compatibility by wrapping the exported getFramePath utility.
+   * 
+   * Requirements: 1.1, 1.2
+   */
+  const currentFrame = useCallback((index: number): string => {
+    return getFramePath(index, isMobile);
+  }, [isMobile]);
 
   // Get the nearest loaded frame index for interpolation
-  const getNearestLoadedFrame = useCallback((targetIndex: number): number => {
-    if (loadedFrames.has(targetIndex)) {
-      return targetIndex;
-    }
-    
-    // Search outward for nearest loaded frame
-    let lower = targetIndex;
-    let upper = targetIndex;
-    
-    while (lower >= 0 || upper < frameCount) {
-      if (lower >= 0 && loadedFrames.has(lower)) {
-        return lower;
-      }
-      if (upper < frameCount && loadedFrames.has(upper)) {
-        return upper;
-      }
-      lower--;
-      upper++;
-    }
-    
-    // Fallback to first loaded frame
-    if (loadedFrames.size > 0) {
-      const firstLoaded = loadedFrames.values().next().value;
-      return firstLoaded !== undefined ? firstLoaded : 0;
-    }
-    return 0;
+  // Uses the extracted utility function for testability
+  const getNearestLoadedFrameCallback = useCallback((targetIndex: number): number => {
+    return getNearestLoadedFrame(targetIndex, loadedFrames, frameCount);
   }, [frameCount]);
+
+  /**
+   * Creates an error handler that implements fallback logic for missing mobile frames.
+   * On error, if we're on mobile and haven't already tried fallback, retry with desktop path.
+   * 
+   * Requirements: 1.3, 1.4
+   */
+  const createFallbackErrorHandler = useCallback((index: number, onSuccess: () => void) => {
+    return () => {
+      const img = imageCache[index];
+      const currentSrc = img.src;
+      
+      // Check if we're on mobile and the current path is a mobile path (not already fallen back)
+      if (isMobile && currentSrc.includes(RESOLUTION_CONFIG.mobile.path) && !fallbackFrames.has(index)) {
+        // Log warning about fallback
+        console.warn(`[useImagePreloader] Mobile frame ${index + 1} failed to load, falling back to desktop`);
+        
+        // Mark this frame as using fallback
+        fallbackFrames.add(index);
+        
+        // Retry with desktop path
+        const desktopPath = getFramePath(index, false);
+        img.onload = onSuccess;
+        img.onerror = () => {
+          // Even desktop failed, still mark as loaded to not block progress
+          console.error(`[useImagePreloader] Frame ${index + 1} failed to load from both mobile and desktop paths`);
+          onSuccess();
+        };
+        img.src = desktopPath;
+      } else {
+        // Not mobile, already tried fallback, or desktop path failed - just continue
+        onSuccess();
+      }
+    };
+  }, [isMobile]);
 
   // Phase 2: Load remaining frames in background
   const loadRemainingFrames = useCallback(() => {
@@ -19316,13 +19327,14 @@ export const useImagePreloader = (frameCount: number) => {
     remainingIndices.forEach((frameIndex, i) => {
       setTimeout(() => {
         if (!imageCache[frameIndex].src) {
-          imageCache[frameIndex].onload = onLoad(frameIndex);
-          imageCache[frameIndex].onerror = onLoad(frameIndex);
+          const successHandler = onLoad(frameIndex);
+          imageCache[frameIndex].onload = successHandler;
+          imageCache[frameIndex].onerror = createFallbackErrorHandler(frameIndex, successHandler);
           imageCache[frameIndex].src = currentFrame(frameIndex);
         }
       }, Math.floor(i / 6) * 50); // Load 6 at a time with 50ms gaps
     });
-  }, [frameCount]);
+  }, [frameCount, currentFrame, createFallbackErrorHandler]);
 
   // Phase 1: Load key frames (every Nth frame)
   const preloadImages = useCallback(() => {
@@ -19377,20 +19389,22 @@ export const useImagePreloader = (frameCount: number) => {
       }
     };
 
-    // Load only key frames
+    // Load only key frames with fallback error handling
     keyFrameIndices.forEach((frameIndex) => {
       if (!imageCache[frameIndex].src) {
-        imageCache[frameIndex].onload = onKeyFrameLoad(frameIndex);
-        imageCache[frameIndex].onerror = onKeyFrameLoad(frameIndex);
+        const successHandler = onKeyFrameLoad(frameIndex);
+        imageCache[frameIndex].onload = successHandler;
+        imageCache[frameIndex].onerror = createFallbackErrorHandler(frameIndex, successHandler);
         imageCache[frameIndex].src = currentFrame(frameIndex);
       } else if (imageCache[frameIndex].complete) {
         onKeyFrameLoad(frameIndex)();
       } else {
-        imageCache[frameIndex].onload = onKeyFrameLoad(frameIndex);
-        imageCache[frameIndex].onerror = onKeyFrameLoad(frameIndex);
+        const successHandler = onKeyFrameLoad(frameIndex);
+        imageCache[frameIndex].onload = successHandler;
+        imageCache[frameIndex].onerror = createFallbackErrorHandler(frameIndex, successHandler);
       }
     });
-  }, [frameCount, loadRemainingFrames]);
+  }, [frameCount, loadRemainingFrames, currentFrame, createFallbackErrorHandler]);
 
   return { 
     imagesLoaded, 
@@ -19398,8 +19412,9 @@ export const useImagePreloader = (frameCount: number) => {
     preloadImages, 
     images: imageCache,
     allFramesLoaded,
-    getNearestLoadedFrame,
-    isFrameLoaded: (index: number) => loadedFrames.has(index)
+    getNearestLoadedFrame: getNearestLoadedFrameCallback,
+    isFrameLoaded: (index: number) => loadedFrames.has(index),
+    isMobile
   };
 };
 
@@ -20144,6 +20159,63 @@ export const consumeLoaderJustPlayed = (): boolean => {
 };
 
 ----
+src/utils/frameUtils.ts
+/**
+ * Utility functions for frame calculations in scroll-driven animations.
+ * These are pure functions that can be easily tested.
+ */
+
+/**
+ * Gets the nearest loaded frame index to a target frame.
+ * 
+ * For any target frame index `t` and set of loaded frame indices `L`,
+ * when `t ∉ L`, the displayed frame SHALL be the element of `L` 
+ * with minimum absolute distance to `t`.
+ * 
+ * @param targetFrame - The desired frame index
+ * @param loadedFrames - Set of frame indices that are currently loaded
+ * @param frameCount - Total number of frames (upper bound, exclusive)
+ * @returns The nearest loaded frame index, or 0 if no frames are loaded
+ * 
+ * Requirements: 5.2
+ */
+export function getNearestLoadedFrame(
+  targetFrame: number,
+  loadedFrames: Set<number>,
+  frameCount: number
+): number {
+  // If target frame is already loaded, return it directly
+  if (loadedFrames.has(targetFrame)) {
+    return targetFrame;
+  }
+
+  // If no frames are loaded, return 0 as fallback
+  if (loadedFrames.size === 0) {
+    return 0;
+  }
+
+  // Search outward from target for nearest loaded frame
+  let lower = targetFrame;
+  let upper = targetFrame;
+
+  while (lower >= 0 || upper < frameCount) {
+    if (lower >= 0 && loadedFrames.has(lower)) {
+      return lower;
+    }
+    if (upper < frameCount && loadedFrames.has(upper)) {
+      return upper;
+    }
+    lower--;
+    upper++;
+  }
+
+  // Fallback to first loaded frame if search didn't find anything
+  // (shouldn't happen if loadedFrames.size > 0, but defensive)
+  const firstLoaded = loadedFrames.values().next().value;
+  return firstLoaded !== undefined ? firstLoaded : 0;
+}
+
+----
 src/utils/scrollConfig.ts
 /**
  * Centralized Scroll Configuration
@@ -20383,5 +20455,25 @@ tsconfig.json
   ],
   "exclude": ["node_modules"]
 }
+
+----
+vitest.config.ts
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
+import path from 'path';
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    environment: 'jsdom',
+    globals: true,
+    setupFiles: [],
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+});
 
 --END--

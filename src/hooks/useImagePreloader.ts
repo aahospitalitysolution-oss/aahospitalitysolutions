@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
+import { getNearestLoadedFrame } from '../utils/frameUtils';
 
 // Global cache for images to persist across re-renders and page navigation
 const imageCache: HTMLImageElement[] = [];
@@ -81,32 +82,9 @@ export const useImagePreloader = (frameCount: number) => {
   }, [isMobile]);
 
   // Get the nearest loaded frame index for interpolation
-  const getNearestLoadedFrame = useCallback((targetIndex: number): number => {
-    if (loadedFrames.has(targetIndex)) {
-      return targetIndex;
-    }
-    
-    // Search outward for nearest loaded frame
-    let lower = targetIndex;
-    let upper = targetIndex;
-    
-    while (lower >= 0 || upper < frameCount) {
-      if (lower >= 0 && loadedFrames.has(lower)) {
-        return lower;
-      }
-      if (upper < frameCount && loadedFrames.has(upper)) {
-        return upper;
-      }
-      lower--;
-      upper++;
-    }
-    
-    // Fallback to first loaded frame
-    if (loadedFrames.size > 0) {
-      const firstLoaded = loadedFrames.values().next().value;
-      return firstLoaded !== undefined ? firstLoaded : 0;
-    }
-    return 0;
+  // Uses the extracted utility function for testability
+  const getNearestLoadedFrameCallback = useCallback((targetIndex: number): number => {
+    return getNearestLoadedFrame(targetIndex, loadedFrames, frameCount);
   }, [frameCount]);
 
   /**
@@ -265,7 +243,7 @@ export const useImagePreloader = (frameCount: number) => {
     preloadImages, 
     images: imageCache,
     allFramesLoaded,
-    getNearestLoadedFrame,
+    getNearestLoadedFrame: getNearestLoadedFrameCallback,
     isFrameLoaded: (index: number) => loadedFrames.has(index),
     isMobile
   };

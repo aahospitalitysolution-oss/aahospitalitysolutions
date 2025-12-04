@@ -1,11 +1,13 @@
 "use client";
 
-import { useRef, useEffect, forwardRef, useImperativeHandle } from "react";
+import { useRef, useEffect, forwardRef, useImperativeHandle, useCallback } from "react";
 import styles from "./Landing.module.css";
 import { useAnimationContext } from "@/contexts/AnimationContext";
 
 export interface LandingCanvasHandle {
   setFrame: (frame: number) => void;
+  freeze: () => void;
+  unfreeze: () => void;
 }
 
 interface LandingCanvasProps {
@@ -18,6 +20,13 @@ export const LandingCanvas = forwardRef<LandingCanvasHandle, LandingCanvasProps>
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const contextRef = useRef<CanvasRenderingContext2D | null>(null);
     const videoFramesRef = useRef({ frame: 0, displayFrame: 0 });
+    const shouldRenderRef = useRef(true);
+    
+    // New refs for decoupled rendering (Task 1.1)
+    const targetFrameRef = useRef<number>(0);
+    const currentRenderedFrameRef = useRef<number>(-1); // -1 to force first render
+    const isFrozenRef = useRef<boolean>(false);
+    const animationFrameIdRef = useRef<number | null>(null);
 
     const frameCount = 385;
 
@@ -26,9 +35,9 @@ export const LandingCanvas = forwardRef<LandingCanvasHandle, LandingCanvasProps>
       const context = contextRef.current;
       if (!canvas || !context) return;
 
-      const pixelRatio = window.devicePixelRatio || 1;
-      canvas.width = window.innerWidth * pixelRatio;
-      canvas.height = window.innerHeight * pixelRatio;
+      const pixelRatio = 1;
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
       canvas.style.width = "100%";
       canvas.style.height = "100%";
       
@@ -38,16 +47,14 @@ export const LandingCanvas = forwardRef<LandingCanvasHandle, LandingCanvasProps>
     };
 
     const render = () => {
+      if (!shouldRenderRef.current) return;
+      
       const canvas = canvasRef.current;
       const context = contextRef.current;
       if (!canvas || !context) return;
 
       const canvasWidth = window.innerWidth;
       const canvasHeight = window.innerHeight;
-
-      // Fill background with black first
-      context.fillStyle = "#000000";
-      context.fillRect(0, 0, canvasWidth, canvasHeight);
 
       // Use the display frame (which accounts for progressive loading)
       const img = images[videoFramesRef.current.displayFrame];
@@ -75,57 +82,109 @@ export const LandingCanvas = forwardRef<LandingCanvasHandle, LandingCanvasProps>
         }
 
         context.drawImage(img, drawX, drawY, drawWidth, drawHeight);
-
-        // Overlay to darken by 10%
-        context.fillStyle = "rgba(0, 0, 0, 0.10)";
-        context.fillRect(0, 0, canvasWidth, canvasHeight);
       }
     };
 
+    // Task 1.2: setFrame only updates targetFrameRef, does NOT call render
     const setFrame = (frame: number) => {
-      const targetFrame = Math.max(0, Math.min(frame, frameCount - 1));
-      videoFramesRef.current.frame = targetFrame;
-      
-      // If the exact frame isn't loaded yet, use the nearest loaded frame
-      if (isFrameLoaded(targetFrame)) {
-        videoFramesRef.current.displayFrame = targetFrame;
-      } else {
-        videoFramesRef.current.displayFrame = getNearestLoadedFrame(targetFrame);
+      const clampedFrame = Math.max(0, Math.min(frame, frameCount - 1));
+      targetFrameRef.current = clampedFrame;
+    };
+
+    // Task 1.3: tick() function as the rAF render loop
+    const tick = useCallback(() => {
+      // Skip if frozen
+      if (isFrozenRef.current) {
+        animationFrameIdRef.current = requestAnimationFrame(tick);
+        return;
       }
-      
-      render();
+
+      // Only render if target frame differs from last rendered frame
+      if (targetFrameRef.current !== currentRenderedFrameRef.current) {
+        const targetFrame = targetFrameRef.current;
+        
+        // Update videoFramesRef for render() to use
+        videoFramesRef.current.frame = targetFrame;
+        
+        // If the exact frame isn't loaded yet, use the nearest loaded frame
+        if (isFrameLoaded(targetFrame)) {
+          videoFramesRef.current.displayFrame = targetFrame;
+        } else {
+          videoFramesRef.current.displayFrame = getNearestLoadedFrame(targetFrame);
+        }
+        
+        // Call render
+        render();
+        
+        // Update currentRenderedFrameRef after successful render
+        currentRenderedFrameRef.current = targetFrame;
+      }
+
+      // Schedule next frame
+      animationFrameIdRef.current = requestAnimationFrame(tick);
+    }, [isFrameLoaded, getNearestLoadedFrame]);
+
+    // Task 1.7: Updated freeze/unfreeze methods
+    const freeze = () => {
+      isFrozenRef.current = true;
+      shouldRenderRef.current = false;
+      const canvas = canvasRef.current;
+      if (canvas) {
+        canvas.style.willChange = '';
+      }
+    };
+
+    const unfreeze = () => {
+      isFrozenRef.current = false;
+      // Reset currentRenderedFrameRef to -1 to force redraw
+      currentRenderedFrameRef.current = -1;
+      shouldRenderRef.current = true;
+      const canvas = canvasRef.current;
+      if (canvas) {
+        canvas.style.willChange = 'transform';
+      }
     };
 
     useImperativeHandle(ref, () => ({
       setFrame,
+      freeze,
+      unfreeze,
     }));
 
     useEffect(() => {
       const canvas = canvasRef.current;
       if (!canvas) return;
 
-      const context = canvas.getContext("2d");
+      // Task 1.5: Canvas context with performance options
+      const context = canvas.getContext("2d", {
+        alpha: false,        // Opaque canvas for performance
+        desynchronized: true // Reduced latency when supported
+      });
       if (!context) return;
 
       contextRef.current = context;
       setCanvasSize();
 
-      // Initial render if images are ready
-      if (imagesLoaded) {
-        render();
-      }
+      // Task 1.6: Start the tick loop
+      tick();
 
       const handleResize = () => {
         setCanvasSize();
-        render();
+        // Force re-render on resize by resetting currentRenderedFrameRef
+        currentRenderedFrameRef.current = -1;
       };
 
       window.addEventListener("resize", handleResize);
 
+      // Task 1.6: Cleanup - cancel animation frame on unmount
       return () => {
         window.removeEventListener("resize", handleResize);
+        if (animationFrameIdRef.current !== null) {
+          cancelAnimationFrame(animationFrameIdRef.current);
+          animationFrameIdRef.current = null;
+        }
       };
-    }, [imagesLoaded]); // Re-run setup/render when imagesLoaded changes
+    }, [imagesLoaded, tick]); // Re-run setup when imagesLoaded or tick changes
 
     return <canvas ref={canvasRef} className={styles.canvas} />;
   }

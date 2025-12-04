@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { getNearestLoadedFrame } from '../utils/frameUtils';
 
 // Constants from the implementation
 const KEY_FRAME_INTERVAL = 4;
@@ -87,34 +88,7 @@ describe('useImagePreloader - Key Frame Loading Logic', () => {
   });
 
   describe('4.3 getNearestLoadedFrame verification', () => {
-    // Simulate the getNearestLoadedFrame logic
-    function getNearestLoadedFrame(targetIndex: number, loadedFrames: Set<number>, frameCount: number): number {
-      if (loadedFrames.has(targetIndex)) {
-        return targetIndex;
-      }
-      
-      // Search outward for nearest loaded frame
-      let lower = targetIndex;
-      let upper = targetIndex;
-      
-      while (lower >= 0 || upper < frameCount) {
-        if (lower >= 0 && loadedFrames.has(lower)) {
-          return lower;
-        }
-        if (upper < frameCount && loadedFrames.has(upper)) {
-          return upper;
-        }
-        lower--;
-        upper++;
-      }
-      
-      // Fallback to first loaded frame
-      if (loadedFrames.size > 0) {
-        const firstLoaded = loadedFrames.values().next().value;
-        return firstLoaded !== undefined ? firstLoaded : 0;
-      }
-      return 0;
-    }
+    // Now using the extracted utility function from frameUtils.ts
 
     it('should return the target index if it is loaded', () => {
       const frameCount = 20;
