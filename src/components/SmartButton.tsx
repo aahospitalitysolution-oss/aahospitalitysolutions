@@ -11,6 +11,7 @@ interface SmartButtonProps {
   theme?: "light" | "dark";
   hoverColor?: string;
   backgroundColor?: string;
+  size?: "default" | "small";
 }
 
 export default function SmartButton({
@@ -21,6 +22,7 @@ export default function SmartButton({
   theme = "light",
   hoverColor,
   backgroundColor,
+  size = "default",
 }: SmartButtonProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const circleRef = useRef<HTMLDivElement>(null);
@@ -205,7 +207,7 @@ export default function SmartButton({
     }, button);
 
     return () => ctx.revert();
-  }, [text, subtext, theme, hoverColor, backgroundColor]); // Added theme dependency
+  }, [text, subtext, theme, hoverColor, backgroundColor, size]); // Added theme and size dependency
 
   const handleMouseEnter = () => {
     tlRef.current?.play();
@@ -250,7 +252,9 @@ export default function SmartButton({
       style={{
         backgroundColor: backgroundColor || (theme === "dark" ? "transparent" : undefined),
       }}
-      className={`relative z-10 group flex items-center justify-between gap-4 px-6 py-3 rounded-full cursor-pointer shadow-lg overflow-hidden ${theme === "dark"
+      className={`relative z-10 group flex items-center justify-between rounded-full cursor-pointer shadow-lg overflow-hidden ${
+        size === "small" ? "gap-2 px-4 py-2" : "gap-4 px-6 py-3"
+      } ${theme === "dark"
         ? "bg-transparent text-[var(--parchment)]"
         : "bg-[var(--parchment)]"
         } ${getAlignmentClass()}`}
@@ -258,7 +262,9 @@ export default function SmartButton({
       {/* Text Section */}
       <div
         ref={textRef}
-        className="leading-none text-left text-lg font-normal tracking-wide font-[family-name:var(--font-sans)] flex flex-col justify-center"
+        className={`leading-none text-left font-normal tracking-wide font-[family-name:var(--font-sans)] flex flex-col justify-center ${
+          size === "small" ? "text-sm" : "text-lg"
+        }`}
       >
         <span
           className={`split-text block whitespace-nowrap ${theme === "dark"
@@ -283,7 +289,9 @@ export default function SmartButton({
       {/* Circle Icon Container */}
       <div
         ref={circleRef}
-        className={`relative flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center shadow-sm transform transition-transform ${theme === "dark"
+        className={`relative flex-shrink-0 rounded-full flex items-center justify-center shadow-sm transform transition-transform ${
+          size === "small" ? "w-7 h-7" : "w-10 h-10"
+        } ${theme === "dark"
           ? "bg-white/10"
           : "bg-[var(--parchment)] border border-[var(--charcoal-blue)]/10"
           }`}
@@ -291,8 +299,8 @@ export default function SmartButton({
         {/* Arrow SVG */}
         <svg
           ref={arrowRef}
-          width="20"
-          height="20"
+          width={size === "small" ? "14" : "20"}
+          height={size === "small" ? "14" : "20"}
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"

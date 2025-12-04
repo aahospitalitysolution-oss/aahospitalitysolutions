@@ -9,7 +9,16 @@ import { useAnimationContext } from "@/contexts/AnimationContext";
 import { OurStory } from "./OurStory";
 import { BadgeCloud } from "./BadgeCloud";
 import { EthosSection } from "./EthosSection";
-import { GlobeSection as Globe } from "./Globe";
+import dynamic from "next/dynamic";
+
+// Dynamically import Globe to avoid bundling three.js in the main chunk
+const Globe = dynamic(
+  () => import("./Globe").then((mod) => mod.GlobeSection),
+  { 
+    ssr: false,
+    loading: () => <div style={{ minHeight: '100vh' }} /> // Placeholder to prevent layout shift
+  }
+);
 
 // GSAP types placeholder for loose typing without full @types/gsap
 // In a strict project, we should use import { GSAPStatic, ScrollTriggerStatic } from "gsap"

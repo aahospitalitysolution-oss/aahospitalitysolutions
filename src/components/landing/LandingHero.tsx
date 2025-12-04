@@ -40,6 +40,7 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
     const sloganRef = useRef<HTMLDivElement>(null);
     const headingRef = useRef<HTMLHeadingElement>(null);
     const buttonWrapperRef = useRef<HTMLDivElement>(null);
+    const navButtonsRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
       if (!headerRef.current) return;
@@ -98,6 +99,14 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
             pointerEvents: resizeProgress > 0.5 ? "none" : "auto",
           });
         }
+
+        // Fade in nav buttons as canvas scrolls in (opposite of buttonWrapper)
+        if (navButtonsRef.current) {
+          gsap.set(navButtonsRef.current, {
+            opacity: resizeProgress,
+            pointerEvents: resizeProgress > 0.5 ? "auto" : "none",
+          });
+        }
       };
 
       animateTextColor();
@@ -138,6 +147,32 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
                 theme="dark"
               />
             </div>
+          </div>
+
+          {/* Reach Out button that appears when canvas scrolls in */}
+          <div
+            ref={navButtonsRef}
+            style={{
+              position: "fixed",
+              top: 0,
+              right: "calc(var(--space-6) + 80px + var(--space-4))", // Position to the left of hamburger menu (80px width + gap)
+              height: "var(--space-20)", // Match nav height
+              display: "flex",
+              alignItems: "center",
+              zIndex: 100,
+              opacity: 0,
+              pointerEvents: "none",
+            }}
+          >
+            <SmartButton
+              text="Reach Out"
+              alignment="center"
+              onClick={() => console.log("Reach Out clicked")}
+              hoverColor="var(--charcoal-blue)"
+              backgroundColor="var(--parchment)"
+              theme="light"
+              size="small"
+            />
           </div>
         </div>
 
