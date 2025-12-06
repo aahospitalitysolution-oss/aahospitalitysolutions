@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest"
+    "test": "vitest",
+    "generate-icons": "tsx scripts/generate-icons.ts",
+    "verify-icons": "tsx scripts/verify-icons.ts"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -31,13 +33,16 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/sharp": "^0.31.1",
     "@types/three": "^0.181.0",
     "@vitejs/plugin-react": "^5.1.1",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.0.1",
     "jsdom": "^27.2.0",
+    "sharp": "^0.34.5",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5",
     "vitest": "^4.0.13"
   }

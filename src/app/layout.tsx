@@ -6,6 +6,7 @@ import { MenuProvider } from "@/contexts/MenuContext";
 import { FullScreenMenu } from "@/components/FullScreenMenu/FullScreenMenu";
 import FloatingContactIcons from "@/components/FloatingContactIcons";
 import Footer from "@/components/Footer";
+import { createMetadata } from "@/lib/metadata";
 
 const spectral = Spectral({
   variable: "--font-spectral",
@@ -33,28 +34,20 @@ const manrope = Manrope({
   display: "swap",
 });
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createMetadata({
   title: "A&A Hospitality Solutions",
   description:
     "Experience elegant animations and modern design solutions for your hospitality business",
+  image: "/og-image.png",
+  url: "/",
   keywords: ["hospitality", "animations", "design", "web solutions"],
-  authors: [{ name: "A&A Hospitality Solutions" }],
-  openGraph: {
-    title: "A&A Hospitality Solutions",
-    description: "Experience elegant animations and modern design solutions",
-    type: "website",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+});
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  themeColor: "#F5EFE6",
+  themeColor: "#28536b",
 };
 
 export default function RootLayout({
