@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Spectral, DM_Sans } from "next/font/google";
+import { Spectral, DM_Sans, Playfair_Display, Manrope } from "next/font/google";
 import "./globals.css";
 import { AnimationProvider } from "@/contexts/AnimationContext";
 import { MenuProvider } from "@/contexts/MenuContext";
 import { FullScreenMenu } from "@/components/FullScreenMenu/FullScreenMenu";
 import FloatingContactIcons from "@/components/FloatingContactIcons";
+import Footer from "@/components/Footer";
 
 const spectral = Spectral({
   variable: "--font-spectral",
@@ -17,6 +18,18 @@ const dmSans = DM_Sans({
   variable: "--font-dm-sans",
   subsets: ["latin"],
   weight: ["400", "500", "700"],
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const manrope = Manrope({
+  variable: "--font-manrope",
+  subsets: ["latin"],
   display: "swap",
 });
 
@@ -53,7 +66,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${spectral.variable} ${dmSans.variable} antialiased`}
+        className={`${spectral.variable} ${dmSans.variable} ${playfair.variable} ${manrope.variable} antialiased`}
       >
         <script
           dangerouslySetInnerHTML={{
@@ -71,6 +84,7 @@ export default function RootLayout({
             <FullScreenMenu />
             <FloatingContactIcons />
             {children}
+            <Footer />
           </MenuProvider>
         </AnimationProvider>
       </body>

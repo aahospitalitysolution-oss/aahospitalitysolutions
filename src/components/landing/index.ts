@@ -10,3 +10,4 @@ export type { LandingCanvasHandle } from "./LandingCanvas";
 
 
 export { GlobeSection as Globe } from "./Globe";
+export { default as PartnersSection } from "./PartnersSection";

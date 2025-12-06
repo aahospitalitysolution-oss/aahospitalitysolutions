@@ -15,23 +15,34 @@
   --font-sans: var(--font-dm-sans);
 
   /* ===== TYPOGRAPHY TOKENS ===== */
-  
+
   /* Base font size - fluid */
-  --text-base: clamp(1rem, 0.0625vw + 0.9375rem, 1.25rem); /* 16px → 20px */
+  --text-base: clamp(1rem, 0.0625vw + 0.9375rem, 1.25rem);
+  /* 16px → 20px */
 
   /* Text scale (step-based) */
-  --text-xs: clamp(0.75rem, 0.5vw + 0.625rem, 0.875rem);   /* 12px → 14px */
-  --text-sm: clamp(0.875rem, 0.5vw + 0.75rem, 1rem);       /* 14px → 16px */
-  --text-lg: clamp(1.125rem, 0.5vw + 1rem, 1.375rem);      /* 18px → 22px */
-  --text-xl: clamp(1.25rem, 0.75vw + 1rem, 1.5rem);        /* 20px → 24px */
-  --text-2xl: clamp(1.5rem, 1vw + 1.125rem, 2rem);         /* 24px → 32px */
-  --text-3xl: clamp(2rem, 2vw + 1.25rem, 3rem);            /* 32px → 48px */
-  --text-4xl: clamp(2.5rem, 3vw + 1.5rem, 4rem);           /* 40px → 64px */
+  --text-xs: clamp(0.75rem, 0.5vw + 0.625rem, 0.875rem);
+  /* 12px → 14px */
+  --text-sm: clamp(0.875rem, 0.5vw + 0.75rem, 1rem);
+  /* 14px → 16px */
+  --text-lg: clamp(1.125rem, 0.5vw + 1rem, 1.375rem);
+  /* 18px → 22px */
+  --text-xl: clamp(1.25rem, 0.75vw + 1rem, 1.5rem);
+  /* 20px → 24px */
+  --text-2xl: clamp(1.5rem, 1vw + 1.125rem, 2rem);
+  /* 24px → 32px */
+  --text-3xl: clamp(2rem, 2vw + 1.25rem, 3rem);
+  /* 32px → 48px */
+  --text-4xl: clamp(2.5rem, 3vw + 1.5rem, 4rem);
+  /* 40px → 64px */
 
   /* Semantic heading tokens (3 levels) */
-  --heading-hero: clamp(2.5rem, 4vw + 1rem, 4.5rem);       /* Hero headlines */
-  --heading-section: clamp(2rem, 3vw + 1rem, 3.5rem);      /* Section titles */
-  --heading-sub: clamp(1.5rem, 1.5vw + 1rem, 2.25rem);     /* Subsection titles */
+  --heading-hero: clamp(2.5rem, 4vw + 1rem, 4.5rem);
+  /* Hero headlines */
+  --heading-section: clamp(2rem, 3vw + 1rem, 3.5rem);
+  /* Section titles */
+  --heading-sub: clamp(1.5rem, 1.5vw + 1rem, 2.25rem);
+  /* Subsection titles */
 
   /* Line heights */
   --leading-tight: 1.1;
@@ -47,27 +58,41 @@
   --tracking-widest: 0.2em;
 
   /* ===== SPACING TOKENS (4px Grid) ===== */
-  --space-1: 0.25rem;   /* 4px */
-  --space-2: 0.5rem;    /* 8px */
-  --space-3: 0.75rem;   /* 12px */
-  --space-4: 1rem;      /* 16px */
-  --space-5: 1.25rem;   /* 20px */
-  --space-6: 1.5rem;    /* 24px */
-  --space-8: 2rem;      /* 32px */
-  --space-10: 2.5rem;   /* 40px */
-  --space-12: 3rem;     /* 48px */
-  --space-16: 4rem;     /* 64px */
-  --space-20: 5rem;     /* 80px */
-  --space-24: 6rem;     /* 96px */
-  --space-32: 8rem;     /* 128px */
+  --space-1: 0.25rem;
+  /* 4px */
+  --space-2: 0.5rem;
+  /* 8px */
+  --space-3: 0.75rem;
+  /* 12px */
+  --space-4: 1rem;
+  /* 16px */
+  --space-5: 1.25rem;
+  /* 20px */
+  --space-6: 1.5rem;
+  /* 24px */
+  --space-8: 2rem;
+  /* 32px */
+  --space-10: 2.5rem;
+  /* 40px */
+  --space-12: 3rem;
+  /* 48px */
+  --space-16: 4rem;
+  /* 64px */
+  --space-20: 5rem;
+  /* 80px */
+  --space-24: 6rem;
+  /* 96px */
+  --space-32: 8rem;
+  /* 128px */
 
   /* Section padding (vertical) */
   --section-padding-y: var(--space-24);
-  --section-padding-y-mobile: var(--space-16);
+  --section-padding-y-mobile: var(--space-12);
 
   /* Section padding (horizontal) */
   --section-padding-x: var(--space-8);
-  --section-padding-x-mobile: var(--space-6);
+  /* Tighter mobile spacing */
+  --section-padding-x-mobile: var(--space-4);
 
   /* Container widths */
   --container-narrow: 800px;
@@ -76,10 +101,18 @@
   --container-max: 1600px;
 }
 
+/* Add a utility class to force font-size down on very small screens */
+@media (max-width: 380px) {
+  :root {
+    --heading-hero: 2.5rem;
+    /* Force smaller hero text on iPhone SE/small androids */
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  
+
   /* Custom Colors */
   --color-charcoal-blue: var(--charcoal-blue);
   --color-rosy-taupe: var(--rosy-taupe);
@@ -112,9 +145,15 @@ body {
 }
 
 /* Headings */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-serif);
-  font-weight: 400; /* Spectral looks good with lighter weights */
+  font-weight: 400;
+  /* Spectral looks good with lighter weights */
 }
 
 /* Accessibility: Skip to content link */
@@ -146,6 +185,7 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
@@ -181,7 +221,8 @@ html.is-loading body {
   position: fixed;
   right: 3rem;
   bottom: 2rem;
-  display: none; /* Hidden by default, shown via .is-loading class */
+  display: none;
+  /* Hidden by default, shown via .is-loading class */
   height: 120px;
   font-size: 120px;
   line-height: 150px;
@@ -235,17 +276,25 @@ html.is-loading .counter {
   pointer-events: none;
 }
 
-.site-nav > * {
+.site-nav>* {
   pointer-events: auto;
 }
 
-.logo-slot {
+.logo-link-wrapper {
   position: absolute;
-  left: var(--space-6);
+  left: calc(var(--space-6) + 4px);
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(calc(-50% + 4px));
   width: 192px;
   height: 48px;
+  pointer-events: auto;
+  z-index: 51;
+}
+
+.logo-slot {
+  width: 100%;
+  height: 100%;
+  position: relative;
   pointer-events: none;
   overflow: visible;
 }
@@ -265,7 +314,8 @@ html.is-loading .counter {
 }
 
 .nav-link:hover {
-  background-color: rgba(40, 83, 107, 0.05); /* charcoal-blue with opacity */
+  background-color: rgba(40, 83, 107, 0.05);
+  /* charcoal-blue with opacity */
   border-color: rgba(40, 83, 107, 0.1);
 }
 
@@ -335,7 +385,7 @@ html.is-loading .counter {
 }
 
 /* Simple reveal utility */
-.reveal {
+html .reveal {
   transform: translateY(20px);
   opacity: 0;
 }
@@ -361,12 +411,32 @@ html.is-loading .site-content-wrapper {
   .site-nav {
     height: var(--space-16);
     padding: var(--space-4);
+    /* Add a subtle background gradient on mobile so nav is always legible if color swap fails */
+    background: linear-gradient(to bottom, rgba(246, 240, 237, 0.05), transparent);
+  }
+
+  .logo-link-wrapper {
+    /* Ensure the wrapper creates a solid hit target area */
+    left: 0.5rem;
+    /* Further reduced from 0.75rem */
+    width: 80px;
+    height: 80px;
+    /* Add a couple of pixels space from top (shift down) */
+    transform: translateY(calc(-50% + 2px));
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .logo-slot {
-    left: var(--space-4);
-    width: 192px;
+    /* Override w-full h-full to wrap the 48px logo exactly for centering */
+    width: 48px;
     height: 48px;
+    /* Scale down slightly to match user preference for "smaller" */
+    transform: scale(0.7);
+    /* Ensure GSAP positioned elements (at 0,0) are visually centered */
+    position: relative;
+    flex: none;
   }
 
   .text-reveal-section {
@@ -376,4 +446,12 @@ html.is-loading .site-content-wrapper {
   .demo-container {
     gap: var(--space-8);
   }
+}
+
+/* Logo SVG transitions */
+.logo-slot svg path,
+.logo-slot svg line,
+.logo-slot svg polygon,
+.logo-slot svg rect {
+  transition: fill 0.3s ease;
 }

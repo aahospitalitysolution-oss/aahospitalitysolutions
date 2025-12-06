@@ -9,87 +9,89 @@ export const OurStory = ({ startAnimation = false }: OurStoryProps) => {
     const sectionRef = useRef<HTMLElement>(null);
     const imageRef = useRef<HTMLDivElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
-    const signaturePathRef = useRef<SVGPathElement>(null);
-    const signatureLineRef = useRef<SVGPathElement>(null);
+    const signatureRef = useRef<HTMLImageElement>(null);
     const founderDetailsRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (!startAnimation) return;
         if (typeof window === "undefined") return;
 
+        let ctx: gsap.Context | null = null;
+        let cancelled = false;
+
         const initAnimation = async () => {
             const { default: gsap } = await import("gsap");
             const { ScrollTrigger } = await import("gsap/ScrollTrigger");
 
+            if (cancelled) return;
+
             gsap.registerPlugin(ScrollTrigger);
 
-            const section = sectionRef.current;
-            const image = imageRef.current;
-            const content = contentRef.current;
-            const signaturePath = signaturePathRef.current;
-            const signatureLine = signatureLineRef.current;
-            const founderDetails = founderDetailsRef.current;
+            ctx = gsap.context(() => {
+                const section = sectionRef.current;
+                const image = imageRef.current;
+                const content = contentRef.current;
+                const signature = signatureRef.current;
+                const founderDetails = founderDetailsRef.current;
 
-            if (!section || !image || !content) return;
+                if (!section || !image || !content) return;
 
-            const tl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: section,
-                    start: "top 80%",
-                    end: "bottom 20%",
-                    toggleActions: "play none none reverse",
-                },
-            });
-
-            tl.fromTo(image,
-                { opacity: 0, x: -50 },
-                { opacity: 1, x: 0, duration: 1, ease: "power3.out" }
-            )
-                .fromTo(content,
-                    { opacity: 0, x: 50 },
-                    { opacity: 1, x: 0, duration: 1, ease: "power3.out" },
-                    "-=0.8"
-                );
-
-            // Signature Animation
-            if (signaturePath && signatureLine && founderDetails) {
-                const pathLength = signaturePath.getTotalLength();
-                const lineLength = signatureLine.getTotalLength();
-
-                gsap.set([signaturePath, signatureLine], {
-                    strokeDasharray: (i) => i === 0 ? pathLength : lineLength,
-                    strokeDashoffset: (i) => i === 0 ? pathLength : lineLength,
-                    opacity: 1
+                const tl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: section,
+                        start: "top 80%",
+                        end: "bottom 20%",
+                        toggleActions: "play none none reverse",
+                    },
                 });
 
-                tl.to(signaturePath, {
-                    strokeDashoffset: 0,
-                    duration: 1.5,
-                    ease: "power2.out"
-                }, "-=0.5")
-                    .to(signatureLine, {
-                        strokeDashoffset: 0,
-                        duration: 0.8,
-                        ease: "power2.out"
-                    }, "-=1.0")
-                    .fromTo(founderDetails,
-                        { opacity: 0, y: 10 },
-                        { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" },
-                        "-=0.5"
+                tl.fromTo(image,
+                    { opacity: 0, x: -50 },
+                    { opacity: 1, x: 0, duration: 1, ease: "power3.out" }
+                )
+                    .fromTo(content,
+                        { opacity: 0, x: 50 },
+                        { opacity: 1, x: 0, duration: 1, ease: "power3.out" },
+                        "-=0.8"
                     );
-            }
+
+                // Signature Animation
+                if (signature && founderDetails) {
+                    // Reset signature wipe
+                    gsap.set(signature, {
+                        clipPath: "inset(0 100% 0 0)",
+                        opacity: 1
+                    });
+
+                    tl.to(signature, {
+                        clipPath: "inset(0 0% 0 0)",
+                        duration: 2,
+                        ease: "power2.inOut"
+                    }, "-=0.5")
+                        .fromTo(founderDetails,
+                            { opacity: 0, y: 10 },
+                            { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" },
+                            "-=1.5"
+                        );
+                }
+            }, sectionRef);
         };
 
         initAnimation();
+
+        return () => {
+            cancelled = true;
+            ctx?.revert();
+        };
     }, [startAnimation]);
 
     return (
-        <section className={styles.section} ref={sectionRef}>
+        <section id="our-story" className={styles.section} ref={sectionRef}>
             <div className={styles.container}>
                 <div className={styles.imageWrapper} ref={imageRef}>
                     <div className={styles.blueBox}></div>
                     <img
-                        src="/SHANKAR_AI_IMAGE.png"
+                        src="/images/founder.png"
                         alt="A&A Hospitality Founder"
                         className={styles.founderImage}
                     />
@@ -111,24 +113,12 @@ export const OurStory = ({ startAnimation = false }: OurStoryProps) => {
                     </p>
 
                     <div className={styles.signatureSection}>
-                        <svg
-                            className={styles.signatureSvg}
-                            viewBox="0 0 200 80"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            {/* Approximate signature wave */}
-                            <path
-                                ref={signaturePathRef}
-                                className={styles.signaturePath}
-                                d="M10 40 Q 40 10, 70 40 T 130 40 T 190 20"
-                            />
-                            {/* Underline */}
-                            <path
-                                ref={signatureLineRef}
-                                className={styles.signaturePath}
-                                d="M20 60 L 160 55"
-                            />
-                        </svg>
+                        <img
+                            ref={signatureRef}
+                            src="/images/founder-signature.png"
+                            alt="Shankar Sreekumar Signature"
+                            className={styles.signatureImage}
+                        />
                         <div className={styles.founderDetails} ref={founderDetailsRef}>
                             <h4 className={styles.founderName}>Shankar Sreekumar</h4>
                             <span className={styles.founderRole}>Founder & Managing Director</span>

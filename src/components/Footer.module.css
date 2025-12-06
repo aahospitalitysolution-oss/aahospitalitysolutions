@@ -1,226 +1,134 @@
-.footer {
-  background-color: var(--charcoal-blue);
-  color: var(--parchment);
-  padding: var(--space-16) var(--section-padding-x) var(--space-8);
+.footerWrapper {
+  --charcoal-blue: #28536bff;
+  --rosy-taupe: #c2948aff;
+  --steel-blue: #7ea8beff;
+  --parchment: #f6f0edff;
+  --khaki-beige: #bbb193ff;
+
   position: relative;
+  width: 100%;
+  margin-top: 50px;
 }
 
-.footer::before {
-  content: "";
+.fontSerifDisplay {
+  font-family: var(--font-playfair), serif;
+}
+
+.fontDisplayHeavy {
+  font-family: var(--font-manrope), sans-serif;
+}
+
+.stackLayer {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(246, 240, 237, 0.2) 50%,
-    transparent 100%
-  );
+  height: 400px;
+  border-radius: 40px 40px 0 0;
+  width: 100%;
+  z-index: 0;
+  will-change: transform;
 }
 
-.container {
-  max-width: var(--container-medium);
-  margin: 0 auto;
+.stackLayer1 {
+  z-index: 30;
+  background-color: var(--khaki-beige);
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: var(--space-12);
-  margin-bottom: var(--space-12);
+.stackLayer2 {
+  z-index: 20;
+  background-color: var(--rosy-taupe);
 }
 
-.brandColumn {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-}
-
-.logoLink {
-  display: block;
-  width: fit-content;
-}
-
-.logo {
-  width: 192px;
-  height: 48px;
-  filter: brightness(0) invert(1);
-}
-
-.brandDescription {
-  font-family: var(--font-sans);
-  font-size: var(--text-sm);
-  color: rgba(246, 240, 237, 0.8);
-  line-height: var(--leading-relaxed);
-  max-width: 400px;
-}
-
-.socialLinks {
-  display: flex;
-  gap: var(--space-4);
-}
-
-.socialLink {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 50%;
-  background-color: rgba(246, 240, 237, 0.1);
-  color: var(--parchment);
-  transition: all 0.3s ease;
-}
-
-.socialLink:hover {
+.stackLayer3 {
+  z-index: 10;
   background-color: var(--steel-blue);
-  transform: translateY(-2px);
 }
 
-.socialIcon {
-  width: 1.25rem;
-  height: 1.25rem;
-}
-
-.linkColumn {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.columnTitle {
-  font-family: var(--font-serif);
-  font-size: var(--text-base);
-  font-weight: 500;
+.mainFooterContent {
+  position: relative;
+  z-index: 40;
+  background-color: var(--charcoal-blue);
+  border-radius: 40px 40px 0 0;
+  width: 100%;
+  padding-top: 4rem;
+  padding-bottom: 2.5rem;
   color: var(--parchment);
-  letter-spacing: var(--tracking-wide);
 }
 
-.linkList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.footerLogoMark {
+  width: 48px;
+  height: 48px;
+  background-color: var(--parchment);
+  -webkit-mask-image: url(/logo-blue-square.svg);
+  mask-image: url(/logo-blue-square.svg);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
 }
 
-.link {
-  font-family: var(--font-sans);
-  font-size: var(--text-sm);
-  color: rgba(246, 240, 237, 0.7);
-  text-decoration: none;
-  transition: color 0.2s ease;
-  display: inline-block;
+.footerWordmark {
+  width: 200px;
+  height: 48px;
+  background-color: var(--parchment);
+  -webkit-mask-image: url(/logo-text-blue.svg);
+  mask-image: url(/logo-text-blue.svg);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: left center;
+  mask-position: left center;
 }
 
-.link:hover {
-  color: var(--steel-blue);
-}
-
-.bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: var(--space-8);
-  border-top: 1px solid rgba(246, 240, 237, 0.1);
-  gap: var(--space-6);
-}
-
-.copyright {
-  font-family: var(--font-sans);
-  font-size: var(--text-sm);
-  color: rgba(246, 240, 237, 0.6);
-}
-
-.bottomLinks {
-  display: flex;
-  gap: var(--space-6);
-}
-
-.bottomLink {
-  font-family: var(--font-sans);
-  font-size: var(--text-sm);
-  color: rgba(246, 240, 237, 0.7);
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.bottomLink:hover {
-  color: var(--steel-blue);
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .grid {
-    grid-template-columns: 2fr 1fr 1fr;
-    gap: var(--space-10);
+@media (min-width: 768px) {
+  .stackLayer,
+  .mainFooterContent {
+    border-radius: 24px 24px 0 0;
   }
 
-  .linkColumn:last-child {
-    grid-column: 1 / -1;
+  .footerLogoMark {
+    width: 64px;
+    height: 64px;
+  }
+
+  .footerWordmark {
+    width: 280px;
+    height: 64px;
   }
 }
 
 @media (max-width: 768px) {
-  .footer {
-    padding: var(--space-12) var(--section-padding-x-mobile) var(--space-6);
+  .stackLayer,
+  .mainFooterContent {
+    border-radius: 24px 24px 0 0;
   }
+}
 
-  .grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-8);
-    margin-bottom: var(--space-8);
-  }
+/* Helper classes for text colors using the variables */
+.textCharcoalBlue {
+  color: var(--charcoal-blue);
+}
 
-  .brandColumn {
-    gap: var(--space-5);
-  }
+.textRosyTaupe {
+  color: var(--rosy-taupe);
+}
 
-  .logo {
-    width: 160px;
-    height: 40px;
-  }
+.textSteelBlue {
+  color: var(--steel-blue);
+}
 
-  .brandDescription {
-    font-size: var(--text-xs);
-  }
+.textParchment {
+  color: var(--parchment);
+}
 
-  .linkColumn {
-    gap: var(--space-3);
-  }
+.textKhakiBeige {
+  color: var(--khaki-beige);
+}
 
-  .columnTitle {
-    font-size: var(--text-sm);
-  }
-
-  .linkList {
-    gap: var(--space-2);
-  }
-
-  .link {
-    font-size: var(--text-xs);
-  }
-
-  .bottom {
-    flex-direction: column;
-    align-items: flex-start;
-    padding-top: var(--space-6);
-    gap: var(--space-4);
-  }
-
-  .copyright {
-    font-size: var(--text-xs);
-  }
-
-  .bottomLinks {
-    flex-direction: column;
-    gap: var(--space-3);
-  }
-
-  .bottomLink {
-    font-size: var(--text-xs);
-  }
+.hoverTextRosyTaupe:hover {
+  color: var(--rosy-taupe);
 }

@@ -1,0 +1,45 @@
+/* Global overrides for this page */
+:global(html.lenis) {
+    height: auto;
+}
+
+:global(.lenis.lenis-smooth) {
+    scroll-behavior: auto !important;
+}
+
+:global(.lenis.lenis-smooth [data-lenis-prevent]) {
+    overscroll-behavior: contain;
+}
+
+:global(.lenis.lenis-stopped) {
+    overflow: hidden;
+}
+
+:global(.lenis.lenis-scrolling iframe) {
+    pointer-events: none;
+}
+
+:global(::-webkit-scrollbar) {
+    width: 8px;
+}
+
+:global(::-webkit-scrollbar-track) {
+    background: var(--parchment);
+}
+
+:global(::-webkit-scrollbar-thumb) {
+    background: var(--khaki-beige);
+    border-radius: 4px;
+}
+
+.treeLine {
+    fill: none;
+    stroke: var(--khaki-beige);
+    stroke-width: 2;
+    opacity: 0.6;
+}
+
+.cardHover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}

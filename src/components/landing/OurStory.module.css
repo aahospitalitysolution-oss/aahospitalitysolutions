@@ -125,19 +125,12 @@
   align-items: flex-start;
 }
 
-.signatureSvg {
+.signatureImage {
   width: 200px;
   height: auto;
   display: block;
-  color: var(--charcoal-blue);
-}
-
-.signaturePath {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  /* Ensure it fits cleanly */
+  object-fit: contain;
 }
 
 .founderDetails {

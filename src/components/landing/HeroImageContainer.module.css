@@ -13,6 +13,7 @@
   /* Transform controlled via CSS variables set by GSAP */
   /* Scale and Y translation: starts smaller and offset below text, grows to fullscreen */
   transform: scale(var(--container-scale, 0.5)) translateY(var(--container-y, 180px));
+  top: 12vh;
 }
 
 /* Translucent blue overlay - starts transparent, becomes charcoal blue as canvas expands */
@@ -47,7 +48,7 @@
     will-change: auto;
     transition: none;
   }
-  
+
   .overlay {
     will-change: auto;
   }

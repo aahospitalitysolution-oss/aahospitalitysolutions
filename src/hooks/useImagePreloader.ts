@@ -63,7 +63,7 @@ export const useImagePreloader = (frameCount: number) => {
   const [allFramesLoaded, setAllFramesLoaded] = useState(false);
   const loadingRef = useRef(false);
   const phase2StartedRef = useRef(false);
-  
+
   // Lock isMobile value at initialization - won't change on resize
   const isMobileRef = useRef<boolean | null>(null);
   if (isMobileRef.current === null) {
@@ -97,15 +97,15 @@ export const useImagePreloader = (frameCount: number) => {
     return () => {
       const img = imageCache[index];
       const currentSrc = img.src;
-      
+
       // Check if we're on mobile and the current path is a mobile path (not already fallen back)
       if (isMobile && currentSrc.includes(RESOLUTION_CONFIG.mobile.path) && !fallbackFrames.has(index)) {
         // Log warning about fallback
         console.warn(`[useImagePreloader] Mobile frame ${index + 1} failed to load, falling back to desktop`);
-        
+
         // Mark this frame as using fallback
         fallbackFrames.add(index);
-        
+
         // Retry with desktop path
         const desktopPath = getFramePath(index, false);
         img.onload = onSuccess;
@@ -147,7 +147,7 @@ export const useImagePreloader = (frameCount: number) => {
     const onLoad = (index: number) => () => {
       loadedFrames.add(index);
       loadedCount++;
-      
+
       if (loadedCount === totalRemaining) {
         phase2Complete = true;
         setAllFramesLoaded(true);
@@ -204,7 +204,7 @@ export const useImagePreloader = (frameCount: number) => {
     const onKeyFrameLoad = (index: number) => () => {
       loadedFrames.add(index);
       loadedCount++;
-      
+
       // Progress is based on key frames loaded
       const currentProgress = Math.round((loadedCount / totalKeyFrames) * 100);
       globalLoadProgress = currentProgress;
@@ -214,7 +214,7 @@ export const useImagePreloader = (frameCount: number) => {
         phase1Complete = true;
         setImagesLoaded(true);
         loadingRef.current = false;
-        
+
         // Start loading remaining frames in background
         loadRemainingFrames();
       }
@@ -237,14 +237,14 @@ export const useImagePreloader = (frameCount: number) => {
     });
   }, [frameCount, loadRemainingFrames, currentFrame, createFallbackErrorHandler]);
 
-  return { 
-    imagesLoaded, 
-    progress, 
-    preloadImages, 
+  return {
+    imagesLoaded,
+    progress,
+    preloadImages,
     images: imageCache,
     allFramesLoaded,
     getNearestLoadedFrame: getNearestLoadedFrameCallback,
-    isFrameLoaded: (index: number) => loadedFrames.has(index),
+    isFrameLoaded: useCallback((index: number) => loadedFrames.has(index), []),
     isMobile
   };
 };

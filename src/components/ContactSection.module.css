@@ -1,11 +1,13 @@
 .section {
   padding: var(--section-padding-y) var(--section-padding-x);
-  background: linear-gradient(
-    135deg,
-    var(--parchment) 0%,
-    rgba(246, 240, 237, 0.8) 100%
-  );
+  padding-bottom: 30vh;
+  background: linear-gradient(135deg,
+      var(--parchment) 0%,
+      rgba(246, 240, 237, 0.8) 100%);
   position: relative;
+  margin-top: -20vh;
+  padding-top: 25vh;
+  z-index: 20;
 }
 
 .section::before {
@@ -15,12 +17,10 @@
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(40, 83, 107, 0.1) 50%,
-    transparent 100%
-  );
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(40, 83, 107, 0.1) 50%,
+      transparent 100%);
 }
 
 .container {
@@ -144,6 +144,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -179,6 +180,7 @@
 @media (max-width: 768px) {
   .section {
     padding: var(--section-padding-y-mobile) var(--section-padding-x-mobile);
+    padding-bottom: 20vh;
   }
 
   .header {

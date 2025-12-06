@@ -67,7 +67,7 @@ export const usePageTransition = ({
     const playNavAndContentReveal = () => {
       tl.to(
         [".nav-divider", ".site-info-divider"],
-        { scaleX: "100%", duration: 1, ease: "power2.inOut", stagger: 0.2 },
+        { scaleX: "100%", duration: 0.5, ease: "power2.inOut", stagger: 0.1 },
         ">"
       );
       tl.to(
@@ -75,9 +75,9 @@ export const usePageTransition = ({
         {
           y: 0,
           autoAlpha: 1,
-          duration: 0.9,
+          duration: 0.4,
           ease: "power4.out",
-          stagger: 0.08,
+          stagger: 0.05,
         },
         ">0.1"
       );

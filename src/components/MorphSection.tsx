@@ -11,6 +11,7 @@ interface MorphSectionProps {
   textColor?: string;
   height?: string;
   style?: React.CSSProperties;
+  id?: string;
 }
 
 export const MorphSection = forwardRef<HTMLElement, MorphSectionProps>(({
@@ -20,7 +21,8 @@ export const MorphSection = forwardRef<HTMLElement, MorphSectionProps>(({
   backgroundColor = 'var(--charcoal-blue)',
   textColor = 'var(--parchment)',
   height = '100vh',
-  style = {}
+  style = {},
+  id
 }, ref) => {
   const localRef = useRef<HTMLElement>(null);
 
@@ -51,7 +53,7 @@ export const MorphSection = forwardRef<HTMLElement, MorphSectionProps>(({
         }
         const progress = easeInOutCubic(Math.max(0, Math.min(1, rawTop)));
         const radius = progress * CONFIG.maxRadiusVw;
-        
+
         element.style.borderTopLeftRadius = `${radius}vw`;
         element.style.borderTopRightRadius = `${radius}vw`;
       }
@@ -64,7 +66,7 @@ export const MorphSection = forwardRef<HTMLElement, MorphSectionProps>(({
         }
         const progress = easeInOutCubic(Math.max(0, Math.min(1, rawBottom)));
         const radius = progress * CONFIG.maxRadiusVw;
-        
+
         element.style.borderBottomLeftRadius = `${radius}vw`;
         element.style.borderBottomRightRadius = `${radius}vw`;
       }
@@ -102,6 +104,7 @@ export const MorphSection = forwardRef<HTMLElement, MorphSectionProps>(({
           (ref as React.MutableRefObject<HTMLElement | null>).current = node;
         }
       }}
+      id={id}
       className={`${styles.morphSection} ${className}`}
       data-morph={variant}
       style={{

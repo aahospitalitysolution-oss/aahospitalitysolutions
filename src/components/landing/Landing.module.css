@@ -32,10 +32,14 @@
 .heroContainer {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
   width: 100%;
   max-width: var(--container-wide);
   height: 100%;
   padding: var(--space-16) var(--space-20);
+  padding-top: 15vh;
   margin: 0 auto;
   position: relative;
   z-index: 1;
@@ -49,11 +53,14 @@
   margin-bottom: var(--space-8);
   z-index: 2;
   position: relative;
+  --hero-text-color-transition: 0;
 }
 
 /* Slogan styling - matches reference */
 .slogan {
-  color: var(--charcoal-blue);
+  color: color-mix(in srgb,
+      var(--charcoal-blue) calc((1 - var(--hero-text-color-transition)) * 100%),
+      var(--parchment) calc(var(--hero-text-color-transition) * 100%));
   letter-spacing: var(--tracking-widest);
   text-transform: uppercase;
   font-family: var(--font-serif), serif;
@@ -63,7 +70,9 @@
 
 /* Hero Heading - matches reference h1 */
 .heroHeading {
-  color: var(--charcoal-blue);
+  color: color-mix(in srgb,
+      var(--charcoal-blue) calc((1 - var(--hero-text-color-transition)) * 100%),
+      var(--parchment) calc(var(--hero-text-color-transition) * 100%));
   font-family: var(--font-serif), serif;
   font-size: var(--heading-section);
   font-weight: 300;
@@ -116,12 +125,7 @@
   color: var(--charcoal-blue);
 }
 
-/* Final Section - High Z-Index to sit ON TOP of spacer */
-.finalSection {
-  position: relative;
-  z-index: 20;
-  /* Sit on top of spacer */
-}
+
 
 .canvas {
   width: 100%;
@@ -191,14 +195,25 @@
   /* Above canvas container */
 }
 
+
 .quadrantText p {
   font-family: var(--font-sans), sans-serif;
-  font-size: var(--text-xl);
-  font-weight: 400;
-  line-height: var(--leading-normal);
+  font-size: var(--text-2xl);
+  font-weight: 300;
+  line-height: var(--leading-relaxed);
   color: var(--parchment);
   margin: 0;
   text-align: justify;
+}
+
+.quadrantTitle {
+  font-family: var(--font-serif), serif;
+  font-size: var(--heading-hero);
+  font-weight: 400;
+  color: var(--parchment);
+  margin-bottom: var(--space-6);
+  text-align: center;
+  line-height: var(--leading-tight);
 }
 
 .quadrantText strong {
@@ -243,22 +258,21 @@
 
 /* New classes for Center Aligned Aaditya/Aaryahi */
 .quadrantTextUpperCenter {
-  top: 40%;
+  top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  width: 40%;
-  max-width: 600px;
+  width: 60%;
+  max-width: 900px;
 }
 
 .quadrantTextLowerCenter {
-  top: 55%;
-  /* Slightly below upper center */
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  width: 40%;
-  max-width: 600px;
+  width: 60%;
+  max-width: 900px;
 }
 
 .quadrantTextUpperCenter p,
@@ -275,8 +289,8 @@
   transform: translate(-50%, -50%);
   text-align: justify;
   /* Justified text */
-  width: 40%;
-  max-width: 600px;
+  width: 60%;
+  max-width: 900px;
   pointer-events: auto;
   /* Allow button clicks */
 }
@@ -567,21 +581,9 @@
   }
 }
 
-/* Final Section Content Styles */
-.finalContent {
-  max-width: var(--container-narrow);
-}
 
-.finalHeading {
-  font-size: var(--heading-hero);
-  margin-bottom: var(--space-6);
-  font-family: var(--font-serif);
-}
 
-.finalParagraph {
-  font-size: var(--text-lg);
-  opacity: 0.9;
-}
+
 
 /* Responsive adjustments */
 @media (max-width: 1024px) {
@@ -607,6 +609,8 @@
 @media (max-width: 768px) {
   .heroContainer {
     padding: var(--section-padding-y-mobile) var(--section-padding-x-mobile);
+    padding-top: 25vh;
+    /* Push content down on mobile */
   }
 
   .heroDiv {

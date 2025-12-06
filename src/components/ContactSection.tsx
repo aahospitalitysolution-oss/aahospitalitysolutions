@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, Button, Input, Textarea, Label } from "@/components/ui";
 import { MapPin, Phone, MessageCircle, Mail, Loader2 } from "lucide-react";
 import styles from "./ContactSection.module.css";
+import { MorphSection } from "./MorphSection";
 
 interface ContactFormData {
   name: string;
@@ -77,7 +78,12 @@ export default function ContactSection() {
   };
 
   return (
-    <section id="contact" className={styles.section}>
+    <MorphSection
+      id="contact"
+      className={styles.section}
+      variant="top"
+      backgroundColor="var(--parchment)"
+    >
       <div className={styles.container}>
         <div className={styles.header}>
           <h2 className={styles.title}>Let's Connect</h2>
@@ -248,11 +254,10 @@ export default function ContactSection() {
                 {/* Status Message */}
                 {submitStatus.type && (
                   <div
-                    className={`${styles.statusMessage} ${
-                      submitStatus.type === "success"
+                    className={`${styles.statusMessage} ${submitStatus.type === "success"
                         ? styles.statusSuccess
                         : styles.statusError
-                    }`}
+                      }`}
                   >
                     {submitStatus.message}
                   </div>
@@ -262,6 +267,6 @@ export default function ContactSection() {
           </Card>
         </div>
       </div>
-    </section>
+    </MorphSection>
   );
 }

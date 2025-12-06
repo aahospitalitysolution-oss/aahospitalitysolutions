@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { PaperPlaneCanvas } from "./PaperPlaneCanvas";
 import SmartButton from "../SmartButton";
 import styles from "./BadgeCloud.module.css";
@@ -59,14 +60,10 @@ const PencilIcon = () => (
 export const BadgeCloud = ({ startAnimation = true }: BadgeCloudProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const [planesActive, setPlanesActive] = useState(false);
+  const router = useRouter();
 
   const handleBadgeClick = (path: string) => {
-    // Navigation will be handled elsewhere - placeholder for now
-    console.log(`Navigate to: ${path}`);
-    // You can uncomment and modify this when ready:
-    // window.location.href = path;
-    // Or use Next.js router:
-    // router.push(path);
+    router.push(path);
   };
 
   useEffect(() => {
@@ -75,7 +72,8 @@ export const BadgeCloud = ({ startAnimation = true }: BadgeCloudProps) => {
 
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    let ctx: any;
+    let ctx: gsap.Context | null = null;
+    let cancelled = false;
 
     const init = async () => {
       const [{ default: gsap }, { ScrollTrigger }] = await Promise.all([
@@ -83,10 +81,12 @@ export const BadgeCloud = ({ startAnimation = true }: BadgeCloudProps) => {
         import("gsap/ScrollTrigger"),
       ]);
 
+      if (cancelled) return;
+
       gsap.registerPlugin(ScrollTrigger);
 
       if (prefersReducedMotion) {
-        // In reduced motion, ensure everything is visible and in final state
+        // ... (existing reduced motion logic)
         const section = sectionRef.current;
         if (section) {
           section.querySelectorAll<HTMLElement>("[data-icon]").forEach((wrapper) => {
@@ -99,14 +99,14 @@ export const BadgeCloud = ({ startAnimation = true }: BadgeCloudProps) => {
           section.querySelectorAll<HTMLElement>("[data-text-id]").forEach((el) => {
             el.style.opacity = "1";
           });
-           // Ensure badges are fully styled
-           section.querySelectorAll<HTMLElement>("[data-badge-id]").forEach((el) => {
-             el.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
-             el.style.borderColor = "var(--charcoal-blue)"; // Default fallback, specifics handled by CSS classes
-             if (el.classList.contains(styles.rosy)) el.style.borderColor = "var(--rosy-taupe)";
-             if (el.classList.contains(styles.khaki)) el.style.borderColor = "var(--khaki-beige)";
-             el.style.fontStyle = "italic";
-             el.style.opacity = "1";
+          // Ensure badges are fully styled
+          section.querySelectorAll<HTMLElement>("[data-badge-id]").forEach((el) => {
+            el.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
+            el.style.borderColor = "var(--charcoal-blue)"; // Default fallback, specifics handled by CSS classes
+            if (el.classList.contains(styles.rosy)) el.style.borderColor = "var(--rosy-taupe)";
+            if (el.classList.contains(styles.khaki)) el.style.borderColor = "var(--khaki-beige)";
+            el.style.fontStyle = "italic";
+            el.style.opacity = "1";
           });
           const ledeEl = section.querySelector<HTMLElement>("[data-lede]");
           if (ledeEl) {
@@ -144,7 +144,7 @@ export const BadgeCloud = ({ startAnimation = true }: BadgeCloudProps) => {
         gsap.set(q("[data-outro-text]"), { opacity: 0, pointerEvents: "none" });
         gsap.set(q("[data-emphasis-word]"), { fontWeight: 400, fontStyle: "normal" });
         gsap.set(q("[data-emphasis-underline]"), { opacity: 0, scaleX: 0 });
-        
+
         // 2. Badges: Border/Bg transparent, Text translucent, normal style
         // We need to be careful not to override the class colors for the final state.
         // We will animate from transparent to the computed style or just use specific values.
@@ -154,7 +154,7 @@ export const BadgeCloud = ({ startAnimation = true }: BadgeCloudProps) => {
           borderColor: "rgba(0,0,0,0)", // Generic transparent
           fontStyle: "normal"
         });
-        
+
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: section,
@@ -178,23 +178,23 @@ export const BadgeCloud = ({ startAnimation = true }: BadgeCloudProps) => {
 
         // Helper for badge activation
         const activateBadge = (index: number, colorVar: string, rotation: number, ease: string) => {
-            const badge = q(`[data-badge-id="${index}"]`);
-            const wrapper = q(`[data-icon="${index}"]`);
-            const circle = q(`[data-icon-circle="${index}"]`);
-            
-            // 1. Badge Appearance & Text Morph
-            tl.to(badge, {
-                opacity: 1,
-                borderColor: colorVar,
-                backgroundColor: "rgba(255, 255, 255, 0.2)",
-                fontStyle: "italic",
-                duration: 1.5,
-                ease: "power2.out"
-            });
+          const badge = q(`[data-badge-id="${index}"]`);
+          const wrapper = q(`[data-icon="${index}"]`);
+          const circle = q(`[data-icon-circle="${index}"]`);
 
-            // 2. Icon Expansion (Concurrent)
-            tl.to(wrapper, { width: "1.5em", duration: 1, ease: "power2.out" }, "<");
-            tl.to(circle, { scale: 1, rotation, duration: 1.5, ease }, "<0.2");
+          // 1. Badge Appearance & Text Morph
+          tl.to(badge, {
+            opacity: 1,
+            borderColor: colorVar,
+            backgroundColor: "rgba(255, 255, 255, 0.2)",
+            fontStyle: "italic",
+            duration: 1.5,
+            ease: "power2.out"
+          });
+
+          // 2. Icon Expansion (Concurrent)
+          tl.to(wrapper, { width: "1.5em", duration: 1, ease: "power2.out" }, "<");
+          tl.to(circle, { scale: 1, rotation, duration: 1.5, ease }, "<0.2");
         };
 
         // --- Sequence ---
@@ -229,7 +229,7 @@ export const BadgeCloud = ({ startAnimation = true }: BadgeCloudProps) => {
         tl.to(q(`[data-text-id="1"]`), { opacity: 1, duration: 1.4 });
         tl.to({}, { duration: 0.4 });
 
-        // 2. Badge 1 "Peak Performance"
+        // 2. Badge 1 "Strategic Asset Management"
         activateBadge(1, "var(--charcoal-blue)", 360, "back.out(1.7)");
         tl.to({}, { duration: 0.5 });
 
@@ -237,46 +237,34 @@ export const BadgeCloud = ({ startAnimation = true }: BadgeCloudProps) => {
         tl.to(q(`[data-text-id="2"]`), { opacity: 1, duration: 1.4 });
         tl.to({}, { duration: 0.4 });
 
-        // 4. Badge 2 "Value Optimization"
+        // 4. Badge 2 "Operational Excellence"
         activateBadge(2, "var(--rosy-taupe)", -15, "elastic.out(1, 0.5)");
         tl.to({}, { duration: 0.5 });
 
-        // 5. "in every step, combined with"
+        // 5. "in every step."
         tl.to(q(`[data-text-id="3"]`), { opacity: 1, duration: 1.4 });
-        tl.to({}, { duration: 0.4 });
-
-        // 6. Badge 3 "Owner Alignment"
-        activateBadge(3, "var(--charcoal-blue)", 0, "back.out(2)");
-        tl.to({}, { duration: 0.5 });
-
-        // 7. " and "
-        tl.to(q(`[data-text-id="4"]`), { opacity: 1, duration: 1.4 });
-        tl.to({}, { duration: 0.4 });
-
-        // 8. Badge 4 "Team Excellence"
-        activateBadge(4, "#9c9273", 15, "elastic.out(1, 0.5)"); // Khaki specific text color used in CSS, approximating border
         tl.to({}, { duration: 0.6 });
 
         // 9. Transition to Outro
         tl.to({}, { duration: 0.5 });
-        
+
         // Add label to mark the start of outro transition
         tl.addLabel("outroTransition");
-        
+
         // Animate Section Background and Text Color
         // "flip the color" - transitions background to charcoal-blue and text to parchment
-        tl.to(section, { 
-            backgroundColor: "var(--charcoal-blue)", 
-            color: "var(--parchment)", 
-            duration: 2.5, // Increased duration for "more scrolls"
-            ease: "power2.inOut"
+        tl.to(section, {
+          backgroundColor: "var(--charcoal-blue)",
+          color: "var(--parchment)",
+          duration: 2.5, // Increased duration for "more scrolls"
+          ease: "power2.inOut"
         }, "outroTransition");
 
         // FADE OUT TEXT: Immediately fade out surrounding text
         tl.to(q("[data-text-id]"), {
-            opacity: 0,
-            duration: 0.2,
-            ease: "power1.out"
+          opacity: 0,
+          duration: 0.2,
+          ease: "power1.out"
         }, "outroTransition");
 
         // SCATTER BADGES: Move badges to corners without changing visual style
@@ -285,31 +273,29 @@ export const BadgeCloud = ({ startAnimation = true }: BadgeCloudProps) => {
         // Previous was 45vw/40vh which pushed them too far.
         // Trying smaller values to keep them "in view" but at edges.
         const corners = [
-            { x: "-24vw", y: "-24vh", rotation: -15 }, // Top-Left
-            { x: "24vw", y: "-24vh", rotation: 15 },   // Top-Right
-            { x: "-24vw", y: "24vh", rotation: -10 },  // Bottom-Left
-            { x: "24vw", y: "24vh", rotation: 10 }     // Bottom-Right
+          { x: "-24vw", y: "-24vh", rotation: -15 }, // Top-Left
+          { x: "24vw", y: "24vh", rotation: 10 }     // Bottom-Right
         ];
 
         q("[data-badge-id]").forEach((badge, i) => {
-            if (!corners[i]) return;
-            
-            tl.to(badge, {
-                x: corners[i].x,
-                y: corners[i].y,
-                rotation: corners[i].rotation,
-                pointerEvents: "none", // Disable interaction/hover
-                duration: 2.5,
-                ease: "power2.inOut"
-            }, "outroTransition");
+          if (!corners[i]) return;
+
+          tl.to(badge, {
+            x: corners[i].x,
+            y: corners[i].y,
+            rotation: corners[i].rotation,
+            pointerEvents: "none", // Disable interaction/hover
+            duration: 2.5,
+            ease: "power2.inOut"
+          }, "outroTransition");
         });
-        
-        tl.to(q("[data-outro-text]"), { 
-            opacity: 1, 
-            color: "var(--parchment)", // Ensure text becomes light
-            pointerEvents: "auto", 
-            duration: 3.0, // Significantly increased duration
-            ease: "power2.out" 
+
+        tl.to(q("[data-outro-text]"), {
+          opacity: 1,
+          color: "var(--parchment)", // Ensure text becomes light
+          pointerEvents: "auto",
+          duration: 3.0, // Significantly increased duration
+          ease: "power2.out"
         }, "outroTransition+=0.5");
 
         // Hold at end
@@ -321,6 +307,7 @@ export const BadgeCloud = ({ startAnimation = true }: BadgeCloudProps) => {
     init();
 
     return () => {
+      cancelled = true;
       ctx?.revert();
     };
   }, [startAnimation]);
@@ -343,11 +330,12 @@ export const BadgeCloud = ({ startAnimation = true }: BadgeCloudProps) => {
       </div>
 
       <div className={styles.outroText} data-outro-text>
-        but we aim to simplify all of that.
-        <SmartButton 
-          text="Find out how" 
-          theme="light" 
+        and we aim to simplify all of that.
+        <SmartButton
+          text="Find out how"
+          theme="light"
           hoverColor="var(--rosy-taupe)"
+          onClick={() => router.push("/services")}
         />
       </div>
 
@@ -356,62 +344,36 @@ export const BadgeCloud = ({ startAnimation = true }: BadgeCloudProps) => {
           Badge cloud variation
         </h2>
         <p className={styles.lede} data-lede>
-          <span data-text-id="1">Brands require </span>
-          <button 
-            className={styles.badge} 
-            data-badge-id="1" 
-            onClick={() => handleBadgeClick("/advisory")}
+          <span data-text-id="1">Visionary growth requires </span>
+          <span style={{ display: "inline-block", whiteSpace: "nowrap" }}><button
+            className={styles.badge}
+            data-badge-id="1"
+            onClick={() => handleBadgeClick("/services#branch-owner")}
             type="button"
+            style={{ marginRight: 0 }}
           >
             <span className={styles.iconWrapper} data-icon="1">
               <span className={styles.iconCircle} data-icon-circle="1">
                 <StarIcon />
               </span>
             </span>
-            Peak Performance
-          </button>{" "}
-          <span data-text-id="2">to function. They need </span>
-          <button 
-            className={`${styles.badge} ${styles.rosy}`} 
+            Strategic Asset Management
+          </button><span data-text-id="2">.</span></span>
+          <span data-text-id="2"> Flawless execution demands </span>
+          <span style={{ display: "inline-block", whiteSpace: "nowrap" }}><button
+            className={`${styles.badge} ${styles.rosy}`}
             data-badge-id="2"
-            onClick={() => handleBadgeClick("/precision")}
+            onClick={() => handleBadgeClick("/services#branch-operator")}
             type="button"
+            style={{ marginRight: 0 }}
           >
             <span className={styles.iconWrapper} data-icon="2">
               <span className={styles.iconCircle} data-icon-circle="2">
                 <OrbitIcon />
               </span>
             </span>
-            Value Optimization
-          </button>{" "}
-          <span className={styles.lineBreakText} data-text-id="3">in every step, combined with</span>{" "}
-          <button 
-            className={styles.badge} 
-            data-badge-id="3"
-            onClick={() => handleBadgeClick("/partnership")}
-            type="button"
-          >
-            <span className={styles.iconWrapper} data-icon="3">
-              <span className={styles.iconCircle} data-icon-circle="3">
-                <ChatIcon />
-              </span>
-            </span>
-            Owner Alignment
-          </button>{" "}
-          <span data-text-id="4">and </span>
-          <button 
-            className={`${styles.badge} ${styles.khaki}`} 
-            data-badge-id="4"
-            onClick={() => handleBadgeClick("/strategy")}
-            type="button"
-          >
-            <span className={styles.iconWrapper} data-icon="4">
-              <span className={styles.iconCircle} data-icon-circle="4">
-                <PencilIcon />
-              </span>
-            </span>
-            Team Excellence
-          </button>
+            Operational Excellence
+          </button><span data-text-id="3">.</span></span>
         </p>
       </div>
     </section>

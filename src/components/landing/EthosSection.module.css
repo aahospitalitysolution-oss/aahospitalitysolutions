@@ -4,7 +4,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-8) var(--section-padding-x) var(--space-1);
+  padding: var(--space-8) var(--section-padding-x) 35vh;
   overflow: hidden;
   background-color: var(--parchment);
   color: var(--charcoal-blue);

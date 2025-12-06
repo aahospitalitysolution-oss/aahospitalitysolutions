@@ -11,6 +11,9 @@
   justify-content: center;
   padding: var(--section-padding-y) var(--section-padding-x-mobile);
   overflow: hidden;
+  margin-top: -15vh;
+  padding-bottom: var(--section-padding-y);
+  /* Tuck under previous section */
 }
 
 .contentWrapper {
@@ -99,7 +102,8 @@
 }
 
 .khaki:hover .iconCircle {
-  background-color: var(--charcoal-blue); /* Contrast for khaki bg */
+  background-color: var(--charcoal-blue);
+  /* Contrast for khaki bg */
   color: var(--khaki-beige);
 }
 
@@ -113,7 +117,8 @@
   overflow: hidden;
   transform-origin: center;
   margin-right: 0.15em;
-  pointer-events: none; /* Let clicks pass through to button */
+  pointer-events: none;
+  /* Let clicks pass through to button */
 }
 
 .iconCircle {
@@ -146,7 +151,8 @@
 
 .lineBreakText {
   display: block;
-  margin-top: 0; /* Reset margin to ensure natural line height spacing */
+  margin-top: 0;
+  /* Reset margin to ensure natural line height spacing */
 }
 
 .introText {
@@ -229,6 +235,14 @@
   .badge {
     display: inline-flex;
     margin: var(--space-1) var(--space-1);
+  }
+}
+
+@media (max-width: 480px) {
+  .badge {
+    font-size: 0.55em;
+    /* Smaller font on very small screens to prevent overflow */
+    padding: 0.1em 0.5em;
   }
 }
 

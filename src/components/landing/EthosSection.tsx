@@ -257,6 +257,7 @@ export const EthosSection = ({ startAnimation = false }: EthosSectionProps) => {
       textColor="var(--charcoal-blue)"
       className={styles.ethosSection}
       ref={sectionRef}
+      id="ethos"
       aria-labelledby="ethos-title"
     >
       <div className={styles.symbolWrapper} aria-hidden="true">

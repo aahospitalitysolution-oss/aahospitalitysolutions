@@ -1,6 +1,7 @@
 "use client";
 
 import { forwardRef, useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./Landing.module.css";
 import { LandingCanvas, LandingCanvasHandle } from "./LandingCanvas";
 import SmartButton from "../SmartButton";
@@ -34,11 +35,11 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
     },
     ref
   ) => {
+    const router = useRouter();
     const [textHeight, setTextHeight] = useState(0);
     const sloganRef = useRef<HTMLDivElement>(null);
     const headingRef = useRef<HTMLHeadingElement>(null);
     const buttonWrapperRef = useRef<HTMLDivElement>(null);
-    const navButtonsRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
       if (!headerRef.current) return;
@@ -58,9 +59,6 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
       return () => observer.disconnect();
     }, [headerRef]);
 
-    // Note: Text color animation and button fading previously driven by resizeProgress
-    // are now handled via CSS variables set by GSAP in Landing.tsx
-
     return (
       <MorphSection
         ref={ref}
@@ -70,66 +68,45 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
         textColor="var(--parchment)"
         height="100vh"
       >
-        <HeroImageContainer
-          containerRef={heroContainerRef}
-          textHeight={textHeight}
-        >
-          <LandingCanvas ref={canvasRef} onImagesLoaded={onImagesLoaded} />
-        </HeroImageContainer>
+        <div className="reveal container-reveal-wrapper" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
+          <HeroImageContainer
+            containerRef={heroContainerRef}
+            textHeight={textHeight}
+          >
+            <LandingCanvas ref={canvasRef} onImagesLoaded={onImagesLoaded} />
+          </HeroImageContainer>
+        </div>
 
         <div className={styles.heroContainer}>
           <div className={styles.heroDiv} ref={headerRef}>
-            <div ref={sloganRef} className={styles.slogan}>
+            <div ref={sloganRef} className={`${styles.slogan} reveal`}>
               Advisory Grounded in Authenticity
             </div>
-            <h1 ref={headingRef} className={styles.heroHeading}>
+            <h1 ref={headingRef} className={`${styles.heroHeading} reveal`}>
               Strategic excellence for hospitality owners and operators
             </h1>
             <div ref={buttonWrapperRef} data-partner-button>
-              <SmartButton
-                text="Partner With Us"
-                alignment="center"
-                onClick={() => console.log("Partner With Us clicked")}
-                hoverColor="var(--rosy-taupe)"
-                backgroundColor="var(--charcoal-blue)"
-                theme="dark"
-              />
+              <div className="reveal">
+                <SmartButton
+                  text="Partner With Us"
+                  alignment="center"
+                  onClick={() => router.push("/#contact")}
+                  hoverColor="var(--rosy-taupe)"
+                  backgroundColor="var(--charcoal-blue)"
+                  theme="dark"
+                />
+              </div>
             </div>
-          </div>
-
-          {/* Reach Out button that appears when canvas scrolls in */}
-          <div
-            ref={navButtonsRef}
-            data-reach-out-button
-            style={{
-              position: "fixed",
-              top: 0,
-              right: "calc(var(--space-6) + 80px + var(--space-4))", // Position to the left of hamburger menu (80px width + gap)
-              height: "var(--space-20)", // Match nav height
-              display: "flex",
-              alignItems: "center",
-              zIndex: 100,
-              opacity: 0,
-              pointerEvents: "none",
-            }}
-          >
-            <SmartButton
-              text="Reach Out"
-              alignment="center"
-              onClick={() => console.log("Reach Out clicked")}
-              hoverColor="var(--charcoal-blue)"
-              backgroundColor="var(--parchment)"
-              theme="light"
-              size="small"
-            />
           </div>
         </div>
 
         {/* Clarity Section (Upper Center) */}
+
         <div
           ref={aadityaRef}
           className={`${styles.quadrantText} ${styles.quadrantTextUpperCenter}`}
         >
+          <h2 className={styles.quadrantTitle}>Partner With Us</h2>
           <p>
             We bring clarity to complex hotel operations, helping owners
             understand their asset, strengthen performance, and make informed
@@ -177,7 +154,7 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
           <SmartButton
             text="Learn More"
             alignment="center"
-            onClick={() => console.log("Learn more clicked")}
+            onClick={() => router.push("/#our-story")}
             hoverColor="var(--charcoal-blue)"
           />
         </div>

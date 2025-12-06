@@ -27,9 +27,8 @@ export const HeroImageContainer = ({
   // Transform and overlay opacity will be controlled via CSS variables set by GSAP
   const containerStyle: CSSProperties = {
     width: "100%",
-    height: "180vh", // Tall enough to extend past bottom when scaled
+    height: "130vh", // Tall enough to extend past bottom when scaled
     position: "absolute",
-    top: 0,
     left: 0,
     zIndex: 0, // Behind text
     transformOrigin: "center center",

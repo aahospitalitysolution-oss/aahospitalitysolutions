@@ -27,49 +27,42 @@ export function useAdaptiveColor(
       const element = ref.current;
       if (!element) return;
 
-      // Get position of the element center
       const rect = element.getBoundingClientRect();
       const x = rect.left + rect.width / 2;
       const y = rect.top + rect.height / 2;
 
-      // Sample elements at this point
-      const elements = document.elementsFromPoint(x, y);
-      
-      let bgColor = "";
-      
-      // Traverse up the stack to find the first opaque background
+      // On mobile, sometimes the header height pushes the logo off "scannable" areas.
+      // We clamp the Y check to ensure it's within the viewport.
+      const sampleY = Math.max(10, Math.min(window.innerHeight - 10, y));
+
+      const elements = document.elementsFromPoint(x, sampleY);
+
       for (const el of elements) {
-        // Skip the element itself and its children if sampled
         if (el === element || element.contains(el)) continue;
 
         const style = window.getComputedStyle(el);
-        const bg = style.backgroundColor;
 
-        // Parse rgba/rgb
-        // Usually returns "rgba(0, 0, 0, 0)" for transparent
+        // Skip transparent elements or pointer-events-none elements (often overlays)
+        if (style.pointerEvents === 'none' && style.backgroundColor.includes('rgba(0, 0, 0, 0)')) continue;
+
+        const bg = style.backgroundColor;
         const match = bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([0-9.]+))?\)/);
-        
+
         if (match) {
           const r = parseInt(match[1], 10);
           const g = parseInt(match[2], 10);
           const b = parseInt(match[3], 10);
           const a = match[4] !== undefined ? parseFloat(match[4]) : 1;
 
-          // If significantly opaque, use this color
-          // Simple heuristic: if alpha > 0.1, we consider it contributing to background
-          if (a > 0.1) {
-            bgColor = bg;
+          // Increased alpha threshold for mobile reliability
+          if (a > 0.5) {
             // Calculate luminance
-            // Formula: 0.299*R + 0.587*G + 0.114*B
             const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
-            
             setColor(luminance < threshold ? lightColor : darkColor);
-            return; // Found our background, stop searching
+            return;
           }
         }
       }
-
-      // If no background found (or all transparent), default to darkColor (assuming white page bg)
       setColor(darkColor);
     };
 
@@ -87,13 +80,13 @@ export function useAdaptiveColor(
 
     window.addEventListener("scroll", onScrollOrResize, { passive: true });
     window.addEventListener("resize", onScrollOrResize, { passive: true });
-    
+
     // Initial check with a small delay to ensure page is rendered
     // This helps avoid incorrect color detection during page transitions
     const initialCheckTimeout = setTimeout(() => {
       checkContrast();
     }, 100);
-    
+
     // Recheck after animations typically complete (e.g., after loader)
     const postAnimationCheckTimeout = setTimeout(() => {
       checkContrast();
