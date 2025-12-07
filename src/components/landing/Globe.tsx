@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 import styles from './Globe.module.css';
 import gsap from 'gsap';
 import * as THREE from 'three';
+import { isMobileDevice } from '@/utils/deviceUtils';
 
 // Dynamically import Globe to avoid SSR issues
 const Globe = dynamic(() => import('react-globe.gl'), { ssr: false });
@@ -410,28 +411,34 @@ export const GlobeSection = () => {
 
             {/* Globe Container */}
             <div className={styles.globeContainer}>
-                {dimensions.width > 0 && (
-                    <Globe
-                        ref={globeEl}
-                        onGlobeReady={handleGlobeReady}
-                        width={dimensions.width}
-                        height={dimensions.height}
-                        backgroundColor="rgba(0,0,0,0)"
-                        showGlobe={true}
-                        showAtmosphere={true}
-                        atmosphereColor={COLORS.globeGlow}
-                        atmosphereAltitude={0.15}
-                        globeMaterial={globeMaterial}
-                        polygonsData={countries}
-                        polygonsTransitionDuration={200}
-                        polygonCapColor={getPolygonCapColor}
-                        polygonSideColor={getPolygonSideColor}
-                        polygonStrokeColor={getPolygonStrokeColor}
-                        polygonAltitude={getPolygonAltitude}
-                        onPolygonHover={handlePolygonHover}
-                        onPolygonClick={handlePolygonClick}
-                    />
-                )}
+                {dimensions.width > 0 && (() => {
+                    // Mobile optimization: disable transition animations for polygons
+                    const isMobile = isMobileDevice();
+                    const transitionDuration = isMobile ? 0 : 200;
+
+                    return (
+                        <Globe
+                            ref={globeEl}
+                            onGlobeReady={handleGlobeReady}
+                            width={dimensions.width}
+                            height={dimensions.height}
+                            backgroundColor="rgba(0,0,0,0)"
+                            showGlobe={true}
+                            showAtmosphere={true}
+                            atmosphereColor={COLORS.globeGlow}
+                            atmosphereAltitude={0.15}
+                            globeMaterial={globeMaterial}
+                            polygonsData={countries}
+                            polygonsTransitionDuration={transitionDuration}
+                            polygonCapColor={getPolygonCapColor}
+                            polygonSideColor={getPolygonSideColor}
+                            polygonStrokeColor={getPolygonStrokeColor}
+                            polygonAltitude={getPolygonAltitude}
+                            onPolygonHover={handlePolygonHover}
+                            onPolygonClick={handlePolygonClick}
+                        />
+                    );
+                })()}
             </div>
         </section>
     );

@@ -11,6 +11,8 @@ import { BadgeCloud } from "./BadgeCloud";
 import { EthosSection } from "./EthosSection";
 import PartnersSection from "./PartnersSection";
 import dynamic from "next/dynamic";
+import { isMobileDevice } from "@/utils/deviceUtils";
+import { getLenisConfig, getScrollTriggerConfig } from "@/utils/scrollConfig";
 
 const Globe = dynamic(() => import("./Globe").then((mod) => mod.GlobeSection), {
   ssr: false,
@@ -91,6 +93,11 @@ export const Landing = ({ navRef }: LandingProps) => {
 
       gsap.registerPlugin(ScrollTrigger);
 
+      // Detect mobile for performance optimizations
+      const isMobile = isMobileDevice();
+      const lenisConfig = getLenisConfig(isMobile);
+      const scrollTriggerConfig = getScrollTriggerConfig(isMobile);
+
       // Prevent the "reach out" button from being revealed by usePageTransition
       // because on the home page it should start hidden (behind the hero section)
       const navButtons = navRef?.current?.querySelector(
@@ -101,16 +108,17 @@ export const Landing = ({ navRef }: LandingProps) => {
         gsap.set(navButtons, { opacity: 0, pointerEvents: "none" });
       }
 
+      // Use device-optimized Lenis configuration
       const lenis = new Lenis({
-        duration: 1.2,
-        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-        orientation: "vertical",
-        gestureOrientation: "vertical",
-        smoothWheel: true,
-        wheelMultiplier: 1,
-        smoothTouch: false,
-        touchMultiplier: 2,
-        infinite: false,
+        duration: lenisConfig.duration,
+        easing: lenisConfig.easing,
+        orientation: lenisConfig.orientation,
+        gestureOrientation: lenisConfig.gestureOrientation,
+        smoothWheel: lenisConfig.smoothWheel,
+        wheelMultiplier: lenisConfig.wheelMultiplier,
+        smoothTouch: lenisConfig.smoothTouch, // Critical: always false on mobile
+        touchMultiplier: lenisConfig.touchMultiplier,
+        infinite: lenisConfig.infinite,
       });
 
       lenisRef.current = lenis;
@@ -231,7 +239,7 @@ export const Landing = ({ navRef }: LandingProps) => {
         end: `+=${totalScrollDistance}px`,
         pin: true,
         pinSpacing: true,
-        scrub: 1,
+        scrub: scrollTriggerConfig.scrubValue, // Device-optimized scrub value
         onUpdate: (self: any) => {
           const scrolled = self.progress * totalScrollDistance;
 

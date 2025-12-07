@@ -11,8 +11,11 @@ let globalLoadProgress = 0;
 let phase1Complete = false;
 let phase2Complete = false;
 
-// Interval for key frames (load every Nth frame in phase 1)
-const KEY_FRAME_INTERVAL = 4;
+// Device-specific key frame intervals
+// Mobile loads fewer key frames initially for faster perceived loading and less memory pressure
+const getKeyFrameInterval = (isMobile: boolean): number => {
+  return isMobile ? 8 : 4; // Mobile loads every 8th, desktop every 4th
+};
 
 // Resolution configuration constants
 export const MOBILE_BREAKPOINT = 768;
@@ -188,9 +191,10 @@ export const useImagePreloader = (frameCount: number) => {
       }
     }
 
-    // Calculate key frame indices (every Nth frame)
+    // Calculate key frame indices (every Nth frame) - interval depends on device
+    const keyFrameInterval = getKeyFrameInterval(isMobile);
     const keyFrameIndices: number[] = [];
-    for (let i = 0; i < frameCount; i += KEY_FRAME_INTERVAL) {
+    for (let i = 0; i < frameCount; i += keyFrameInterval) {
       keyFrameIndices.push(i);
     }
     // Always include the last frame

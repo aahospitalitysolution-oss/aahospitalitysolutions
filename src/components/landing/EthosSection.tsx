@@ -1,6 +1,8 @@
 import { useEffect, useRef } from "react";
 import { MorphSection } from "../MorphSection";
 import styles from "./EthosSection.module.css";
+import { isMobileDevice } from "@/utils/deviceUtils";
+import { getScrollTriggerConfig } from "@/utils/scrollConfig";
 
 interface EthosSectionProps {
   startAnimation?: boolean;
@@ -155,13 +157,17 @@ export const EthosSection = ({ startAnimation = false }: EthosSectionProps) => {
         }
 
         if (definitionsRef.current) {
+          // Get device-optimized scrub value
+          const isMobile = isMobileDevice();
+          const scrollTriggerConfig = getScrollTriggerConfig(isMobile);
+
           gsap
             .timeline({
               scrollTrigger: {
                 trigger: definitionsRef.current,
                 start: "top center",
                 end: "bottom center",
-                scrub: 1,
+                scrub: scrollTriggerConfig.scrubValue, // Device-optimized scrub
               },
             })
             .to(

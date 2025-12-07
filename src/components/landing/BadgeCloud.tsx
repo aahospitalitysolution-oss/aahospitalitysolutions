@@ -3,6 +3,8 @@ import { useRouter } from "next/navigation";
 import { PaperPlaneCanvas } from "./PaperPlaneCanvas";
 import SmartButton from "../SmartButton";
 import styles from "./BadgeCloud.module.css";
+import { isMobileDevice } from "@/utils/deviceUtils";
+import { getScrollTriggerConfig } from "@/utils/scrollConfig";
 
 interface BadgeCloudProps {
   startAnimation?: boolean;
@@ -134,6 +136,10 @@ export const BadgeCloud = ({ startAnimation = true }: BadgeCloudProps) => {
         const section = sectionRef.current;
         if (!section) return;
 
+        // Get device-optimized scrub value
+        const isMobile = isMobileDevice();
+        const scrollTriggerConfig = getScrollTriggerConfig(isMobile);
+
         const q = gsap.utils.selector(section);
 
         // Initial States
@@ -160,7 +166,7 @@ export const BadgeCloud = ({ startAnimation = true }: BadgeCloudProps) => {
             trigger: section,
             start: "top top",
             end: "+=5000", // Extended distance to provide additional scroll room
-            scrub: 0.5, // Smooth scrub
+            scrub: scrollTriggerConfig.scrubValue, // Device-optimized scrub
             pin: true,
             anticipatePin: 1,
             onUpdate: (self) => {

@@ -39,6 +39,13 @@
 @media (max-width: 767px) {
   .container {
     /* Mobile-specific adjustments handled in component */
+    /* Disable will-change on mobile to reduce GPU layer pressure */
+    will-change: auto;
+  }
+
+  .overlay {
+    /* Disable will-change on mobile */
+    will-change: auto;
   }
 }
 

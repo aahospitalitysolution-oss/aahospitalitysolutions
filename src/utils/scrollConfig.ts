@@ -109,6 +109,27 @@ export const LENIS_CONFIG: LenisConfig = {
 };
 
 /**
+ * Mobile-optimized Lenis Configuration
+ * 
+ * Reduced values for better mobile performance:
+ * - Duration: 1.2 (reduced from 1.8 to lower interpolation overhead)
+ * - Lerp: 0.15 (increased for faster response)
+ * - smoothTouch: false (critical for mobile - let native touch handle scrolling)
+ */
+export const LENIS_CONFIG_MOBILE: LenisConfig = {
+  duration: 1.2,
+  easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+  lerp: 0.15,
+  orientation: 'vertical',
+  gestureOrientation: 'vertical',
+  smoothWheel: true,
+  wheelMultiplier: 1.0,
+  smoothTouch: false, // Critical: never enable smooth touch on mobile
+  touchMultiplier: 2,
+  infinite: false,
+};
+
+/**
  * Unified ScrollTrigger Configuration
  * 
  * Based on design document recommendations:
@@ -119,6 +140,33 @@ export const SCROLL_TRIGGER_CONFIG: ScrollTriggerConfig = {
   anticipatePin: 1,
   pinSpacing: true,
   refreshPriority: 0,
+};
+
+/**
+ * Mobile-optimized ScrollTrigger Configuration
+ * 
+ * Reduced scrub for snappier mobile response:
+ * - Scrub Value: 0.5 (reduced from 1.0 to minimize interpolation)
+ */
+export const SCROLL_TRIGGER_CONFIG_MOBILE: ScrollTriggerConfig = {
+  scrubValue: 0.5,
+  anticipatePin: 1,
+  pinSpacing: true,
+  refreshPriority: 0,
+};
+
+/**
+ * Get the appropriate Lenis config based on device
+ */
+export const getLenisConfig = (isMobile: boolean): LenisConfig => {
+  return isMobile ? LENIS_CONFIG_MOBILE : LENIS_CONFIG;
+};
+
+/**
+ * Get the appropriate ScrollTrigger config based on device
+ */
+export const getScrollTriggerConfig = (isMobile: boolean): ScrollTriggerConfig => {
+  return isMobile ? SCROLL_TRIGGER_CONFIG_MOBILE : SCROLL_TRIGGER_CONFIG;
 };
 
 /**
@@ -173,12 +221,12 @@ export const prefersReducedMotion = (): boolean => {
  */
 export const getDeviceType = (): 'mouse' | 'touchpad' | 'touch' => {
   if (typeof window === 'undefined') return 'mouse';
-  
+
   // Check for touch capability
   if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
     return 'touch';
   }
-  
+
   // Default to mouse (touchpad detection is complex and not reliable)
   return 'mouse';
 };
@@ -188,7 +236,7 @@ export const getDeviceType = (): 'mouse' | 'touchpad' | 'touch' => {
  */
 export const getDeviceMultiplier = (): number => {
   const deviceType = getDeviceType();
-  
+
   switch (deviceType) {
     case 'touch':
       return DEVICE_MULTIPLIERS.TOUCH;

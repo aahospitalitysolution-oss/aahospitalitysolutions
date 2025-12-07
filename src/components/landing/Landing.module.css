@@ -636,6 +636,22 @@
   .quadrantText p {
     font-size: var(--text-lg);
   }
+
+  /* Mobile performance optimizations: disable will-change to reduce GPU layer pressure */
+  .header,
+  .quadrantText,
+  .sideText,
+  .sideText p {
+    will-change: auto;
+  }
+
+  /* Disable glow animations on mobile for performance */
+  .sunRays,
+  .sunCoreGlow,
+  .crystalPrism,
+  .prismCoreGlow {
+    display: none;
+  }
 }
 
 /* Reduced motion support */

@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect, forwardRef } from 'react';
 import styles from './MorphSection.module.css';
+import { isMobileDevice } from '@/utils/deviceUtils';
 
 interface MorphSectionProps {
   children: React.ReactNode;
@@ -30,6 +31,22 @@ export const MorphSection = forwardRef<HTMLElement, MorphSectionProps>(({
     // Handle ref merging
     const element = (ref as React.RefObject<HTMLElement>)?.current || localRef.current;
     if (!element) return;
+
+    // Mobile optimization: skip morph animation entirely on mobile
+    // The curved edges are a subtle enhancement that's not critical on smaller screens
+    const isMobile = isMobileDevice();
+    if (isMobile) {
+      // Set static border radius on mobile
+      if (variant === 'top' || variant === 'both') {
+        element.style.borderTopLeftRadius = '0';
+        element.style.borderTopRightRadius = '0';
+      }
+      if (variant === 'bottom' || variant === 'both') {
+        element.style.borderBottomLeftRadius = '0';
+        element.style.borderBottomRightRadius = '0';
+      }
+      return; // Skip scroll listener setup for mobile
+    }
 
     const CONFIG = {
       maxRadiusVw: 15, // The "curvature" intensity (in VW)
@@ -83,7 +100,8 @@ export const MorphSection = forwardRef<HTMLElement, MorphSectionProps>(({
       }
     };
 
-    window.addEventListener('scroll', onScroll);
+    // Use passive listener for better scroll performance
+    window.addEventListener('scroll', onScroll, { passive: true });
     // Initial calculation
     updateShape();
 

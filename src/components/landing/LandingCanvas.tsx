@@ -3,6 +3,7 @@
 import { useRef, useEffect, forwardRef, useImperativeHandle, useCallback } from "react";
 import styles from "./Landing.module.css";
 import { useAnimationContext } from "@/contexts/AnimationContext";
+import { isMobileDevice } from "@/utils/deviceUtils";
 
 export interface LandingCanvasHandle {
   setFrame: (frame: number) => void;
@@ -26,8 +27,13 @@ export const LandingCanvas = forwardRef<LandingCanvasHandle, LandingCanvasProps>
     const currentRenderedFrameRef = useRef<number>(-1);
     const isFrozenRef = useRef<boolean>(false);
     const animationFrameIdRef = useRef<number | null>(null);
+    const lastRenderTimeRef = useRef<number>(0);
 
     const frameCount = 385;
+
+    // Mobile throttling: limit to ~30fps on mobile to save battery
+    const isMobile = typeof window !== 'undefined' ? isMobileDevice() : false;
+    const throttleMs = isMobile ? 33 : 0; // ~30fps on mobile, no throttle on desktop
 
     const setCanvasSize = () => {
       const canvas = canvasRef.current;
@@ -45,10 +51,7 @@ export const LandingCanvas = forwardRef<LandingCanvasHandle, LandingCanvasProps>
       context.scale(pixelRatio, pixelRatio);
     };
 
-    const render = () => {
-      // Double check freeze state before expensive draw
-      if (isFrozenRef.current) return;
-
+    const render = useCallback(() => {
       const canvas = canvasRef.current;
       const context = contextRef.current;
       if (!canvas || !context) return;
@@ -79,58 +82,85 @@ export const LandingCanvas = forwardRef<LandingCanvasHandle, LandingCanvasProps>
 
         context.drawImage(img, drawX, drawY, drawWidth, drawHeight);
       }
-    };
+    }, [images]);
 
-    // Tick loop - Handles the actual rendering cadence
-    const tick = useCallback(() => {
-      if (isFrozenRef.current) {
-        animationFrameIdRef.current = requestAnimationFrame(tick);
-        return;
-      }
+    // Start the animation loop
+    const startLoop = useCallback(() => {
+      if (animationFrameIdRef.current !== null) return; // Already running
 
-      // OPTIMIZATION: Only render if the target frame has changed
-      if (targetFrameRef.current !== currentRenderedFrameRef.current) {
-        const targetFrame = targetFrameRef.current;
-
-        // Logic to handle progressive loading
-        if (isFrameLoaded(targetFrame)) {
-          videoFramesRef.current.displayFrame = targetFrame;
-        } else {
-          videoFramesRef.current.displayFrame = getNearestLoadedFrame(targetFrame);
+      const tick = (time: number) => {
+        // OPTIMIZATION: Completely stop loop when frozen instead of continuing to schedule
+        if (isFrozenRef.current) {
+          animationFrameIdRef.current = null;
+          return;
         }
 
-        render();
-        currentRenderedFrameRef.current = targetFrame;
-      }
+        // Throttle on mobile for battery savings
+        if (throttleMs > 0 && time - lastRenderTimeRef.current < throttleMs) {
+          animationFrameIdRef.current = requestAnimationFrame(tick);
+          return;
+        }
+
+        // OPTIMIZATION: Only render if the target frame has changed
+        if (targetFrameRef.current !== currentRenderedFrameRef.current) {
+          const targetFrame = targetFrameRef.current;
+
+          // Logic to handle progressive loading
+          if (isFrameLoaded(targetFrame)) {
+            videoFramesRef.current.displayFrame = targetFrame;
+          } else {
+            videoFramesRef.current.displayFrame = getNearestLoadedFrame(targetFrame);
+          }
+
+          render();
+          currentRenderedFrameRef.current = targetFrame;
+          lastRenderTimeRef.current = time;
+        }
+
+        animationFrameIdRef.current = requestAnimationFrame(tick);
+      };
 
       animationFrameIdRef.current = requestAnimationFrame(tick);
-    }, [isFrameLoaded, getNearestLoadedFrame]);
+    }, [isFrameLoaded, getNearestLoadedFrame, render, throttleMs]);
+
+    // Stop the animation loop
+    const stopLoop = useCallback(() => {
+      if (animationFrameIdRef.current !== null) {
+        cancelAnimationFrame(animationFrameIdRef.current);
+        animationFrameIdRef.current = null;
+      }
+    }, []);
 
     // Exposed methods
-    const setFrame = (frame: number) => {
+    const setFrame = useCallback((frame: number) => {
       targetFrameRef.current = Math.max(0, Math.min(frame, frameCount - 1));
-    };
+    }, []);
 
-    // FIXED: Added checks to prevent redundant operations
+    // OPTIMIZED: Freeze now completely stops the RAF loop
     const freeze = useCallback(() => {
-      if (isFrozenRef.current) return; // Already frozen, do nothing
+      if (isFrozenRef.current) return;
 
       isFrozenRef.current = true;
+      stopLoop(); // Completely stop RAF loop
+
       if (canvasRef.current) {
         canvasRef.current.style.willChange = 'auto';
       }
-    }, []);
+    }, [stopLoop]);
 
+    // OPTIMIZED: Unfreeze restarts the RAF loop
     const unfreeze = useCallback(() => {
-      if (!isFrozenRef.current) return; // Already unfrozen, do nothing
+      if (!isFrozenRef.current) return;
 
       isFrozenRef.current = false;
-      // Force a re-render on the next tick
-      currentRenderedFrameRef.current = -1;
+      currentRenderedFrameRef.current = -1; // Force re-render
+
       if (canvasRef.current) {
         canvasRef.current.style.willChange = 'transform';
       }
-    }, []);
+
+      startLoop(); // Restart RAF loop
+    }, [startLoop]);
 
     useImperativeHandle(ref, () => ({
       setFrame,
@@ -158,7 +188,7 @@ export const LandingCanvas = forwardRef<LandingCanvasHandle, LandingCanvasProps>
       contextRef.current = context;
       setCanvasSize();
 
-      tick();
+      startLoop();
 
       const handleResize = () => {
         setCanvasSize();
@@ -169,11 +199,9 @@ export const LandingCanvas = forwardRef<LandingCanvasHandle, LandingCanvasProps>
 
       return () => {
         window.removeEventListener("resize", handleResize);
-        if (animationFrameIdRef.current !== null) {
-          cancelAnimationFrame(animationFrameIdRef.current);
-        }
+        stopLoop();
       };
-    }, [imagesLoaded, tick]);
+    }, [imagesLoaded, startLoop, stopLoop]);
 
     return <canvas ref={canvasRef} className={styles.canvas} />;
   }
