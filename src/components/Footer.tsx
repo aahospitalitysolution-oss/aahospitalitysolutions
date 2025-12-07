@@ -162,9 +162,9 @@ export default function Footer() {
           ></div>
 
           {/* Footer Bottom Row */}
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-xs opacity-60 uppercase tracking-widest relative text-white/60">
-            <div className="flex flex-col md:flex-row gap-6 items-center">
-              <span>© 2025 Ana Hospitality.</span>
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 text-xs opacity-60 uppercase tracking-widest relative text-white/60">
+            <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
+              <span>© 2025 A&A Hospitality.</span>
 
               <div className="flex gap-6 items-center md:ml-6 md:border-l md:border-white/20 md:pl-6">
                 <Link href="/privacy-policy" className="hover:text-white transition-colors">

@@ -345,7 +345,7 @@ export const BadgeCloud = ({ startAnimation = true }: BadgeCloudProps) => {
         />
       </div>
 
-      <div className={`contentWrapper ${styles.contentWrapper}`}>
+      <div className={styles.contentWrapper}>
         <h2 id="badge-cloud-heading" className={styles.screenReaderOnly}>
           Badge cloud variation
         </h2>
