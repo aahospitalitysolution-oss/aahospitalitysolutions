@@ -51,8 +51,9 @@ export default function HomeClient() {
       >
         <Link
           href="/"
-          className={`logo-link-wrapper transition-opacity duration-300 ${isMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"
-            }`}
+          className={`logo-link-wrapper transition-opacity duration-300 ${
+            isMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"
+          }`}
           aria-label="Home"
         >
           <div
@@ -78,7 +79,7 @@ export default function HomeClient() {
           style={{ display: "flex", alignItems: "center", gap: "1rem" }}
         >
           <div className="hidden md:block">
-            <AdaptiveReachOutButton />
+            <AdaptiveReachOutButton skipRevealAnimation={true} />
           </div>
           <AdaptiveItem>
             <MenuButton className="reveal" />

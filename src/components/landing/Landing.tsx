@@ -12,13 +12,10 @@ import { EthosSection } from "./EthosSection";
 import PartnersSection from "./PartnersSection";
 import dynamic from "next/dynamic";
 
-const Globe = dynamic(
-  () => import("./Globe").then((mod) => mod.GlobeSection),
-  {
-    ssr: false,
-    loading: () => <div style={{ minHeight: '100vh' }} />
-  }
-);
+const Globe = dynamic(() => import("./Globe").then((mod) => mod.GlobeSection), {
+  ssr: false,
+  loading: () => <div style={{ minHeight: "100vh" }} />,
+});
 
 type GSAPStatic = any;
 type ScrollTriggerStatic = any;
@@ -26,7 +23,8 @@ type LenisInstance = any;
 
 // Hoist easing functions to avoid re-creation on every frame
 const power2Out = (t: number) => 1 - Math.pow(1 - t, 2);
-const power2InOut = (t: number) => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+const power2InOut = (t: number) =>
+  t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
 const power2In = (t: number) => t * t;
 
 interface LandingProps {
@@ -55,10 +53,18 @@ export const Landing = ({ navRef }: LandingProps) => {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
 
     if (prefersReducedMotion) {
-      const refs = [headerRef, aadityaRef, aaryahiRef, togetherRef, textBlock4Ref];
+      const refs = [
+        headerRef,
+        aadityaRef,
+        aaryahiRef,
+        togetherRef,
+        textBlock4Ref,
+      ];
       refs.forEach((ref) => {
         if (ref.current) {
           ref.current.style.opacity = "1";
@@ -84,6 +90,16 @@ export const Landing = ({ navRef }: LandingProps) => {
       Lenis = lenisModule.default;
 
       gsap.registerPlugin(ScrollTrigger);
+
+      // Prevent the "reach out" button from being revealed by usePageTransition
+      // because on the home page it should start hidden (behind the hero section)
+      const navButtons = navRef?.current?.querySelector(
+        "[data-reach-out-button]"
+      );
+      if (navButtons) {
+        gsap.killTweensOf(navButtons);
+        gsap.set(navButtons, { opacity: 0, pointerEvents: "none" });
+      }
 
       const lenis = new Lenis({
         duration: 1.2,
@@ -122,13 +138,17 @@ export const Landing = ({ navRef }: LandingProps) => {
         shrinkDuringHold: boolean = false
       ) => {
         // Helper to reuse config object structure
-        const applyStyle = (scale: number, opacity: number, pointerEvents: string) => {
+        const applyStyle = (
+          scale: number,
+          opacity: number,
+          pointerEvents: string
+        ) => {
           gsap.set(element, {
             scale,
             opacity,
             pointerEvents,
             xPercent: isCentered ? -50 : 0,
-            yPercent: isCentered ? -50 : 0
+            yPercent: isCentered ? -50 : 0,
           });
         };
 
@@ -143,7 +163,10 @@ export const Landing = ({ navRef }: LandingProps) => {
         const holdEnd = threshold + reduceSizeDuration + holdDuration;
         const exitEnd = stayVisible
           ? 1
-          : Math.min(1, threshold + reduceSizeDuration + holdDuration + zoomOutDuration);
+          : Math.min(
+              1,
+              threshold + reduceSizeDuration + holdDuration + zoomOutDuration
+            );
 
         if (stayVisible) {
           if (progress < entryStart) {
@@ -227,44 +250,57 @@ export const Landing = ({ navRef }: LandingProps) => {
               const currentTop = (1 - resizeProgress) * 12; // 12vh to 0vh
 
               gsap.set(heroContainerRef.current, {
-                '--container-scale': scale,
-                '--overlay-opacity': overlayOpacity,
-                '--container-y': `${currentY}px`,
+                "--container-scale": scale,
+                "--overlay-opacity": overlayOpacity,
+                "--container-y": `${currentY}px`,
                 top: `${currentTop}vh`,
               });
             }
 
-            const buttonWrapper = heroRef.current?.querySelector('[data-partner-button]');
-            const navButtons = heroRef.current?.querySelector('[data-reach-out-button]');
+            const buttonWrapper = heroRef.current?.querySelector(
+              "[data-partner-button]"
+            );
+            const navButtons = navRef?.current?.querySelector(
+              "[data-reach-out-button]"
+            );
 
             if (buttonWrapper) {
               gsap.set(buttonWrapper, {
                 opacity: 1 - resizeProgress,
-                pointerEvents: resizeProgress > 0.5 ? 'none' : 'auto',
+                pointerEvents: resizeProgress > 0.5 ? "none" : "auto",
               });
             }
             if (navButtons) {
               gsap.set(navButtons, {
                 opacity: resizeProgress,
-                pointerEvents: resizeProgress > 0.5 ? 'auto' : 'none',
+                pointerEvents: resizeProgress > 0.5 ? "auto" : "none",
               });
             }
 
             // Transition hero text color from blue to white
             if (headerRef.current) {
               gsap.set(headerRef.current, {
-                '--hero-text-color-transition': resizeProgress,
+                "--hero-text-color-transition": resizeProgress,
               });
             }
 
             if (canvasRef.current) canvasRef.current.setFrame(0);
 
-            const textOverlays = [aadityaRef, aaryahiRef, togetherRef, textBlock4Ref];
+            const textOverlays = [
+              aadityaRef,
+              aaryahiRef,
+              togetherRef,
+              textBlock4Ref,
+            ];
             textOverlays.forEach((ref) => {
-              if (ref.current) gsap.set(ref.current, { opacity: 0, scale: 3, pointerEvents: "none" });
+              if (ref.current)
+                gsap.set(ref.current, {
+                  opacity: 0,
+                  scale: 3,
+                  pointerEvents: "none",
+                });
             });
             // if (headerRef.current) gsap.set(headerRef.current, { opacity: 1, scale: 1 });
-
           } else {
             // --- TIMELINE PHASE ---
             const timelineScrolled = scrolled - resizePhaseEnd;
@@ -277,18 +313,24 @@ export const Landing = ({ navRef }: LandingProps) => {
 
             if (heroContainerRef.current) {
               gsap.set(heroContainerRef.current, {
-                '--container-scale': 1,
-                '--overlay-opacity': 0.65,
-                '--container-y': '0px',
-                top: '0px',
+                "--container-scale": 1,
+                "--overlay-opacity": 0.65,
+                "--container-y": "0px",
+                top: "0px",
               });
             }
 
             // Force specific visibility states for buttons during timeline
-            const buttonWrapper = heroRef.current?.querySelector('[data-partner-button]');
-            const navButtons = heroRef.current?.querySelector('[data-reach-out-button]');
-            if (buttonWrapper) gsap.set(buttonWrapper, { opacity: 0, pointerEvents: 'none' });
-            if (navButtons) gsap.set(navButtons, { opacity: 1, pointerEvents: 'auto' });
+            const buttonWrapper = heroRef.current?.querySelector(
+              "[data-partner-button]"
+            );
+            const navButtons = navRef?.current?.querySelector(
+              "[data-reach-out-button]"
+            );
+            if (buttonWrapper)
+              gsap.set(buttonWrapper, { opacity: 0, pointerEvents: "none" });
+            if (navButtons)
+              gsap.set(navButtons, { opacity: 1, pointerEvents: "auto" });
 
             const targetFrame = Math.round(timelineProgress * (frameCount - 1));
 
@@ -305,43 +347,91 @@ export const Landing = ({ navRef }: LandingProps) => {
 
             // 0. Greek Header
             if (headerRef.current) {
-              animateZoomBlock(headerRef.current, timelineProgress, 0.03, false, false, true, true);
+              animateZoomBlock(
+                headerRef.current,
+                timelineProgress,
+                0.03,
+                false,
+                false,
+                true,
+                true
+              );
             }
 
             // 1. Aaditya
             if (aadityaRef.current) {
               const aadityaStart = 0.2133;
               const aadityaEnd = 0.4266;
-              const shouldBeActive = timelineProgress >= aadityaStart && timelineProgress <= aadityaEnd;
+              const shouldBeActive =
+                timelineProgress >= aadityaStart &&
+                timelineProgress <= aadityaEnd;
 
               if (shouldBeActive !== isAadityaAnimating.current) {
                 isAadityaAnimating.current = shouldBeActive;
-                aadityaRef.current.classList.toggle(styles.animateAaditya, shouldBeActive);
+                aadityaRef.current.classList.toggle(
+                  styles.animateAaditya,
+                  shouldBeActive
+                );
               }
-              animateZoomBlock(aadityaRef.current, timelineProgress, 0.2433, false, true, false, true);
+              animateZoomBlock(
+                aadityaRef.current,
+                timelineProgress,
+                0.2433,
+                false,
+                true,
+                false,
+                true
+              );
             }
 
             // 2. Aaryahi
             if (aaryahiRef.current) {
               const aaryahiStart = 0.4266;
               const aaryahiEnd = 0.64;
-              const shouldBeActive = timelineProgress >= aaryahiStart && timelineProgress <= aaryahiEnd;
+              const shouldBeActive =
+                timelineProgress >= aaryahiStart &&
+                timelineProgress <= aaryahiEnd;
 
               if (shouldBeActive !== isAaryahiAnimating.current) {
                 isAaryahiAnimating.current = shouldBeActive;
-                aaryahiRef.current.classList.toggle(styles.animateAaryahi, shouldBeActive);
+                aaryahiRef.current.classList.toggle(
+                  styles.animateAaryahi,
+                  shouldBeActive
+                );
               }
-              animateZoomBlock(aaryahiRef.current, timelineProgress, 0.4566, false, true, false, true);
+              animateZoomBlock(
+                aaryahiRef.current,
+                timelineProgress,
+                0.4566,
+                false,
+                true,
+                false,
+                true
+              );
             }
 
             // 3. Together
             if (togetherRef.current) {
-              animateZoomBlock(togetherRef.current, timelineProgress, 0.67, false, true, false, true);
+              animateZoomBlock(
+                togetherRef.current,
+                timelineProgress,
+                0.67,
+                false,
+                true,
+                false,
+                true
+              );
             }
 
             // 4. Final Block
             if (textBlock4Ref.current) {
-              animateZoomBlock(textBlock4Ref.current, timelineProgress, 0.8833, true, true);
+              animateZoomBlock(
+                textBlock4Ref.current,
+                timelineProgress,
+                0.8833,
+                true,
+                true
+              );
             }
           }
         },
@@ -398,7 +488,7 @@ export const Landing = ({ navRef }: LandingProps) => {
           togetherRef={togetherRef}
           textBlock4Ref={textBlock4Ref}
           heroContainerRef={heroContainerRef}
-          onImagesLoaded={() => { }}
+          onImagesLoaded={() => {}}
         />
       </div>
 
@@ -407,8 +497,6 @@ export const Landing = ({ navRef }: LandingProps) => {
       <Globe />
       <PartnersSection />
       <BadgeCloud startAnimation={heroPinned} />
-
-
     </div>
   );
 };
