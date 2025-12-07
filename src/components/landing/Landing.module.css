@@ -258,7 +258,7 @@
 
 /* New classes for Center Aligned Aaditya/Aaryahi */
 .quadrantTextUpperCenter {
-  top: 45%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
@@ -620,6 +620,21 @@
 
   .slogan {
     letter-spacing: var(--tracking-wider);
+  }
+
+  /* Ensure consistent vertical centering for all quadrant texts on mobile */
+  .quadrantTextUpperCenter,
+  .quadrantTextLowerCenter,
+  .quadrantTextCenter {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85%;
+    max-width: none;
+  }
+
+  .quadrantText p {
+    font-size: var(--text-lg);
   }
 }
 

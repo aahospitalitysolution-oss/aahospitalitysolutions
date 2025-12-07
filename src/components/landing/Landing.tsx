@@ -164,9 +164,9 @@ export const Landing = ({ navRef }: LandingProps) => {
         const exitEnd = stayVisible
           ? 1
           : Math.min(
-              1,
-              threshold + reduceSizeDuration + holdDuration + zoomOutDuration
-            );
+            1,
+            threshold + reduceSizeDuration + holdDuration + zoomOutDuration
+          );
 
         if (stayVisible) {
           if (progress < entryStart) {
@@ -247,7 +247,9 @@ export const Landing = ({ navRef }: LandingProps) => {
               const overlayOpacity = resizeProgress * 0.65;
               const textOffset = 180;
               const currentY = textOffset * (1 - resizeProgress);
-              const currentTop = (1 - resizeProgress) * 12; // 12vh to 0vh
+              const isMobile = window.innerWidth <= 768;
+              const startTop = isMobile ? 25 : 12; // Start lower on mobile
+              const currentTop = (1 - resizeProgress) * startTop;
 
               gsap.set(heroContainerRef.current, {
                 "--container-scale": scale,
@@ -488,7 +490,7 @@ export const Landing = ({ navRef }: LandingProps) => {
           togetherRef={togetherRef}
           textBlock4Ref={textBlock4Ref}
           heroContainerRef={heroContainerRef}
-          onImagesLoaded={() => {}}
+          onImagesLoaded={() => { }}
         />
       </div>
 

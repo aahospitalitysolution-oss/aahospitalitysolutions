@@ -104,9 +104,8 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
 
         <div
           ref={aadityaRef}
-          className={`${styles.quadrantText} ${styles.quadrantTextUpperCenter}`}
+          className={`${styles.quadrantText} ${styles.quadrantTextLowerCenter}`}
         >
-          <h2 className={styles.quadrantTitle}>Partner With Us</h2>
           <p>
             We bring clarity to complex hotel operations, helping owners
             understand their asset, strengthen performance, and make informed
