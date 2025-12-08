@@ -269,7 +269,7 @@ html.is-loading .counter {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 50;
+  z-index: 101;
   background-color: transparent;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;

@@ -355,7 +355,7 @@ export const EthosSection = ({ startAnimation = false }: EthosSectionProps) => {
               data-reveal-block
               ref={aadityaBlockRef}
             >
-              <span className={styles.nameHighlight}>Aaditya</span>
+              <h3 className={styles.nameHighlight}>Aaditya</h3>
               <p className={styles.meaning}>
                 Means sun—energy, growth, illumination. It represents the light
                 we bring to complex challenges.
@@ -367,7 +367,7 @@ export const EthosSection = ({ startAnimation = false }: EthosSectionProps) => {
               data-reveal-block
               ref={aaryahiBlockRef}
             >
-              <span className={styles.nameHighlight}>Aaryahi</span>
+              <h3 className={styles.nameHighlight}>Aaryahi</h3>
               <p className={styles.meaning}>
                 Means noble—integrity, excellence, the highest standards. It is
                 our promise to uphold dignity in every decision.

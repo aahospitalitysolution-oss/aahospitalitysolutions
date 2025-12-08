@@ -79,9 +79,9 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
 
         <div className={styles.heroContainer}>
           <div className={styles.heroDiv} ref={headerRef}>
-            <div ref={sloganRef} className={`${styles.slogan} reveal`}>
+            <p ref={sloganRef} className={`${styles.slogan} reveal`}>
               Advisory Grounded in Authenticity
-            </div>
+            </p>
             <h1 ref={headingRef} className={`${styles.heroHeading} reveal`}>
               Strategic excellence for hospitality owners and operators
             </h1>

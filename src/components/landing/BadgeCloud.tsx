@@ -364,7 +364,7 @@ export const BadgeCloud = ({ startAnimation = true }: BadgeCloudProps) => {
 
       <div className={styles.contentWrapper}>
         <h2 id="badge-cloud-heading" className={styles.screenReaderOnly}>
-          Badge cloud variation
+          Core Competencies
         </h2>
         <p className={styles.lede} data-lede>
           <span data-text-id="1">Visionary growth requires </span>

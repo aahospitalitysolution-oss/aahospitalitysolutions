@@ -63,6 +63,27 @@ export default function RootLayout({
         className={`${spectral.variable} ${dmSans.variable} ${playfair.variable} ${manrope.variable} antialiased`}
       >
         <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "A&A Hospitality Solutions",
+              "url": "https://anahospitality.com",
+              "logo": "https://anahospitality.com/logo.png",
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "telephone": "+1-234-567-890",
+                "contactType": "customer service"
+              },
+              "sameAs": [
+                "https://www.linkedin.com/company/anahospitality",
+                "https://twitter.com/anahospitality"
+              ]
+            })
+          }}
+        />
+        <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {

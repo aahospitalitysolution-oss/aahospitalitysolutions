@@ -93,7 +93,7 @@ export const OurStory = ({ startAnimation = false }: OurStoryProps) => {
                     <div className={styles.blueBox}></div>
                     <img
                         src="/images/founder.png"
-                        alt="A&A Hospitality Founder"
+                        alt="Shankar Sreekumar, Founder of A&A Hospitality"
                         className={styles.founderImage}
                     />
                 </div>

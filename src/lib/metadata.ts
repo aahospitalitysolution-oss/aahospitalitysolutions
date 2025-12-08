@@ -51,10 +51,14 @@ export function createMetadata(config: MetadataConfig): Metadata {
   const absoluteUrl = getAbsoluteUrl(url);
 
   return {
+    metadataBase: new URL(absoluteUrl),
     title,
     description,
     keywords,
     authors: [{ name: "A&A Hospitality Solutions" }],
+    alternates: {
+      canonical: absoluteUrl,
+    },
     openGraph: {
       title,
       description,

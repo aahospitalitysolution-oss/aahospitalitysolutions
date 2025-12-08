@@ -380,19 +380,19 @@ export const GlobeSection = () => {
                         <span className="text-[10px] md:text-xs font-semibold tracking-widest text-[#7ea8be] uppercase">
                             Regional Impact
                         </span>
-                        <h1 className="text-3xl md:text-5xl font-bold mt-1 leading-tight text-[#f6f0ed]">
+                        <h2 className="text-3xl md:text-5xl font-bold mt-1 leading-tight text-[#f6f0ed]">
                             Pan-Asian<br />Excellence
-                        </h1>
+                        </h2>
                     </div>
 
                     <div id="dynamic-content" className="prose prose-invert max-w-md">
-                        <h2
+                        <h3
                             ref={titleRef}
                             id="country-name"
                             className="text-xl md:text-3xl font-semibold mb-4 md:mb-8 min-h-[1.75rem] md:min-h-[2.5rem] text-[#c2948a]"
                         >
                             Decades of Expertise
-                        </h2>
+                        </h3>
                         <p
                             ref={descRef}
                             id="country-desc"

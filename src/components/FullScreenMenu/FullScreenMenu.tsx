@@ -102,6 +102,13 @@ export const FullScreenMenu = () => {
             >
               Partners
             </Link>
+            <Link
+              href="/blog"
+              onClick={handleLinkClick}
+              className={`${styles.menuItem} ${styles.fancyUnderline} text-3xl md:text-5xl lg:text-6xl`}
+            >
+              Blog
+            </Link>
           </div>
 
           {/* CTA Section */}
