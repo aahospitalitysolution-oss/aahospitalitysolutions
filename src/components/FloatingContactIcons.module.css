@@ -2,8 +2,8 @@
 
 .container {
   position: fixed;
-  bottom: var(--space-6);
-  right: var(--space-6);
+  bottom: calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
+  right: calc(var(--space-6) + env(safe-area-inset-right, 0px));
   z-index: 50;
   display: flex;
   flex-direction: column;
@@ -129,8 +129,8 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .container {
-    bottom: var(--space-4);
-    right: var(--space-4);
+    bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px));
+    right: calc(var(--space-4) + env(safe-area-inset-right, 0px));
     gap: var(--space-3);
   }
 
@@ -152,6 +152,7 @@
 
 /* Accessibility: Reduce motion */
 @media (prefers-reduced-motion: reduce) {
+
   .iconButton,
   .iconBackground,
   .icon,

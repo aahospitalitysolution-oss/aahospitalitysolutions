@@ -5,14 +5,11 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 0; /* Behind the contentWrapper */
+  z-index: 0;
+  /* Behind the contentWrapper */
   overflow: hidden;
   opacity: 0;
-  transition: opacity 0.35s ease;
-}
-
-.isActive {
-  opacity: 1;
+  /* Opacity is now controlled by GSAP for better performance */
 }
 
 .canvas {
@@ -21,9 +18,10 @@
   pointer-events: none;
 }
 
-/* The color requested */
+/* ===== DESKTOP: Full pencil texture effect ===== */
 .sketchStroke {
-  stroke: #c2948a; /* Rosy Taupe */
+  stroke: #c2948a;
+  /* Rosy Taupe */
   stroke-width: 2;
   fill: none;
   stroke-linecap: round;
@@ -32,7 +30,7 @@
 }
 
 .planeFill {
-  fill: var(--charcoal-blue); /* Match the new dark background so it looks filled but integrated */
+  fill: var(--charcoal-blue);
   stroke: #c2948a;
   stroke-width: 2;
   stroke-linejoin: round;
@@ -51,3 +49,33 @@
   opacity: 0.8;
 }
 
+/* ===== MOBILE: Lightweight filter for performance ===== */
+/* Uses a simple blur instead of feTurbulence + feDisplacementMap */
+.sketchStrokeMobile {
+  stroke: #c2948a;
+  stroke-width: 2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: url(#pencilTextureMobile);
+}
+
+.planeFillMobile {
+  fill: var(--charcoal-blue);
+  stroke: #c2948a;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  filter: url(#pencilTextureMobile);
+}
+
+.dashedPathMobile {
+  stroke: #c2948a;
+  stroke-width: 2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: url(#pencilTextureMobile);
+  stroke-dasharray: 10, 5, 2, 5, 8, 5;
+  opacity: 0.8;
+}

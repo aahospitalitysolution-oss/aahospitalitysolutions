@@ -32,9 +32,7 @@ export const HeroImageContainer = ({
     left: 0,
     zIndex: 0, // Behind text
     transformOrigin: "center center",
-    // Performance optimizations
-    willChange: "transform",
-    // Force GPU acceleration
+    // Force GPU acceleration for 3D transforms
     backfaceVisibility: "hidden",
     WebkitBackfaceVisibility: "hidden",
     // Smooth transition

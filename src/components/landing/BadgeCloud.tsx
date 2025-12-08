@@ -257,52 +257,69 @@ export const BadgeCloud = ({ startAnimation = true }: BadgeCloudProps) => {
         // Add label to mark the start of outro transition
         tl.addLabel("outroTransition");
 
-        // Animate Section Background and Text Color
-        // "flip the color" - transitions background to charcoal-blue and text to parchment
+        // PRE-CALCULATE pixel values to avoid per-frame vw/vh conversions during scrub
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const xOffset = viewportWidth * 0.24; // 24vw in pixels
+        const yOffset = viewportHeight * 0.24; // 24vh in pixels
+
+        const corners = [
+          { x: -xOffset, y: -yOffset, rotation: -15 }, // Top-Left
+          { x: xOffset, y: yOffset, rotation: 10 }     // Bottom-Right
+        ];
+
+        // Prepare badges for animation with will-change hint
+        const badges = q("[data-badge-id]");
+        badges.forEach((badge) => {
+          gsap.set(badge, { willChange: "transform, opacity" });
+        });
+
+        // STAGGERED SEQUENCE for better performance distribution:
+
+        // 1. First: Background color change (0s offset)
         tl.to(section, {
           backgroundColor: "var(--charcoal-blue)",
           color: "var(--parchment)",
-          duration: 2.5, // Increased duration for "more scrolls"
+          duration: 2.5,
           ease: "power2.inOut"
         }, "outroTransition");
 
-        // FADE OUT TEXT: Immediately fade out surrounding text
+        // 2. Second: Text fadeout (0.1s offset)
         tl.to(q("[data-text-id]"), {
           opacity: 0,
-          duration: 0.2,
+          duration: 0.3,
           ease: "power1.out"
-        }, "outroTransition");
+        }, "outroTransition+=0.1");
 
-        // SCATTER BADGES: Move badges to corners without changing visual style
-        // Specific corner targets for each badge (0-3)
-        // Reduced values to ensure they are visible (stick out just a bit, not gone)
-        // Previous was 45vw/40vh which pushed them too far.
-        // Trying smaller values to keep them "in view" but at edges.
-        const corners = [
-          { x: "-24vw", y: "-24vh", rotation: -15 }, // Top-Left
-          { x: "24vw", y: "24vh", rotation: 10 }     // Bottom-Right
-        ];
-
-        q("[data-badge-id]").forEach((badge, i) => {
+        // 3. Third: Badge scattering (0.2s offset) - now with pixel values
+        badges.forEach((badge, i) => {
           if (!corners[i]) return;
 
           tl.to(badge, {
             x: corners[i].x,
             y: corners[i].y,
             rotation: corners[i].rotation,
-            pointerEvents: "none", // Disable interaction/hover
+            pointerEvents: "none",
             duration: 2.5,
             ease: "power2.inOut"
-          }, "outroTransition");
+          }, "outroTransition+=0.2");
         });
 
+        // 4. Fourth: Outro text fade-in (0.5s offset)
         tl.to(q("[data-outro-text]"), {
           opacity: 1,
-          color: "var(--parchment)", // Ensure text becomes light
+          color: "var(--parchment)",
           pointerEvents: "auto",
-          duration: 3.0, // Significantly increased duration
+          duration: 3.0,
           ease: "power2.out"
         }, "outroTransition+=0.5");
+
+        // 5. Remove will-change hints after animation completes to free GPU memory
+        tl.call(() => {
+          badges.forEach((badge) => {
+            gsap.set(badge, { willChange: "auto" });
+          });
+        }, [], ">");
 
         // Hold at end
         tl.to({}, { duration: 2.5 });

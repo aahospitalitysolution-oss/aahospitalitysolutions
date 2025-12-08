@@ -262,8 +262,10 @@ html.is-loading .counter {
   top: 0;
   left: 0;
   width: 100%;
-  height: var(--space-20);
-  padding: var(--space-6);
+  height: calc(var(--space-20) + env(safe-area-inset-top, 0px));
+  padding: calc(var(--space-6) + env(safe-area-inset-top, 0px)) var(--space-6) var(--space-6);
+  padding-left: calc(var(--space-6) + env(safe-area-inset-left, 0px));
+  padding-right: calc(var(--space-6) + env(safe-area-inset-right, 0px));
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -348,7 +350,7 @@ html.is-loading .counter {
 
 /* Text Reveal Demo Section */
 .text-reveal-section {
-  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   align-items: center;
   justify-content: center;

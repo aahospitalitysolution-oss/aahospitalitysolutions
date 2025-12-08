@@ -8,7 +8,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: var(--space-6);
+  padding: calc(var(--space-6) + env(safe-area-inset-top, 0px)) calc(var(--space-6) + env(safe-area-inset-right, 0px)) calc(var(--space-6) + env(safe-area-inset-bottom, 0px)) calc(var(--space-6) + env(safe-area-inset-left, 0px));
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.5s ease, visibility 0.5s ease;
@@ -23,7 +23,8 @@
 
 .menuItem {
   font-family: var(--font-serif);
-  color: rgba(246, 240, 237, 0.9); /* parchment with opacity */
+  color: rgba(246, 240, 237, 0.9);
+  /* parchment with opacity */
   text-decoration: none;
   transition: transform 0.3s ease, color 0.3s ease;
   position: relative;
@@ -57,16 +58,27 @@
 }
 
 /* Staggered animation delays for entry */
-.open .menuContent > * {
+.open .menuContent>* {
   animation: slideUpFade 0.6s ease forwards;
   opacity: 0;
   transform: translateY(20px);
 }
 
-.open .menuContent > *:nth-child(1) { animation-delay: 0.1s; }
-.open .menuContent > *:nth-child(2) { animation-delay: 0.2s; }
-.open .menuContent > *:nth-child(3) { animation-delay: 0.3s; }
-.open .menuContent > *:nth-child(4) { animation-delay: 0.4s; }
+.open .menuContent>*:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.open .menuContent>*:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.open .menuContent>*:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.open .menuContent>*:nth-child(4) {
+  animation-delay: 0.4s;
+}
 
 @keyframes slideUpFade {
   to {
@@ -74,8 +86,3 @@
     transform: translateY(0);
   }
 }
-
-
-
-
-

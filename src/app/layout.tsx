@@ -48,6 +48,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   themeColor: "#28536b",
+  viewportFit: "cover", // Required for env(safe-area-inset-*) to work on notched iOS devices
 };
 
 export default function RootLayout({

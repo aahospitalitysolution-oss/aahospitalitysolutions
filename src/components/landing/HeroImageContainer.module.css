@@ -5,8 +5,7 @@
   overflow: hidden;
   /* No transitions - controlled by GSAP via inline styles */
   transition: none;
-  /* Performance optimization */
-  will-change: transform;
+  /* will-change removed - GSAP handles GPU hints dynamically */
   /* Ensure proper stacking */
   z-index: 1;
   position: relative;

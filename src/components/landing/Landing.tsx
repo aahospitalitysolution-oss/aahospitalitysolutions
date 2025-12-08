@@ -16,7 +16,7 @@ import { getLenisConfig, getScrollTriggerConfig } from "@/utils/scrollConfig";
 
 const Globe = dynamic(() => import("./Globe").then((mod) => mod.GlobeSection), {
   ssr: false,
-  loading: () => <div style={{ minHeight: "100vh" }} />,
+  loading: () => <div style={{ minHeight: "100svh" }} />,
 });
 
 type GSAPStatic = any;
@@ -51,6 +51,18 @@ export const Landing = ({ navRef }: LandingProps) => {
 
   const isAadityaAnimating = useRef(false);
   const isAaryahiAnimating = useRef(false);
+
+  // Performance: Cache previous values to skip redundant gsap.set() calls
+  const prevValuesRef = useRef({
+    containerScale: -1,
+    overlayOpacity: -1,
+    containerY: -1,
+    containerTop: -1,
+    buttonOpacity: -1,
+    navOpacity: -1,
+    textColorTransition: -1,
+    lastPhase: "" as "resize" | "timeline" | "",
+  });
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -97,6 +109,11 @@ export const Landing = ({ navRef }: LandingProps) => {
       const isMobile = isMobileDevice();
       const lenisConfig = getLenisConfig(isMobile);
       const scrollTriggerConfig = getScrollTriggerConfig(isMobile);
+
+      // Apply global ScrollTrigger configuration for mobile (prevents jumps from iOS dynamic bars)
+      if (scrollTriggerConfig.ignoreMobileResize) {
+        ScrollTrigger.config({ ignoreMobileResize: true });
+      }
 
       // Prevent the "reach out" button from being revealed by usePageTransition
       // because on the home page it should start hidden (behind the hero section)
@@ -255,16 +272,33 @@ export const Landing = ({ navRef }: LandingProps) => {
               const overlayOpacity = resizeProgress * 0.65;
               const textOffset = 180;
               const currentY = textOffset * (1 - resizeProgress);
-              const isMobile = window.innerWidth <= 768;
-              const startTop = isMobile ? 25 : 12; // Start lower on mobile
+              // Use cached mobile check instead of reading window.innerWidth every frame
+              const startTop = isMobile ? 25 : 12;
               const currentTop = (1 - resizeProgress) * startTop;
 
-              gsap.set(heroContainerRef.current, {
-                "--container-scale": scale,
-                "--overlay-opacity": overlayOpacity,
-                "--container-y": `${currentY}px`,
-                top: `${currentTop}vh`,
-              });
+              // OPTIMIZATION: Only update if values changed significantly (threshold: 0.001)
+              const prev = prevValuesRef.current;
+              const threshold = 0.001;
+
+              if (
+                Math.abs(prev.containerScale - scale) > threshold ||
+                Math.abs(prev.overlayOpacity - overlayOpacity) > threshold ||
+                Math.abs(prev.containerY - currentY) > threshold ||
+                Math.abs(prev.containerTop - currentTop) > threshold ||
+                prev.lastPhase !== "resize"
+              ) {
+                gsap.set(heroContainerRef.current, {
+                  "--container-scale": scale,
+                  "--overlay-opacity": overlayOpacity,
+                  "--container-y": `${currentY}px`,
+                  top: `${currentTop}vh`,
+                });
+                prev.containerScale = scale;
+                prev.overlayOpacity = overlayOpacity;
+                prev.containerY = currentY;
+                prev.containerTop = currentTop;
+                prev.lastPhase = "resize";
+              }
             }
 
             const buttonWrapper = heroRef.current?.querySelector(
@@ -274,24 +308,32 @@ export const Landing = ({ navRef }: LandingProps) => {
               "[data-reach-out-button]"
             );
 
-            if (buttonWrapper) {
+            // OPTIMIZATION: Only update buttons if opacity changed
+            const prev = prevValuesRef.current;
+            const buttonOpacity = 1 - resizeProgress;
+            const navOpacity = resizeProgress;
+
+            if (buttonWrapper && Math.abs(prev.buttonOpacity - buttonOpacity) > 0.01) {
               gsap.set(buttonWrapper, {
-                opacity: 1 - resizeProgress,
+                opacity: buttonOpacity,
                 pointerEvents: resizeProgress > 0.5 ? "none" : "auto",
               });
+              prev.buttonOpacity = buttonOpacity;
             }
-            if (navButtons) {
+            if (navButtons && Math.abs(prev.navOpacity - navOpacity) > 0.01) {
               gsap.set(navButtons, {
-                opacity: resizeProgress,
+                opacity: navOpacity,
                 pointerEvents: resizeProgress > 0.5 ? "auto" : "none",
               });
+              prev.navOpacity = navOpacity;
             }
 
             // Transition hero text color from blue to white
-            if (headerRef.current) {
+            if (headerRef.current && Math.abs(prev.textColorTransition - resizeProgress) > 0.01) {
               gsap.set(headerRef.current, {
                 "--hero-text-color-transition": resizeProgress,
               });
+              prev.textColorTransition = resizeProgress;
             }
 
             if (canvasRef.current) canvasRef.current.setFrame(0);
@@ -321,26 +363,37 @@ export const Landing = ({ navRef }: LandingProps) => {
             progressRef.current.timeline = timelineProgress;
             isCompleteRef.current = timelineProgress >= 1;
 
-            if (heroContainerRef.current) {
+            // OPTIMIZATION: Only set container values once when transitioning to timeline phase
+            const prev = prevValuesRef.current;
+            if (heroContainerRef.current && prev.lastPhase !== "timeline") {
               gsap.set(heroContainerRef.current, {
                 "--container-scale": 1,
                 "--overlay-opacity": 0.65,
                 "--container-y": "0px",
                 top: "0px",
               });
+              prev.lastPhase = "timeline";
+              prev.containerScale = 1;
+              prev.overlayOpacity = 0.65;
+              prev.containerY = 0;
+              prev.containerTop = 0;
             }
 
-            // Force specific visibility states for buttons during timeline
+            // Force specific visibility states for buttons during timeline (once per phase)
             const buttonWrapper = heroRef.current?.querySelector(
               "[data-partner-button]"
             );
             const navButtons = navRef?.current?.querySelector(
               "[data-reach-out-button]"
             );
-            if (buttonWrapper)
+            if (buttonWrapper && prev.buttonOpacity !== 0) {
               gsap.set(buttonWrapper, { opacity: 0, pointerEvents: "none" });
-            if (navButtons)
+              prev.buttonOpacity = 0;
+            }
+            if (navButtons && prev.navOpacity !== 1) {
               gsap.set(navButtons, { opacity: 1, pointerEvents: "auto" });
+              prev.navOpacity = 1;
+            }
 
             const targetFrame = Math.round(timelineProgress * (frameCount - 1));
 

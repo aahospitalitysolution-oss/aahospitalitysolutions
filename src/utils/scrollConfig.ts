@@ -47,6 +47,8 @@ export interface ScrollTriggerConfig {
   pinSpacing: boolean;
   /** Refresh order priority */
   refreshPriority: number;
+  /** Ignore mobile resize events (prevents jumps from iOS dynamic bars) */
+  ignoreMobileResize?: boolean;
 }
 
 /**
@@ -140,6 +142,7 @@ export const SCROLL_TRIGGER_CONFIG: ScrollTriggerConfig = {
   anticipatePin: 1,
   pinSpacing: true,
   refreshPriority: 0,
+  ignoreMobileResize: false,
 };
 
 /**
@@ -147,12 +150,14 @@ export const SCROLL_TRIGGER_CONFIG: ScrollTriggerConfig = {
  * 
  * Reduced scrub for snappier mobile response:
  * - Scrub Value: 0.5 (reduced from 1.0 to minimize interpolation)
+ * - ignoreMobileResize: true (prevents jumps when iOS dynamic bars appear/disappear)
  */
 export const SCROLL_TRIGGER_CONFIG_MOBILE: ScrollTriggerConfig = {
   scrubValue: 0.5,
   anticipatePin: 1,
   pinSpacing: true,
   refreshPriority: 0,
+  ignoreMobileResize: true, // Critical: prevents viewport jump recalculations on iOS
 };
 
 /**

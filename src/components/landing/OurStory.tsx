@@ -55,16 +55,17 @@ export const OurStory = ({ startAnimation = false }: OurStoryProps) => {
                         "-=0.8"
                     );
 
-                // Signature Animation
+                // Signature Animation - Use GPU-accelerated scaleX instead of clipPath
                 if (signature && founderDetails) {
-                    // Reset signature wipe
+                    // Reset signature wipe - use scaleX for better performance than clipPath
                     gsap.set(signature, {
-                        clipPath: "inset(0 100% 0 0)",
+                        scaleX: 0,
+                        transformOrigin: "left center",
                         opacity: 1
                     });
 
                     tl.to(signature, {
-                        clipPath: "inset(0 0% 0 0)",
+                        scaleX: 1,
                         duration: 2,
                         ease: "power2.inOut"
                     }, "-=0.5")

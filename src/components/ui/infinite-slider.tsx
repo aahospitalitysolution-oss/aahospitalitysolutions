@@ -1,7 +1,7 @@
 'use client';
 import { cn } from '@/lib/utils';
 import { useMotionValue, animate, motion } from 'motion/react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import useMeasure from 'react-use-measure';
 
 export type InfiniteSliderProps = {
@@ -29,16 +29,37 @@ export function InfiniteSlider({
     const [isTransitioning, setIsTransitioning] = useState(false);
     const [key, setKey] = useState(0);
     const [isMounted, setIsMounted] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     // Fix hydration by ensuring component only animates after mount
     useEffect(() => {
         setIsMounted(true);
     }, []);
 
+    // PERFORMANCE: Use Intersection Observer to pause animation when off-screen
     useEffect(() => {
-        if (!isMounted) return;
+        if (!isMounted || !containerRef.current) return;
 
-        let controls;
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    setIsVisible(entry.isIntersecting);
+                });
+            },
+            { threshold: 0, rootMargin: '50px' } // Start animating slightly before visible
+        );
+
+        observer.observe(containerRef.current);
+
+        return () => observer.disconnect();
+    }, [isMounted]);
+
+    useEffect(() => {
+        // Don't animate if not visible or not mounted
+        if (!isMounted || !isVisible) return;
+
+        let controls: ReturnType<typeof animate> | undefined;
         const size = direction === 'horizontal' ? width : height;
         const contentSize = size + gap;
         const from = reverse ? -contentSize / 2 : 0;
@@ -75,6 +96,7 @@ export function InfiniteSlider({
         return controls?.stop;
     }, [
         isMounted,
+        isVisible, // Added dependency
         key,
         translation,
         currentSpeed,
@@ -102,7 +124,7 @@ export function InfiniteSlider({
     // Render static version during SSR to prevent hydration mismatch
     if (!isMounted) {
         return (
-            <div className={cn('overflow-hidden', className)}>
+            <div ref={containerRef} className={cn('overflow-hidden', className)}>
                 <div
                     className='flex w-max'
                     style={{
@@ -118,7 +140,7 @@ export function InfiniteSlider({
     }
 
     return (
-        <div className={cn('overflow-hidden', className)}>
+        <div ref={containerRef} className={cn('overflow-hidden', className)}>
             <motion.div
                 className='flex w-max'
                 style={{

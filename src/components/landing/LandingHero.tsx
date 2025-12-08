@@ -66,7 +66,7 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
         className={styles.hero}
         backgroundColor="transparent"
         textColor="var(--parchment)"
-        height="100vh"
+        height="100svh"
       >
         <div className="reveal container-reveal-wrapper" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
           <HeroImageContainer

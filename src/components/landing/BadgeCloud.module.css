@@ -1,6 +1,6 @@
 .badgeCloudSection {
   position: relative;
-  min-height: 100vh;
+  min-height: 100svh;
   width: 100%;
   border-top: 1px solid rgba(40, 83, 107, 0.1);
   border-bottom: 1px solid rgba(40, 83, 107, 0.1);
@@ -52,7 +52,9 @@
   position: relative;
   top: -0.1em;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  /* REMOVED transition for transform - GSAP handles this to avoid conflict */
+  /* Hover transitions are CSS-only since GSAP doesn't animate during hover */
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   -webkit-appearance: none;
   appearance: none;
 }
@@ -132,7 +134,9 @@
   color: var(--parchment);
   transform: scale(0);
   transform-origin: center;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  /* REMOVED transition for transform/scale - GSAP handles this */
+  /* Only keep color transitions for hover states (not animated by GSAP) */
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .rosy .iconCircle {

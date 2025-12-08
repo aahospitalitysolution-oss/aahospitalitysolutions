@@ -21,7 +21,7 @@ export const MorphSection = forwardRef<HTMLElement, MorphSectionProps>(({
   className = '',
   backgroundColor = 'var(--charcoal-blue)',
   textColor = 'var(--parchment)',
-  height = '100vh',
+  height = '100svh',
   style = {},
   id
 }, ref) => {

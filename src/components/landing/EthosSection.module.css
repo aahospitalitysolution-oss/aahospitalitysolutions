@@ -28,7 +28,7 @@
   height: 80%;
   color: var(--rosy-taupe);
   opacity: 0;
-  transition: opacity 0.5s ease;
+  /* Transition removed - GSAP handles opacity animation */
 }
 
 .container {
@@ -81,7 +81,8 @@
   max-width: 600px;
   margin: 0 auto;
   border-radius: 0 var(--space-2) var(--space-2) 0;
-  transition: all 0.5s ease;
+  /* GSAP handles x, opacity, borderColor - only keep non-GSAP transitions */
+  transition: border-color 0.5s ease;
 }
 
 .textBlockRight {
