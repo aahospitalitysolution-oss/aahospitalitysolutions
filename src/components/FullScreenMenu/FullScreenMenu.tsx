@@ -41,7 +41,12 @@ export const FullScreenMenu = () => {
       aria-hidden={!isMenuOpen}
     >
       {/* Language Switcher */}
-      <div className="absolute top-8 left-8 z-20 flex gap-4 text-xs font-medium tracking-widest">
+      <div
+        className="absolute left-8 z-20 flex gap-4 text-xs font-medium tracking-widest"
+        style={{
+          top: "calc(1.5rem + env(safe-area-inset-top, 0px))",
+        }}
+      >
         <a href="#" className="text-white font-semibold border-b border-white">
           ENGLISH
         </a>
