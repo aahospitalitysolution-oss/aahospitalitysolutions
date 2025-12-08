@@ -7,8 +7,31 @@
 
 // Cache detection results to avoid repeated calculations
 let _isMobile: boolean | null = null;
+let _isIOS: boolean | null = null;
 let _isLowPowerDevice: boolean | null = null;
 let _prefersReducedMotion: boolean | null = null;
+
+/**
+ * Detects if the current device is running iOS (iPhone, iPad, iPod).
+ * iOS has native smooth scrolling, so Lenis adds unnecessary overhead.
+ * Results are cached for performance.
+ */
+export const isIOSDevice = (): boolean => {
+    if (typeof window === 'undefined') return false;
+
+    if (_isIOS === null) {
+        const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+        // Check for iOS devices
+        _isIOS = /iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream;
+
+        // Also check for iPad on iOS 13+ (reports as Mac)
+        if (!_isIOS && navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) {
+            _isIOS = true;
+        }
+    }
+
+    return _isIOS;
+};
 
 /**
  * Detects if the current device is mobile based on screen size and touch capability.
@@ -75,6 +98,7 @@ export const prefersReducedMotion = (refresh = false): boolean => {
  */
 export const resetDeviceCache = (): void => {
     _isMobile = null;
+    _isIOS = null;
     _isLowPowerDevice = null;
     _prefersReducedMotion = null;
 };
@@ -190,4 +214,86 @@ export const createThrottledRAF = (callback: (time: number) => void, throttleMs:
         },
         isRunning: () => isRunning,
     };
+};
+
+/**
+ * OPTIMIZATION G: Frame Pressure Monitor
+ * Detects when frames are being dropped and triggers quality reduction
+ */
+export interface FramePressureMonitorOptions {
+    /** Threshold in ms above which a frame is considered "dropped" (default: 20ms = ~50fps) */
+    dropThreshold?: number;
+    /** Number of consecutive dropped frames before triggering low power mode (default: 5) */
+    consecutiveDropsThreshold?: number;
+    /** Callback when device enters low power mode */
+    onLowPowerMode?: () => void;
+    /** Callback when device exits low power mode */
+    onNormalMode?: () => void;
+}
+
+export const createFramePressureMonitor = (options: FramePressureMonitorOptions = {}) => {
+    const {
+        dropThreshold = 20, // ~50fps
+        consecutiveDropsThreshold = 5,
+        onLowPowerMode,
+        onNormalMode,
+    } = options;
+
+    let lastFrameTime = 0;
+    let consecutiveDrops = 0;
+    let isLowPowerMode = false;
+    let normalFrameCount = 0;
+
+    /**
+     * Call this at the start of each scroll frame to monitor performance
+     * Returns true if in low power mode
+     */
+    const tick = (): boolean => {
+        if (typeof performance === 'undefined') return isLowPowerMode;
+
+        const now = performance.now();
+
+        if (lastFrameTime > 0) {
+            const delta = now - lastFrameTime;
+
+            if (delta > dropThreshold) {
+                // Frame took too long
+                consecutiveDrops++;
+                normalFrameCount = 0;
+
+                if (!isLowPowerMode && consecutiveDrops >= consecutiveDropsThreshold) {
+                    isLowPowerMode = true;
+                    onLowPowerMode?.();
+                }
+            } else {
+                // Good frame
+                normalFrameCount++;
+
+                // Need 30 good frames in a row to exit low power mode
+                if (isLowPowerMode && normalFrameCount >= 30) {
+                    isLowPowerMode = false;
+                    consecutiveDrops = 0;
+                    onNormalMode?.();
+                }
+            }
+        }
+
+        lastFrameTime = now;
+        return isLowPowerMode;
+    };
+
+    const reset = () => {
+        lastFrameTime = 0;
+        consecutiveDrops = 0;
+        normalFrameCount = 0;
+        isLowPowerMode = false;
+    };
+
+    const getStatus = () => ({
+        isLowPowerMode,
+        consecutiveDrops,
+        normalFrameCount,
+    });
+
+    return { tick, reset, getStatus, isLowPower: () => isLowPowerMode };
 };

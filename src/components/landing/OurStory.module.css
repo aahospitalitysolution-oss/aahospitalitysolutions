@@ -6,6 +6,10 @@
   color: var(--charcoal-blue);
   overflow: hidden;
   z-index: 10;
+  /* OPTIMIZATION L: Skip rendering until section is near viewport */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 800px;
+  /* Estimated height for layout calculations */
 }
 
 .container {

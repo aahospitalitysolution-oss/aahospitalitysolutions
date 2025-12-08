@@ -9,6 +9,9 @@
   background-color: var(--parchment);
   color: var(--charcoal-blue);
   z-index: 20;
+  /* OPTIMIZATION L: Skip rendering until section is near viewport */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 120vh;
 }
 
 .symbolWrapper {

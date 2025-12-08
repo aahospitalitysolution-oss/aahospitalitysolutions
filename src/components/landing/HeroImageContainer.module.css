@@ -5,14 +5,15 @@
   overflow: hidden;
   /* No transitions - controlled by GSAP via inline styles */
   transition: none;
-  /* will-change removed - GSAP handles GPU hints dynamically */
   /* Ensure proper stacking */
   z-index: 1;
   position: relative;
-  /* Transform controlled via CSS variables set by GSAP */
-  /* Scale and Y translation: starts smaller and offset below text, grows to fullscreen */
-  transform: scale(var(--container-scale, 0.5)) translateY(var(--container-y, 180px));
-  top: 12vh;
+  /* 
+   * OPTIMIZATION F: Initial transform state only
+   * GSAP will apply scale/translateY directly via inline styles
+   * Direct transforms are GPU-accelerated and skip CSS variable parsing
+   */
+  transform-origin: center center;
 }
 
 /* Translucent blue overlay - starts transparent, becomes charcoal blue as canvas expands */
@@ -23,15 +24,11 @@
   width: 100%;
   height: 100%;
   background-color: var(--charcoal-blue);
-  /* Opacity controlled via CSS variable set by GSAP */
-  /* Default 0 = no overlay initially, increases to 0.4 as canvas becomes fullscreen */
-  opacity: var(--overlay-opacity, 0);
+  /* OPTIMIZATION F: GSAP controls opacity directly via inline styles */
+  opacity: 0;
   pointer-events: none;
   z-index: 1;
-  /* Use brand color with opacity for translucency */
   mix-blend-mode: normal;
-  /* Performance optimization */
-  will-change: opacity;
 }
 
 /* Mobile responsive breakpoint */

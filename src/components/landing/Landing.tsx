@@ -11,7 +11,7 @@ import { BadgeCloud } from "./BadgeCloud";
 import { EthosSection } from "./EthosSection";
 import PartnersSection from "./PartnersSection";
 import dynamic from "next/dynamic";
-import { isMobileDevice } from "@/utils/deviceUtils";
+import { isMobileDevice, isIOSDevice } from "@/utils/deviceUtils";
 import { getLenisConfig, getScrollTriggerConfig } from "@/utils/scrollConfig";
 
 const Globe = dynamic(() => import("./Globe").then((mod) => mod.GlobeSection), {
@@ -105,15 +105,16 @@ export const Landing = ({ navRef }: LandingProps) => {
 
       gsap.registerPlugin(ScrollTrigger);
 
-      // Detect mobile for performance optimizations
+      // Detect device type for performance optimizations
       const isMobile = isMobileDevice();
+      const isIOS = isIOSDevice();
       const lenisConfig = getLenisConfig(isMobile);
       const scrollTriggerConfig = getScrollTriggerConfig(isMobile);
 
-      // Apply global ScrollTrigger configuration for mobile (prevents jumps from iOS dynamic bars)
-      if (scrollTriggerConfig.ignoreMobileResize) {
-        ScrollTrigger.config({ ignoreMobileResize: true });
-      }
+      // Apply global ScrollTrigger configuration for all devices
+      // This prevents unnecessary recalculations during viewport changes
+      // Desktop browsers rarely resize during scroll, so this is safe
+      ScrollTrigger.config({ ignoreMobileResize: true });
 
       // Prevent the "reach out" button from being revealed by usePageTransition
       // because on the home page it should start hidden (behind the hero section)
@@ -125,32 +126,67 @@ export const Landing = ({ navRef }: LandingProps) => {
         gsap.set(navButtons, { opacity: 0, pointerEvents: "none" });
       }
 
-      // Use device-optimized Lenis configuration
-      const lenis = new Lenis({
-        duration: lenisConfig.duration,
-        easing: lenisConfig.easing,
-        orientation: lenisConfig.orientation,
-        gestureOrientation: lenisConfig.gestureOrientation,
-        smoothWheel: lenisConfig.smoothWheel,
-        wheelMultiplier: lenisConfig.wheelMultiplier,
-        smoothTouch: lenisConfig.smoothTouch, // Critical: always false on mobile
-        touchMultiplier: lenisConfig.touchMultiplier,
-        infinite: lenisConfig.infinite,
-      });
+      // OPTIMIZATION C: Skip Lenis on iOS - native iOS scroll is already smooth
+      // Lenis adds unnecessary overhead and can conflict with iOS momentum scrolling
+      if (!isIOS) {
+        const lenis = new Lenis({
+          duration: lenisConfig.duration,
+          easing: lenisConfig.easing,
+          orientation: lenisConfig.orientation,
+          gestureOrientation: lenisConfig.gestureOrientation,
+          smoothWheel: lenisConfig.smoothWheel,
+          wheelMultiplier: lenisConfig.wheelMultiplier,
+          smoothTouch: lenisConfig.smoothTouch,
+          touchMultiplier: lenisConfig.touchMultiplier,
+          infinite: lenisConfig.infinite,
+        });
 
-      lenisRef.current = lenis;
+        lenisRef.current = lenis;
+        lenis.on("scroll", ScrollTrigger.update);
 
-      lenis.on("scroll", ScrollTrigger.update);
-
-      gsap.ticker.add((time: number) => {
-        lenis.raf(time * 1000);
-      });
+        gsap.ticker.add((time: number) => {
+          lenis.raf(time * 1000);
+        });
+      }
 
       gsap.ticker.lagSmoothing(0);
 
       const frameCount = 385;
       const totalScrollDistance = window.innerHeight * 8;
       const resizePhaseEnd = window.innerHeight;
+
+      // OPTIMIZATION D: Create quickSetters for high-frequency scroll updates
+      // quickSetter is significantly faster than gsap.set() for per-frame updates
+      const buttonWrapper = heroRef.current?.querySelector(
+        "[data-partner-button]"
+      ) as HTMLElement | null;
+      const navButtonsEl = navRef?.current?.querySelector(
+        "[data-reach-out-button]"
+      ) as HTMLElement | null;
+
+      // QuickSetters for button opacity (used every frame during resize phase)
+      const setButtonOpacity = buttonWrapper
+        ? gsap.quickSetter(buttonWrapper, "opacity")
+        : null;
+      const setNavOpacity = navButtonsEl
+        ? gsap.quickSetter(navButtonsEl, "opacity")
+        : null;
+
+      // OPTIMIZATION F: QuickSetters for hero container - direct transforms instead of CSS variables
+      // This is significantly faster because it bypasses CSS variable parsing and style recalculation
+      const overlayEl = heroContainerRef.current?.querySelector(
+        "[data-hero-overlay]"
+      ) as HTMLElement | null;
+
+      const setContainerScale = heroContainerRef.current
+        ? gsap.quickSetter(heroContainerRef.current, "scale")
+        : null;
+      const setContainerY = heroContainerRef.current
+        ? gsap.quickSetter(heroContainerRef.current, "y")
+        : null;
+      const setOverlayOpacity = overlayEl
+        ? gsap.quickSetter(overlayEl, "opacity")
+        : null;
 
       // Optimized animation function: removed inner object creation
       const animateZoomBlock = (
@@ -250,13 +286,41 @@ export const Landing = ({ navRef }: LandingProps) => {
         }
       };
 
+      // OPTIMIZATION B: Strategic will-change management
+      // Enable GPU layers when entering scroll animation, disable when leaving
+      const enableWillChange = () => {
+        if (heroContainerRef.current) {
+          heroContainerRef.current.style.willChange = 'transform, opacity';
+        }
+        [headerRef, aadityaRef, aaryahiRef, togetherRef, textBlock4Ref].forEach(ref => {
+          if (ref.current) {
+            ref.current.style.willChange = 'transform, opacity';
+          }
+        });
+      };
+
+      const disableWillChange = () => {
+        if (heroContainerRef.current) {
+          heroContainerRef.current.style.willChange = 'auto';
+        }
+        [headerRef, aadityaRef, aaryahiRef, togetherRef, textBlock4Ref].forEach(ref => {
+          if (ref.current) {
+            ref.current.style.willChange = 'auto';
+          }
+        });
+      };
+
       const trigger = ScrollTrigger.create({
         trigger: heroRef.current,
         start: "top top",
         end: `+=${totalScrollDistance}px`,
         pin: true,
         pinSpacing: true,
-        scrub: scrollTriggerConfig.scrubValue, // Device-optimized scrub value
+        scrub: scrollTriggerConfig.scrubValue,
+        onEnter: enableWillChange,
+        onEnterBack: enableWillChange,
+        onLeave: disableWillChange,
+        onLeaveBack: disableWillChange,
         onUpdate: (self: any) => {
           const scrolled = self.progress * totalScrollDistance;
 
@@ -272,11 +336,10 @@ export const Landing = ({ navRef }: LandingProps) => {
               const overlayOpacity = resizeProgress * 0.65;
               const textOffset = 180;
               const currentY = textOffset * (1 - resizeProgress);
-              // Use cached mobile check instead of reading window.innerWidth every frame
               const startTop = isMobile ? 25 : 12;
               const currentTop = (1 - resizeProgress) * startTop;
 
-              // OPTIMIZATION: Only update if values changed significantly (threshold: 0.001)
+              // OPTIMIZATION F: Use quickSetters for direct transforms (no CSS variable overhead)
               const prev = prevValuesRef.current;
               const threshold = 0.001;
 
@@ -287,12 +350,13 @@ export const Landing = ({ navRef }: LandingProps) => {
                 Math.abs(prev.containerTop - currentTop) > threshold ||
                 prev.lastPhase !== "resize"
               ) {
-                gsap.set(heroContainerRef.current, {
-                  "--container-scale": scale,
-                  "--overlay-opacity": overlayOpacity,
-                  "--container-y": `${currentY}px`,
-                  top: `${currentTop}vh`,
-                });
+                // Direct quickSetter calls - much faster than gsap.set with CSS variables
+                if (setContainerScale) setContainerScale(scale);
+                if (setContainerY) setContainerY(currentY);
+                if (setOverlayOpacity) setOverlayOpacity(overlayOpacity);
+                // Top still needs to be set via style (vh units)
+                heroContainerRef.current.style.top = `${currentTop}vh`;
+
                 prev.containerScale = scale;
                 prev.overlayOpacity = overlayOpacity;
                 prev.containerY = currentY;
@@ -301,30 +365,24 @@ export const Landing = ({ navRef }: LandingProps) => {
               }
             }
 
-            const buttonWrapper = heroRef.current?.querySelector(
-              "[data-partner-button]"
-            );
-            const navButtons = navRef?.current?.querySelector(
-              "[data-reach-out-button]"
-            );
-
-            // OPTIMIZATION: Only update buttons if opacity changed
+            // OPTIMIZATION D: Use quickSetters for high-frequency opacity updates
             const prev = prevValuesRef.current;
             const buttonOpacity = 1 - resizeProgress;
             const navOpacity = resizeProgress;
 
-            if (buttonWrapper && Math.abs(prev.buttonOpacity - buttonOpacity) > 0.01) {
-              gsap.set(buttonWrapper, {
-                opacity: buttonOpacity,
-                pointerEvents: resizeProgress > 0.5 ? "none" : "auto",
-              });
+            if (setButtonOpacity && Math.abs(prev.buttonOpacity - buttonOpacity) > 0.01) {
+              setButtonOpacity(buttonOpacity);
+              // Update pointer events less frequently (only at threshold)
+              if (buttonWrapper) {
+                buttonWrapper.style.pointerEvents = resizeProgress > 0.5 ? "none" : "auto";
+              }
               prev.buttonOpacity = buttonOpacity;
             }
-            if (navButtons && Math.abs(prev.navOpacity - navOpacity) > 0.01) {
-              gsap.set(navButtons, {
-                opacity: navOpacity,
-                pointerEvents: resizeProgress > 0.5 ? "auto" : "none",
-              });
+            if (setNavOpacity && Math.abs(prev.navOpacity - navOpacity) > 0.01) {
+              setNavOpacity(navOpacity);
+              if (navButtonsEl) {
+                navButtonsEl.style.pointerEvents = resizeProgress > 0.5 ? "auto" : "none";
+              }
               prev.navOpacity = navOpacity;
             }
 
@@ -363,15 +421,14 @@ export const Landing = ({ navRef }: LandingProps) => {
             progressRef.current.timeline = timelineProgress;
             isCompleteRef.current = timelineProgress >= 1;
 
-            // OPTIMIZATION: Only set container values once when transitioning to timeline phase
+            // OPTIMIZATION F: Set container final values with quickSetters
             const prev = prevValuesRef.current;
             if (heroContainerRef.current && prev.lastPhase !== "timeline") {
-              gsap.set(heroContainerRef.current, {
-                "--container-scale": 1,
-                "--overlay-opacity": 0.65,
-                "--container-y": "0px",
-                top: "0px",
-              });
+              if (setContainerScale) setContainerScale(1);
+              if (setContainerY) setContainerY(0);
+              if (setOverlayOpacity) setOverlayOpacity(0.65);
+              heroContainerRef.current.style.top = "0px";
+
               prev.lastPhase = "timeline";
               prev.containerScale = 1;
               prev.overlayOpacity = 0.65;
@@ -380,18 +437,14 @@ export const Landing = ({ navRef }: LandingProps) => {
             }
 
             // Force specific visibility states for buttons during timeline (once per phase)
-            const buttonWrapper = heroRef.current?.querySelector(
-              "[data-partner-button]"
-            );
-            const navButtons = navRef?.current?.querySelector(
-              "[data-reach-out-button]"
-            );
-            if (buttonWrapper && prev.buttonOpacity !== 0) {
-              gsap.set(buttonWrapper, { opacity: 0, pointerEvents: "none" });
+            if (setButtonOpacity && prev.buttonOpacity !== 0) {
+              setButtonOpacity(0);
+              if (buttonWrapper) buttonWrapper.style.pointerEvents = "none";
               prev.buttonOpacity = 0;
             }
-            if (navButtons && prev.navOpacity !== 1) {
-              gsap.set(navButtons, { opacity: 1, pointerEvents: "auto" });
+            if (setNavOpacity && prev.navOpacity !== 1) {
+              setNavOpacity(1);
+              if (navButtonsEl) navButtonsEl.style.pointerEvents = "auto";
               prev.navOpacity = 1;
             }
 
