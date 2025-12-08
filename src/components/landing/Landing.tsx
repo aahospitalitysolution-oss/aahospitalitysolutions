@@ -111,10 +111,10 @@ export const Landing = ({ navRef }: LandingProps) => {
       const lenisConfig = getLenisConfig(isMobile);
       const scrollTriggerConfig = getScrollTriggerConfig(isMobile);
 
-      // Apply global ScrollTrigger configuration for all devices
-      // This prevents unnecessary recalculations during viewport changes
-      // Desktop browsers rarely resize during scroll, so this is safe
-      ScrollTrigger.config({ ignoreMobileResize: true });
+      // Apply global ScrollTrigger configuration for mobile (prevents jumps from iOS dynamic bars)
+      if (scrollTriggerConfig.ignoreMobileResize) {
+        ScrollTrigger.config({ ignoreMobileResize: true });
+      }
 
       // Prevent the "reach out" button from being revealed by usePageTransition
       // because on the home page it should start hidden (behind the hero section)
@@ -170,22 +170,6 @@ export const Landing = ({ navRef }: LandingProps) => {
         : null;
       const setNavOpacity = navButtonsEl
         ? gsap.quickSetter(navButtonsEl, "opacity")
-        : null;
-
-      // OPTIMIZATION F: QuickSetters for hero container - direct transforms instead of CSS variables
-      // This is significantly faster because it bypasses CSS variable parsing and style recalculation
-      const overlayEl = heroContainerRef.current?.querySelector(
-        "[data-hero-overlay]"
-      ) as HTMLElement | null;
-
-      const setContainerScale = heroContainerRef.current
-        ? gsap.quickSetter(heroContainerRef.current, "scale")
-        : null;
-      const setContainerY = heroContainerRef.current
-        ? gsap.quickSetter(heroContainerRef.current, "y")
-        : null;
-      const setOverlayOpacity = overlayEl
-        ? gsap.quickSetter(overlayEl, "opacity")
         : null;
 
       // Optimized animation function: removed inner object creation
@@ -336,10 +320,11 @@ export const Landing = ({ navRef }: LandingProps) => {
               const overlayOpacity = resizeProgress * 0.65;
               const textOffset = 180;
               const currentY = textOffset * (1 - resizeProgress);
+              // Use cached mobile check instead of reading window.innerWidth every frame
               const startTop = isMobile ? 25 : 12;
               const currentTop = (1 - resizeProgress) * startTop;
 
-              // OPTIMIZATION F: Use quickSetters for direct transforms (no CSS variable overhead)
+              // OPTIMIZATION: Only update if values changed significantly (threshold: 0.001)
               const prev = prevValuesRef.current;
               const threshold = 0.001;
 
@@ -350,13 +335,12 @@ export const Landing = ({ navRef }: LandingProps) => {
                 Math.abs(prev.containerTop - currentTop) > threshold ||
                 prev.lastPhase !== "resize"
               ) {
-                // Direct quickSetter calls - much faster than gsap.set with CSS variables
-                if (setContainerScale) setContainerScale(scale);
-                if (setContainerY) setContainerY(currentY);
-                if (setOverlayOpacity) setOverlayOpacity(overlayOpacity);
-                // Top still needs to be set via style (vh units)
-                heroContainerRef.current.style.top = `${currentTop}vh`;
-
+                gsap.set(heroContainerRef.current, {
+                  "--container-scale": scale,
+                  "--overlay-opacity": overlayOpacity,
+                  "--container-y": `${currentY}px`,
+                  top: `${currentTop}vh`,
+                });
                 prev.containerScale = scale;
                 prev.overlayOpacity = overlayOpacity;
                 prev.containerY = currentY;
@@ -421,14 +405,15 @@ export const Landing = ({ navRef }: LandingProps) => {
             progressRef.current.timeline = timelineProgress;
             isCompleteRef.current = timelineProgress >= 1;
 
-            // OPTIMIZATION F: Set container final values with quickSetters
+            // OPTIMIZATION: Only set container values once when transitioning to timeline phase
             const prev = prevValuesRef.current;
             if (heroContainerRef.current && prev.lastPhase !== "timeline") {
-              if (setContainerScale) setContainerScale(1);
-              if (setContainerY) setContainerY(0);
-              if (setOverlayOpacity) setOverlayOpacity(0.65);
-              heroContainerRef.current.style.top = "0px";
-
+              gsap.set(heroContainerRef.current, {
+                "--container-scale": 1,
+                "--overlay-opacity": 0.65,
+                "--container-y": "0px",
+                top: "0px",
+              });
               prev.lastPhase = "timeline";
               prev.containerScale = 1;
               prev.overlayOpacity = 0.65;

@@ -13,9 +13,7 @@
   overflow: hidden;
   margin-top: -15vh;
   padding-bottom: var(--section-padding-y);
-  /* OPTIMIZATION L: Skip rendering until section is near viewport */
-  content-visibility: auto;
-  contain-intrinsic-size: auto 100svh;
+  /* Tuck under previous section */
 }
 
 .contentWrapper {

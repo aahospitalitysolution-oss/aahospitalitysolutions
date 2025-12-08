@@ -3,7 +3,7 @@
 import { useRef, useEffect, forwardRef, useImperativeHandle, useCallback } from "react";
 import styles from "./Landing.module.css";
 import { useAnimationContext } from "@/contexts/AnimationContext";
-import { isMobileDevice, isIOSDevice, createFramePressureMonitor } from "@/utils/deviceUtils";
+import { isMobileDevice, isIOSDevice } from "@/utils/deviceUtils";
 
 export interface LandingCanvasHandle {
   setFrame: (frame: number) => void;
@@ -31,13 +31,11 @@ export const LandingCanvas = forwardRef<LandingCanvasHandle, LandingCanvasProps>
 
     const frameCount = 385;
 
-    // OPTIMIZATION A: Tiered throttling for all devices
-    // - iOS: 42ms (~24fps) - Safari has more overhead
-    // - Mobile: 33ms (~30fps) - Battery savings
-    // - Desktop: 20ms (~50fps) - Light throttle, imperceptible due to motion blur
+    // OPTIMIZATION A: Aggressive mobile throttling
+    // iOS gets ~24fps (42ms), other mobile gets ~30fps (33ms), desktop gets 60fps
     const isMobile = typeof window !== 'undefined' ? isMobileDevice() : false;
     const isIOS = typeof window !== 'undefined' ? isIOSDevice() : false;
-    const throttleMs = isIOS ? 42 : (isMobile ? 33 : 20);
+    const throttleMs = isIOS ? 42 : (isMobile ? 33 : 0);
 
     const setCanvasSize = () => {
       const canvas = canvasRef.current;
@@ -88,26 +86,6 @@ export const LandingCanvas = forwardRef<LandingCanvasHandle, LandingCanvasProps>
       }
     }, [images]);
 
-    // OPTIMIZATION G: Frame pressure monitor for adaptive quality
-    const framePressureRef = useRef<ReturnType<typeof createFramePressureMonitor> | null>(null);
-    const frameCountRef = useRef(0);
-
-    // Initialize frame pressure monitor on mount
-    useEffect(() => {
-      if (typeof window !== 'undefined') {
-        framePressureRef.current = createFramePressureMonitor({
-          dropThreshold: 20, // Frame is "dropped" if it takes >20ms
-          consecutiveDropsThreshold: 5,
-          onLowPowerMode: () => {
-            console.debug('[LandingCanvas] Entering low power mode - skipping frames');
-          },
-          onNormalMode: () => {
-            console.debug('[LandingCanvas] Exiting low power mode - full framerate');
-          },
-        });
-      }
-    }, []);
-
     // Start the animation loop
     const startLoop = useCallback(() => {
       if (animationFrameIdRef.current !== null) return; // Already running
@@ -121,16 +99,6 @@ export const LandingCanvas = forwardRef<LandingCanvasHandle, LandingCanvasProps>
 
         // Throttle on mobile for battery savings
         if (throttleMs > 0 && time - lastRenderTimeRef.current < throttleMs) {
-          animationFrameIdRef.current = requestAnimationFrame(tick);
-          return;
-        }
-
-        // OPTIMIZATION G: Check frame pressure and skip frames if under stress
-        const isUnderPressure = framePressureRef.current?.tick() ?? false;
-        frameCountRef.current++;
-
-        // When under pressure, skip every other frame
-        if (isUnderPressure && frameCountRef.current % 2 !== 0) {
           animationFrameIdRef.current = requestAnimationFrame(tick);
           return;
         }

@@ -2,7 +2,6 @@
 
 import { useState, useEffect, CSSProperties } from "react";
 import styles from "./HeroImageContainer.module.css";
-import { isMobileDevice } from "@/utils/deviceUtils";
 
 interface HeroImageContainerProps {
   children: React.ReactNode;
@@ -24,27 +23,22 @@ export const HeroImageContainer = ({
     setMounted(true);
   }, []);
 
-  // Detect mobile for initial positioning
-  const isMobile = typeof window !== 'undefined' ? isMobileDevice() : false;
-  const initialTop = isMobile ? 25 : 12;
-
-  // OPTIMIZATION F: Set initial transform values directly
-  // GSAP will update scale, y, and top directly (no CSS variable overhead)
+  // Base style without transform/opacity calculations
+  // Transform and overlay opacity will be controlled via CSS variables set by GSAP
   const containerStyle: CSSProperties = {
     width: "100%",
-    height: "130vh",
+    height: "130vh", // Tall enough to extend past bottom when scaled
     position: "absolute",
     left: 0,
-    zIndex: 0,
+    zIndex: 0, // Behind text
     transformOrigin: "center center",
+    // Force GPU acceleration for 3D transforms
     backfaceVisibility: "hidden",
     WebkitBackfaceVisibility: "hidden",
-    transition: "none",
+    // Smooth transition
+    transition: "none", // Controlled by GSAP
     overflow: "hidden",
-    opacity: mounted ? 1 : 0,
-    // Initial transform state - GSAP will override these
-    transform: "scale(0.5) translateY(180px)",
-    top: `${initialTop}vh`,
+    opacity: mounted ? 1 : 0, // Hide until mounted to avoid hydration mismatch
   };
 
   return (
@@ -54,8 +48,8 @@ export const HeroImageContainer = ({
       style={containerStyle}
     >
       {children}
-      {/* Overlay with data attribute for GSAP targeting */}
-      <div className={styles.overlay} data-hero-overlay />
+      {/* Translucent blue overlay controlled via CSS variable */}
+      <div className={styles.overlay} />
     </div>
   );
 };

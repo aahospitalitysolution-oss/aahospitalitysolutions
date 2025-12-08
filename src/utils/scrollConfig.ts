@@ -93,14 +93,14 @@ export interface AnimationTiming {
  * Unified Lenis Configuration
  * 
  * Based on design document recommendations:
- * - Duration: 1.5 (balanced between smoothness and responsiveness)
- * - Lerp: 0.12 (slightly faster interpolation for better performance)
+ * - Duration: 1.8 (increased from 1.2 for more fluid feel)
+ * - Lerp: 0.1 (added for smoother interpolation)
  * - Wheel Multiplier: 0.8 (reduced for more control)
  */
 export const LENIS_CONFIG: LenisConfig = {
-  duration: 1.5,
+  duration: 1.8,
   easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-  lerp: 0.12,
+  lerp: 0.1,
   orientation: 'vertical',
   gestureOrientation: 'vertical',
   smoothWheel: true,

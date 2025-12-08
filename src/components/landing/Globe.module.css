@@ -7,9 +7,6 @@
   margin-top: -25vh;
   padding-top: 30vh;
   z-index: 10;
-  /* OPTIMIZATION L: Skip rendering until section is near viewport */
-  content-visibility: auto;
-  contain-intrinsic-size: auto 140vh;
 }
 
 .globeContainer {
