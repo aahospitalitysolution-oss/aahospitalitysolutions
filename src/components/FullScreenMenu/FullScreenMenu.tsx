@@ -73,12 +73,7 @@ export const FullScreenMenu = () => {
       </div>
 
       {/* Close Button (replicates Navbar position) */}
-      <div
-        className="absolute right-4 md:right-6 z-[200]"
-        style={{
-          top: "env(safe-area-inset-top, 0px)",
-        }}
-      >
+      <div className={styles.closeButton}>
         <MenuButton />
       </div>
 

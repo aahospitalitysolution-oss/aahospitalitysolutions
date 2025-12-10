@@ -8,6 +8,9 @@
   margin-top: -20vh;
   padding-top: 25vh;
   z-index: 20;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100vw;
 }
 
 .section::before {
@@ -26,6 +29,7 @@
 .container {
   max-width: var(--container-medium);
   margin: 0 auto;
+  width: 100%;
 }
 
 .header {
@@ -61,6 +65,8 @@
 .infoCard,
 .formCard {
   height: 100%;
+  width: 100%;
+  max-width: 100%;
 }
 
 .contactInfo {
