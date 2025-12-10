@@ -2,13 +2,16 @@
 
 import { useEffect } from "react";
 import { useMenuContext } from "@/contexts/MenuContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import SmartButton from "@/components/SmartButton";
+import { MenuButton } from "@/components/MenuButton/MenuButton";
 import styles from "./FullScreenMenu.module.css";
 
 export const FullScreenMenu = () => {
   const { isMenuOpen, closeMenu } = useMenuContext();
+  const { t, language, setLanguage } = useLanguage();
 
   const router = useRouter();
 
@@ -42,20 +45,41 @@ export const FullScreenMenu = () => {
     >
       {/* Language Switcher */}
       <div
-        className="absolute left-8 z-20 flex gap-4 text-xs font-medium tracking-widest"
+        className="absolute left-8 z-[300] flex gap-4 text-xs font-medium tracking-widest pointer-events-auto"
         style={{
           top: "calc(1.5rem + env(safe-area-inset-top, 0px))",
         }}
       >
-        <a href="#" className="text-white font-semibold border-b border-white">
-          ENGLISH
-        </a>
-        <a
-          href="#"
-          className="text-white/60 hover:text-white transition-colors"
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            setLanguage("en");
+          }}
+          className={`p-2 -m-2 ${language === "en" ? "text-white border-b border-white" : "text-white/60 hover:text-white"} transition-colors font-semibold`}
         >
-          THAI
-        </a>
+          {t.menu.english}
+        </button>
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            setLanguage("th");
+          }}
+          className={`p-2 -m-2 ${language === "th" ? "text-white border-b border-white" : "text-white/60 hover:text-white"} transition-colors`}
+        >
+          {t.menu.thai}
+        </button>
+      </div>
+
+      {/* Close Button (replicates Navbar position) */}
+      <div
+        className="absolute right-4 md:right-6 z-[200]"
+        style={{
+          top: "env(safe-area-inset-top, 0px)",
+        }}
+      >
+        <MenuButton />
       </div>
 
       {/* Main Menu Content */}
@@ -68,21 +92,21 @@ export const FullScreenMenu = () => {
               onClick={handleLinkClick}
               className={`${styles.menuItem} ${styles.fancyUnderline} text-3xl md:text-5xl lg:text-6xl`}
             >
-              Our Story
+              {t.menu.ourStory}
             </Link>
             <Link
               href="/#ethos"
               onClick={handleLinkClick}
               className={`${styles.menuItem} ${styles.fancyUnderline} text-3xl md:text-5xl lg:text-6xl`}
             >
-              Ethos
+              {t.menu.ethos}
             </Link>
             <Link
               href="/services"
               onClick={handleLinkClick}
               className={`${styles.menuItem} ${styles.fancyUnderline} text-3xl md:text-5xl lg:text-6xl`}
             >
-              Services
+              {t.menu.services}
             </Link>
           </div>
 
@@ -93,27 +117,27 @@ export const FullScreenMenu = () => {
               onClick={handleLinkClick}
               className={`${styles.menuItem} ${styles.fancyUnderline} text-3xl md:text-5xl lg:text-6xl`}
             >
-              Global Reach
+              {t.menu.globalReach}
             </Link>
             <Link
               href="/#partners"
               onClick={handleLinkClick}
               className={`${styles.menuItem} ${styles.fancyUnderline} text-3xl md:text-5xl lg:text-6xl`}
             >
-              Partners
+              {t.menu.partners}
             </Link>
             <Link
               href="/blog"
               onClick={handleLinkClick}
               className={`${styles.menuItem} ${styles.fancyUnderline} text-3xl md:text-5xl lg:text-6xl`}
             >
-              Blog
+              {t.menu.blog}
             </Link>
           </div>
 
           {/* CTA Section */}
           <div className="flex items-center gap-8 mt-12 md:mt-20">
-            <SmartButton text="Talk to us" onClick={handleContactClick} theme="dark" />
+            <SmartButton text={t.menu.talkToUs} onClick={handleContactClick} theme="dark" />
           </div>
         </nav>
       </main>

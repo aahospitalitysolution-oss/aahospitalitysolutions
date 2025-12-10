@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
             allow: '/',
             disallow: '/private/',
         },
-        sitemap: 'https://anahospitality.com/sitemap.xml', // Replace with production URL
+        sitemap: 'https://aahospitalitysolutions.com/sitemap.xml', // Replace with production URL
     };
 }

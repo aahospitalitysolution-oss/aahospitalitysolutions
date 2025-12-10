@@ -59,10 +59,13 @@ const PencilIcon = () => (
   </svg>
 );
 
+import { useLanguage } from "@/contexts/LanguageContext";
+
 export const BadgeCloud = ({ startAnimation = true }: BadgeCloudProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const [planesActive, setPlanesActive] = useState(false);
   const router = useRouter();
+  const { t } = useLanguage();
 
   const handleBadgeClick = (path: string) => {
     router.push(path);
@@ -344,18 +347,18 @@ export const BadgeCloud = ({ startAnimation = true }: BadgeCloudProps) => {
     >
       <PaperPlaneCanvas active={planesActive} />
       <div className={styles.introText} data-intro-text>
-        We{" "}
+        {t.badgeCloud.intro1}
         <span className={styles.emphasisWord} data-emphasis-word>
-          understand
+          {t.badgeCloud.highlight}
           <span className={styles.emphasisUnderline} data-emphasis-underline />
-        </span>{" "}
-        that
+        </span>
+        {t.badgeCloud.intro2}
       </div>
 
       <div className={styles.outroText} data-outro-text>
-        and we aim to simplify all of that.
+        {t.badgeCloud.outro}
         <SmartButton
-          text="Find out how"
+          text={t.badgeCloud.button}
           theme="light"
           hoverColor="var(--rosy-taupe)"
           onClick={() => router.push("/services")}
@@ -367,7 +370,7 @@ export const BadgeCloud = ({ startAnimation = true }: BadgeCloudProps) => {
           Core Competencies
         </h2>
         <p className={styles.lede} data-lede>
-          <span data-text-id="1">Visionary growth requires </span>
+          <span data-text-id="1">{t.badgeCloud.visionary}</span>
           <span style={{ display: "inline-block", whiteSpace: "nowrap" }}><button
             className={styles.badge}
             data-badge-id="1"
@@ -380,9 +383,9 @@ export const BadgeCloud = ({ startAnimation = true }: BadgeCloudProps) => {
                 <StarIcon />
               </span>
             </span>
-            Strategic Asset Management
-          </button><span data-text-id="2">.</span></span>
-          <span data-text-id="2"> Flawless execution demands </span>
+            {t.badgeCloud.strategic}
+          </button></span>
+          <span data-text-id="2">{t.badgeCloud.flawless}</span>
           <span style={{ display: "inline-block", whiteSpace: "nowrap" }}><button
             className={`${styles.badge} ${styles.rosy}`}
             data-badge-id="2"
@@ -395,8 +398,8 @@ export const BadgeCloud = ({ startAnimation = true }: BadgeCloudProps) => {
                 <OrbitIcon />
               </span>
             </span>
-            Operational Excellence
-          </button><span data-text-id="3">.</span></span>
+            {t.badgeCloud.operational}
+          </button></span>
         </p>
       </div>
     </section>

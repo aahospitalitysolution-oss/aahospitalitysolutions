@@ -15,6 +15,11 @@ export const metadata: Metadata = createMetadata({
     "operational excellence",
     "hotel consulting",
     "A&A Hospitality",
+    "Hospitality Consulting Bangkok",
+    "Hotel Asset Management Asia",
+    "Hotel Advisory Thailand",
+    "Hospitality Management Southeast Asia",
+    "Hotel Operator Selection",
   ],
 });
 

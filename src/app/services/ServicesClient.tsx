@@ -29,9 +29,11 @@ import { usePageTransition } from "@/hooks/usePageTransition";
 import { MenuButton } from "@/components/MenuButton/MenuButton";
 import { AdaptiveItem } from "@/components/AdaptiveItem";
 import SmartButton from "@/components/SmartButton";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function ServicesClient() {
   const router = useRouter();
+  const { t } = useLanguage();
   const rootRef = useRef<HTMLDivElement>(null);
   const { loaderComplete, shouldPlayLoader, boxRef, blueRef, stageRef } =
     useAnimationContext();
@@ -191,9 +193,14 @@ export default function ServicesClient() {
       >
         <Link
           href="/"
-          className={`logo-link-wrapper transition-opacity duration-300 ${
-            isMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"
-          }`}
+          className="logo-link-wrapper"
+          style={{
+            pointerEvents: isMenuOpen ? "none" : "auto",
+            visibility: isMenuOpen ? "hidden" : "visible",
+            opacity: isMenuOpen ? 0 : 1,
+            transition: `opacity 0.3s ease, visibility 0s linear ${isMenuOpen ? "0.3s" : "0s"
+              }`,
+          }}
           aria-label="Home"
         >
           <div
@@ -235,21 +242,18 @@ export default function ServicesClient() {
         >
           <div className="overflow-hidden mb-4">
             <h2 className="text-[var(--khaki-beige)] uppercase tracking-[0.2em] text-sm font-semibold hero-anim translate-y-full opacity-0">
-              Strategic Advisory
+              {t.servicesPage.hero.tag}
             </h2>
           </div>
           <div className="overflow-hidden">
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif text-[var(--charcoal-blue)] mb-6 leading-tight hero-anim translate-y-full opacity-0">
-              Two Paths,
-              <br />
-              One Goal.
-            </h1>
+            <h1
+              className="text-5xl md:text-7xl lg:text-8xl font-serif text-[var(--charcoal-blue)] mb-6 leading-tight hero-anim translate-y-full opacity-0"
+              dangerouslySetInnerHTML={{ __html: t.servicesPage.hero.title }}
+            />
           </div>
           <div className="max-w-2xl mx-auto overflow-hidden">
             <p className="text-lg md:text-xl text-[var(--charcoal-blue)]/80 font-light hero-anim translate-y-full opacity-0 leading-relaxed">
-              Whether you&apos;re an owner protecting your investment or an
-              operator striving for excellence, we meet you where you are—and
-              take you where you need to be.
+              {t.servicesPage.hero.description}
             </p>
           </div>
           <div className="mt-12 hero-anim opacity-0">
@@ -275,20 +279,18 @@ export default function ServicesClient() {
                     <Building2 className="w-10 h-10" />
                   </div>
                   <h3 className="text-3xl font-serif text-[var(--charcoal-blue)] mb-4">
-                    Owner Advantage
+                    {t.servicesPage.cards.owner.title}
                   </h3>
                   <h4 className="text-sm uppercase tracking-widest text-[var(--charcoal-blue)]/50 mb-6">
-                    Strategic Asset Management & Advisory
+                    {t.servicesPage.cards.owner.subtitle}
                   </h4>
                   <p className="text-[var(--charcoal-blue)]/70 mb-8 leading-relaxed">
-                    Your asset deserves more than passive oversight. We optimize
-                    financial performance, manage operator relationships,
-                    enhance asset value, and deliver governance you can trust.
+                    {t.servicesPage.cards.owner.description}
                   </p>
                 </div>
                 <div className="mt-auto">
                   <SmartButton
-                    text="Learn More"
+                    text={t.servicesPage.cards.owner.button}
                     alignment="left"
                     size="small"
                     onClick={() => setActiveDetail("owner")}
@@ -309,20 +311,18 @@ export default function ServicesClient() {
                     <Settings className="w-10 h-10" />
                   </div>
                   <h3 className="text-3xl font-serif mb-4">
-                    Operator Advantage
+                    {t.servicesPage.cards.operator.title}
                   </h3>
                   <h4 className="text-sm uppercase tracking-widest text-[var(--parchment)]/50 mb-6">
-                    Operational Excellence & Performance
+                    {t.servicesPage.cards.operator.subtitle}
                   </h4>
                   <p className="text-[var(--parchment)]/80 mb-8 leading-relaxed">
-                    Great operations don&apos;t happen by accident. We drive
-                    revenue optimization, cost efficiency, team development, and
-                    discipline that turns good hotels into exceptional ones.
+                    {t.servicesPage.cards.operator.description}
                   </p>
                 </div>
                 <div className="mt-auto">
                   <SmartButton
-                    text="Learn More"
+                    text={t.servicesPage.cards.operator.button}
                     alignment="left"
                     theme="dark"
                     size="small"
@@ -342,14 +342,13 @@ export default function ServicesClient() {
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-20">
               <span className="text-[var(--khaki-beige)] uppercase tracking-[0.2em] text-sm font-semibold">
-                Specialized Solutions
+                {t.servicesPage.ancillary.tag}
               </span>
               <h2 className="text-5xl font-serif text-[var(--charcoal-blue)] mt-4">
-                Beyond the Basics
+                {t.servicesPage.ancillary.title}
               </h2>
               <p className="text-[var(--charcoal-blue)]/70 mt-6 max-w-2xl mx-auto">
-                Every asset has unique needs. Our specialized workshops and
-                advisory services address the moments that define success.
+                {t.servicesPage.ancillary.description}
               </p>
             </div>
 
@@ -360,10 +359,10 @@ export default function ServicesClient() {
                   <Compass className="w-6 h-6" />
                 </div>
                 <h3 className="text-xl font-serif text-[var(--charcoal-blue)] mb-2">
-                  Positioning Workshop
+                  {t.servicesPage.ancillary.items[0].title}
                 </h3>
                 <p className="text-sm text-[var(--charcoal-blue)]/70">
-                  Clarify your place in the market with data-driven strategy.
+                  {t.servicesPage.ancillary.items[0].desc}
                 </p>
               </div>
 
@@ -373,10 +372,10 @@ export default function ServicesClient() {
                   <Search className="w-6 h-6" />
                 </div>
                 <h3 className="text-xl font-serif text-[var(--charcoal-blue)] mb-2">
-                  Business Deep Dive
+                  {t.servicesPage.ancillary.items[1].title}
                 </h3>
                 <p className="text-sm text-[var(--charcoal-blue)]/70">
-                  Uncover hidden opportunities through rigorous analysis.
+                  {t.servicesPage.ancillary.items[1].desc}
                 </p>
               </div>
 
@@ -386,10 +385,10 @@ export default function ServicesClient() {
                   <Award className="w-6 h-6" />
                 </div>
                 <h3 className="text-xl font-serif text-[var(--charcoal-blue)] mb-2">
-                  Leadership Coaching
+                  {t.servicesPage.ancillary.items[2].title}
                 </h3>
                 <p className="text-sm text-[var(--charcoal-blue)]/70">
-                  Build resilient teams that deliver consistent excellence.
+                  {t.servicesPage.ancillary.items[2].desc}
                 </p>
               </div>
 
@@ -399,10 +398,10 @@ export default function ServicesClient() {
                   <Coffee className="w-6 h-6" />
                 </div>
                 <h3 className="text-xl font-serif text-[var(--charcoal-blue)] mb-2">
-                  Concept Advisory
+                  {t.servicesPage.ancillary.items[3].title}
                 </h3>
                 <p className="text-sm text-[var(--charcoal-blue)]/70">
-                  Create F&B and experience concepts that resonate.
+                  {t.servicesPage.ancillary.items[3].desc}
                 </p>
               </div>
 
@@ -412,10 +411,10 @@ export default function ServicesClient() {
                   <FileCheck className="w-6 h-6" />
                 </div>
                 <h3 className="text-xl font-serif text-[var(--charcoal-blue)] mb-2">
-                  Pre-Opening Advisory
+                  {t.servicesPage.ancillary.items[4].title}
                 </h3>
                 <p className="text-sm text-[var(--charcoal-blue)]/70">
-                  Launch with confidence, clarity, and precision.
+                  {t.servicesPage.ancillary.items[4].desc}
                 </p>
               </div>
 
@@ -425,10 +424,10 @@ export default function ServicesClient() {
                   <PenTool className="w-6 h-6" />
                 </div>
                 <h3 className="text-xl font-serif text-[var(--charcoal-blue)] mb-2">
-                  Development Signing
+                  {t.servicesPage.ancillary.items[5].title}
                 </h3>
                 <p className="text-sm text-[var(--charcoal-blue)]/70">
-                  Make informed brand and partnership decisions.
+                  {t.servicesPage.ancillary.items[5].desc}
                 </p>
               </div>
             </div>
@@ -442,20 +441,19 @@ export default function ServicesClient() {
         >
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-4xl md:text-5xl font-serif mb-8">
-              Ready to transform your asset?
+              {t.servicesPage.cta.title}
             </h2>
             <p className="text-[var(--parchment)]/60 mb-12 text-lg">
-              Schedule a consultation to explore custom solutions for your
-              portfolio.
+              {t.servicesPage.cta.subtitle}
             </p>
             <div className="flex flex-col md:flex-row justify-center gap-6">
               <SmartButton
-                text="Schedule Consultation"
+                text={t.servicesPage.cta.schedule}
                 backgroundColor="var(--khaki-beige)"
                 theme="light"
                 onClick={() => router.push("/#contact")}
               />
-              <SmartButton text="Download Brochure" theme="dark" />
+              <SmartButton text={t.servicesPage.cta.download} theme="dark" />
             </div>
           </div>
         </section>
@@ -474,6 +472,7 @@ export default function ServicesClient() {
 
 function OwnerModal({ onClose }: { onClose: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const { t } = useLanguage();
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -514,16 +513,12 @@ function OwnerModal({ onClose }: { onClose: () => void }) {
       <div className="min-h-screen py-32 px-4 relative z-10">
         <div className="max-w-7xl mx-auto">
           <div className="mb-20 md:w-2/3 modal-anim">
-            <h2 className="text-5xl md:text-6xl font-serif text-[var(--charcoal-blue)] mb-6">
-              Protect Your Investment.
-              <br />
-              <span className="text-[var(--khaki-beige)] italic">
-                Maximize Returns.
-              </span>
-            </h2>
+            <h2
+              className="text-5xl md:text-6xl font-serif text-[var(--charcoal-blue)] mb-6"
+              dangerouslySetInnerHTML={{ __html: t.servicesPage.modals.owner.title }}
+            />
             <p className="text-xl text-[var(--charcoal-blue)]/70 font-light">
-              Ownership comes with risk. We reduce it through rigorous analysis
-              and strategic foresight.
+              {t.servicesPage.modals.owner.description}
             </p>
           </div>
 
@@ -536,12 +531,10 @@ function OwnerModal({ onClose }: { onClose: () => void }) {
                 </span>
                 <h3 className="text-2xl font-serif mb-4 flex items-center text-[var(--charcoal-blue)]">
                   <TrendingUp className="w-6 h-6 mr-3 text-[var(--khaki-beige)]" />{" "}
-                  Financial Optimization
+                  {t.servicesPage.modals.owner.items[0].title}
                 </h3>
                 <p className="text-[var(--charcoal-blue)]/70 leading-relaxed mb-4">
-                  We dissect numbers, not just review them. Weekly reviews of
-                  GOP and RevPAR against budget, CapEx planning, and cost
-                  flow-through optimization to protect your bottom line.
+                  {t.servicesPage.modals.owner.items[0].desc}
                 </p>
               </div>
             </div>
@@ -554,12 +547,10 @@ function OwnerModal({ onClose }: { onClose: () => void }) {
                 </span>
                 <h3 className="text-2xl font-serif mb-4 flex items-center text-[var(--charcoal-blue)]">
                   <Users className="w-6 h-6 mr-3 text-[var(--khaki-beige)]" />{" "}
-                  Relationship & Brand
+                  {t.servicesPage.modals.owner.items[1].title}
                 </h3>
                 <p className="text-[var(--charcoal-blue)]/70 leading-relaxed mb-4">
-                  Bridging the gap between ownership and brand management. We
-                  monitor compliance, review KPIs, and protect your ROI while
-                  maintaining brand integrity.
+                  {t.servicesPage.modals.owner.items[1].desc}
                 </p>
               </div>
             </div>
@@ -572,12 +563,10 @@ function OwnerModal({ onClose }: { onClose: () => void }) {
                 </span>
                 <h3 className="text-2xl font-serif mb-4 flex items-center text-[var(--charcoal-blue)]">
                   <Gem className="w-6 h-6 mr-3 text-[var(--khaki-beige)]" />{" "}
-                  Asset Enhancement
+                  {t.servicesPage.modals.owner.items[2].title}
                 </h3>
                 <p className="text-[var(--charcoal-blue)]/70 leading-relaxed mb-4">
-                  Differentiation strategies, F&B concept optimization, and
-                  ancillary revenue streams—from retail to spa—ensuring your
-                  asset evolves with the market.
+                  {t.servicesPage.modals.owner.items[2].desc}
                 </p>
               </div>
             </div>
@@ -590,12 +579,10 @@ function OwnerModal({ onClose }: { onClose: () => void }) {
                 </span>
                 <h3 className="text-2xl font-serif mb-4 flex items-center text-[var(--charcoal-blue)]">
                   <FileCheck className="w-6 h-6 mr-3 text-[var(--khaki-beige)]" />{" "}
-                  Governance & Reporting
+                  {t.servicesPage.modals.owner.items[3].title}
                 </h3>
                 <p className="text-[var(--charcoal-blue)]/70 leading-relaxed mb-4">
-                  Transparency builds trust. Monthly strategic presentations,
-                  executive meeting attendance, and ad-hoc analysis whenever you
-                  need it.
+                  {t.servicesPage.modals.owner.items[3].desc}
                 </p>
               </div>
             </div>
@@ -603,7 +590,7 @@ function OwnerModal({ onClose }: { onClose: () => void }) {
 
           <div className="mt-32 text-center modal-anim">
             <SmartButton
-              text="Let's Talk Strategy"
+              text={t.servicesPage.modals.owner.button}
               alignment="center"
               theme="light"
               onClick={scrollToContact}
@@ -617,6 +604,7 @@ function OwnerModal({ onClose }: { onClose: () => void }) {
 
 function OperatorModal({ onClose }: { onClose: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const { t } = useLanguage();
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -657,16 +645,12 @@ function OperatorModal({ onClose }: { onClose: () => void }) {
       <div className="min-h-screen py-32 px-4 relative z-10">
         <div className="max-w-7xl mx-auto">
           <div className="mb-20 md:w-2/3 ml-auto text-right modal-anim">
-            <h2 className="text-5xl md:text-6xl font-serif mb-6">
-              Excellence Isn&apos;t Optional.
-              <br />
-              <span className="text-[var(--khaki-beige)] italic">
-                It&apos;s Operational.
-              </span>
-            </h2>
+            <h2
+              className="text-5xl md:text-6xl font-serif mb-6"
+              dangerouslySetInnerHTML={{ __html: t.servicesPage.modals.operator.title }}
+            />
             <p className="text-xl text-[var(--parchment)]/70 font-light">
-              Operations are where strategy meets reality. We build leadership
-              that lasts.
+              {t.servicesPage.modals.operator.description}
             </p>
           </div>
 
@@ -678,13 +662,10 @@ function OperatorModal({ onClose }: { onClose: () => void }) {
                   01
                 </span>
                 <h3 className="text-2xl font-serif mb-4 text-[var(--khaki-beige)]">
-                  Operational Management
+                  {t.servicesPage.modals.operator.items[0].title}
                 </h3>
                 <p className="text-[var(--parchment)]/70 leading-relaxed mb-4">
-                  Comprehensive reviews across all departments. Guest experience
-                  metrics, brand audits, SOP assessment, and tech stack
-                  optimization. We find what&apos;s working—and fix what
-                  isn&apos;t.
+                  {t.servicesPage.modals.operator.items[0].desc}
                 </p>
               </div>
             </div>
@@ -696,12 +677,10 @@ function OperatorModal({ onClose }: { onClose: () => void }) {
                   02
                 </span>
                 <h3 className="text-2xl font-serif mb-4 text-[var(--khaki-beige)]">
-                  Total Revenue Optimization
+                  {t.servicesPage.modals.operator.items[1].title}
                 </h3>
                 <p className="text-[var(--parchment)]/70 leading-relaxed mb-4">
-                  Pricing strategy across rooms, F&B, and spa. Direct booking
-                  optimization, distribution analysis, and yield management
-                  practices that respond to real-time demand.
+                  {t.servicesPage.modals.operator.items[1].desc}
                 </p>
               </div>
             </div>
@@ -713,12 +692,10 @@ function OperatorModal({ onClose }: { onClose: () => void }) {
                   03
                 </span>
                 <h3 className="text-2xl font-serif mb-4 text-[var(--khaki-beige)]">
-                  Cost Efficiency
+                  {t.servicesPage.modals.operator.items[2].title}
                 </h3>
                 <p className="text-[var(--parchment)]/70 leading-relaxed mb-4">
-                  Productivity benchmarking, energy management, procurement
-                  reviews, and labor scheduling. Protecting profitability
-                  without compromising service.
+                  {t.servicesPage.modals.operator.items[2].desc}
                 </p>
               </div>
             </div>
@@ -730,12 +707,10 @@ function OperatorModal({ onClose }: { onClose: () => void }) {
                   04
                 </span>
                 <h3 className="text-2xl font-serif mb-4 text-[var(--khaki-beige)]">
-                  Team Development
+                  {t.servicesPage.modals.operator.items[3].title}
                 </h3>
                 <p className="text-[var(--parchment)]/70 leading-relaxed mb-4">
-                  Executive coaching, succession planning, and talent pipeline
-                  development. We optimize organizational structures to retain
-                  top performers.
+                  {t.servicesPage.modals.operator.items[3].desc}
                 </p>
               </div>
             </div>
@@ -743,7 +718,7 @@ function OperatorModal({ onClose }: { onClose: () => void }) {
 
           <div className="mt-32 text-center modal-anim">
             <SmartButton
-              text="Elevate Operations"
+              text={t.servicesPage.modals.operator.button}
               alignment="center"
               theme="dark"
               backgroundColor="var(--charcoal-blue)"

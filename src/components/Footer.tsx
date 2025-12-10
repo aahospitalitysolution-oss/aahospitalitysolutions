@@ -4,12 +4,14 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { Instagram, Linkedin, Twitter } from "lucide-react";
 import styles from "./Footer.module.css";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Footer() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const layer1Ref = useRef<HTMLDivElement>(null);
   const layer2Ref = useRef<HTMLDivElement>(null);
   const layer3Ref = useRef<HTMLDivElement>(null);
+  const { t } = useLanguage();
 
   useEffect(() => {
     let animationFrameId: number;
@@ -113,7 +115,7 @@ export default function Footer() {
               <span
                 className={`${styles.fontSerifDisplay} text-lg md:text-2xl italic font-light opacity-80 ${styles.textKhakiBeige}`}
               >
-                Advisory Grounded in Authenticity
+                {t.footer.slogan}
               </span>
             </div>
 
@@ -124,19 +126,19 @@ export default function Footer() {
                   href="/services"
                   className={`transition-colors ${styles.hoverTextRosyTaupe}`}
                 >
-                  Services
+                  {t.menu.services}
                 </Link>
                 <Link
                   href="/#partners"
                   className={`transition-colors ${styles.hoverTextRosyTaupe}`}
                 >
-                  Partners
+                  {t.menu.partners}
                 </Link>
                 <Link
                   href="/#our-story"
                   className={`transition-colors ${styles.hoverTextRosyTaupe}`}
                 >
-                  Our Story
+                  {t.menu.ourStory}
                 </Link>
               </div>
               <div className="flex flex-col gap-3">
@@ -144,13 +146,13 @@ export default function Footer() {
                   href="/insights"
                   className={`transition-colors ${styles.hoverTextRosyTaupe}`}
                 >
-                  Insights
+                  {t.footer.insights}
                 </Link>
                 <Link
                   href="/#contact"
                   className={`transition-colors ${styles.hoverTextRosyTaupe}`}
                 >
-                  Contact
+                  {t.footer.contact}
                 </Link>
               </div>
             </div>
@@ -164,14 +166,14 @@ export default function Footer() {
           {/* Footer Bottom Row */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 text-xs opacity-60 uppercase tracking-widest relative text-white/60">
             <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
-              <span>© 2025 A&A Hospitality.</span>
+              <span>{t.footer.copyright}</span>
 
               <div className="flex gap-6 items-center md:ml-6 md:border-l md:border-white/20 md:pl-6">
                 <Link href="/privacy-policy" className="hover:text-white transition-colors">
-                  Privacy
+                  {t.footer.privacy}
                 </Link>
                 <Link href="/terms-of-service" className="hover:text-white transition-colors">
-                  Terms
+                  {t.footer.terms}
                 </Link>
 
                 {/* Socials */}

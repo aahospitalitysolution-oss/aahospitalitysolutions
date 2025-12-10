@@ -3,6 +3,7 @@ import { Spectral, DM_Sans, Playfair_Display, Manrope } from "next/font/google";
 import "./globals.css";
 import { AnimationProvider } from "@/contexts/AnimationContext";
 import { MenuProvider } from "@/contexts/MenuContext";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 import { FullScreenMenu } from "@/components/FullScreenMenu/FullScreenMenu";
 import FloatingContactIcons from "@/components/FloatingContactIcons";
 import Footer from "@/components/Footer";
@@ -65,22 +66,38 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              "name": "A&A Hospitality Solutions",
-              "url": "https://anahospitality.com",
-              "logo": "https://anahospitality.com/logo.png",
-              "contactPoint": {
-                "@type": "ContactPoint",
-                "telephone": "+1-234-567-890",
-                "contactType": "customer service"
+            __html: JSON.stringify([
+              {
+                "@context": "https://schema.org",
+                "@type": "ProfessionalService",
+                "name": "A&A Hospitality Solutions",
+                "url": "https://aahospitalitysolutions.com",
+                "logo": "https://aahospitalitysolutions.com/logo.png",
+                "priceRange": "$$$",
+                "contactPoint": {
+                  "@type": "ContactPoint",
+                  "telephone": "+66-6-1415-7942",
+                  "contactType": "customer service",
+                  "address": {
+                    "@type": "PostalAddress",
+                    "streetAddress": "388 Exchange Tower, 29th Floor, Unit 2901 - 2904, Sukhumvit Road, Khlong Toey",
+                    "addressLocality": "Bangkok",
+                    "postalCode": "10110",
+                    "addressCountry": "TH"
+                  }
+                },
+                "sameAs": [
+                  "https://www.linkedin.com/company/anahospitality",
+                  "https://twitter.com/anahospitality"
+                ]
               },
-              "sameAs": [
-                "https://www.linkedin.com/company/anahospitality",
-                "https://twitter.com/anahospitality"
-              ]
-            })
+              {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "name": "A&A Hospitality Solutions",
+                "url": "https://aahospitalitysolutions.com"
+              }
+            ])
           }}
         />
         <script
@@ -94,14 +111,16 @@ export default function RootLayout({
             `,
           }}
         />
-        <AnimationProvider>
-          <MenuProvider>
-            <FullScreenMenu />
-            <FloatingContactIcons />
-            {children}
-            <Footer />
-          </MenuProvider>
-        </AnimationProvider>
+        <LanguageProvider>
+          <AnimationProvider>
+            <MenuProvider>
+              <FloatingContactIcons />
+              {children}
+              <Footer />
+              <FullScreenMenu />
+            </MenuProvider>
+          </AnimationProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

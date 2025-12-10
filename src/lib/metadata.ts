@@ -9,6 +9,7 @@ interface MetadataConfig {
   image?: string;
   url?: string;
   keywords?: string[];
+  robots?: Metadata["robots"];
 }
 
 /**
@@ -45,6 +46,7 @@ export function createMetadata(config: MetadataConfig): Metadata {
     image = "/og-image.png",
     url = "/",
     keywords = ["hospitality", "solutions", "A&A", "business"],
+    robots,
   } = config;
 
   const absoluteImageUrl = getAbsoluteUrl(image);
@@ -55,6 +57,7 @@ export function createMetadata(config: MetadataConfig): Metadata {
     title,
     description,
     keywords,
+    robots,
     authors: [{ name: "A&A Hospitality Solutions" }],
     alternates: {
       canonical: absoluteUrl,
@@ -99,6 +102,17 @@ const defaultMetadata: Metadata = createMetadata({
   image: "/og-image.png",
   url: "/",
   keywords: ["hospitality", "solutions", "business", "A&A"],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 });
 
 export default defaultMetadata;

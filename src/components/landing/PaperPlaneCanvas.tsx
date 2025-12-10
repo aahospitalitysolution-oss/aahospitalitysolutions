@@ -9,7 +9,7 @@ interface PaperPlaneCanvasProps {
 }
 
 // Pre-defined plane pool size based on device
-const getMaxPlanes = () => (isMobileDevice() ? 1 : 3);
+const getMaxPlanes = () => (isMobileDevice() ? 2 : 3);
 
 export const PaperPlaneCanvas = ({ active }: PaperPlaneCanvasProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -226,14 +226,14 @@ export const PaperPlaneCanvas = ({ active }: PaperPlaneCanvasProps) => {
         0
       );
 
-      // Move plane - disable autoRotate on mobile for performance
+      // Move plane with autoRotate enabled for all devices
       tl.to(
         planeGroup,
         {
           motionPath: {
             path: flightPath as SVGPathElement,
             align: flightPath as SVGPathElement,
-            autoRotate: !isMobile, // Disable on mobile for performance
+            autoRotate: true,
             alignOrigin: [0.5, 0.5],
           },
           duration: duration,

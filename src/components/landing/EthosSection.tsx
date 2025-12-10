@@ -3,12 +3,14 @@ import { MorphSection } from "../MorphSection";
 import styles from "./EthosSection.module.css";
 import { isMobileDevice } from "@/utils/deviceUtils";
 import { getScrollTriggerConfig } from "@/utils/scrollConfig";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface EthosSectionProps {
   startAnimation?: boolean;
 }
 
 export const EthosSection = ({ startAnimation = false }: EthosSectionProps) => {
+  const { t } = useLanguage();
   const sectionRef = useRef<HTMLElement>(null);
   const definitionsRef = useRef<HTMLDivElement>(null);
   const sunSymbolRef = useRef<SVGSVGElement>(null);
@@ -341,13 +343,14 @@ export const EthosSection = ({ startAnimation = false }: EthosSectionProps) => {
       <div className={styles.container}>
         <div className={styles.contentWrapper}>
           <span className={styles.subtitle} data-reveal-text>
-            Our Philosophy
+            {t.ethos.subtitle}
           </span>
-          <h2 id="ethos-title" className={styles.title} data-reveal-text>
-            Our name tells
-            <br />
-            our story.
+          <h2 id="ethos-title" className={styles.title} data-reveal-text dangerouslySetInnerHTML={{ __html: t.ethos.title }}>
           </h2>
+
+          <p className={styles.summary} style={{ marginBottom: "var(--space-16)" }} data-reveal-text>
+            {t.ethos.summary1}
+          </p>
 
           <div className={styles.definitions} ref={definitionsRef}>
             <div
@@ -355,10 +358,9 @@ export const EthosSection = ({ startAnimation = false }: EthosSectionProps) => {
               data-reveal-block
               ref={aadityaBlockRef}
             >
-              <h3 className={styles.nameHighlight}>Aaditya</h3>
+              <h3 className={styles.nameHighlight}>{t.ethos.aadityaName}</h3>
               <p className={styles.meaning}>
-                Means sun—energy, growth, illumination. It represents the light
-                we bring to complex challenges.
+                {t.ethos.aadityaMeaning}
               </p>
             </div>
 
@@ -367,21 +369,19 @@ export const EthosSection = ({ startAnimation = false }: EthosSectionProps) => {
               data-reveal-block
               ref={aaryahiBlockRef}
             >
-              <h3 className={styles.nameHighlight}>Aaryahi</h3>
+              <h3 className={styles.nameHighlight}>{t.ethos.aaryahiName}</h3>
               <p className={styles.meaning}>
-                Means noble—integrity, excellence, the highest standards. It is
-                our promise to uphold dignity in every decision.
+                {t.ethos.aaryahiMeaning}
               </p>
             </div>
           </div>
 
           <p className={styles.summary} data-reveal-text>
-            Together, they represent our commitment. We believe in continuous
-            growth powered by transparency and trust.
+            {t.ethos.summary2}
           </p>
 
           <div className={styles.closingStatement} ref={closingRef}>
-            <span>That's authentic advisory.</span>
+            <span>{t.ethos.closing}</span>
             <svg className={styles.underline} height="15" width="220">
               <path
                 ref={underlinePathRef}

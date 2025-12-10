@@ -97,19 +97,45 @@ export default async function BlogPost({ params }: Props) {
                     <script
                         type="application/ld+json"
                         dangerouslySetInnerHTML={{
-                            __html: JSON.stringify({
-                                '@context': 'https://schema.org',
-                                '@type': 'BlogPosting',
-                                headline: post.title,
-                                datePublished: post.date,
-                                dateModified: post.date,
-                                description: post.excerpt,
-                                image: [post.coverImage],
-                                author: {
-                                    '@type': 'Organization',
-                                    name: post.author || 'ANA Hospitality',
+                            __html: JSON.stringify([
+                                {
+                                    '@context': 'https://schema.org',
+                                    '@type': 'BlogPosting',
+                                    headline: post.title,
+                                    datePublished: post.date,
+                                    dateModified: post.date,
+                                    description: post.excerpt,
+                                    image: [post.coverImage],
+                                    author: {
+                                        '@type': 'Organization',
+                                        name: post.author || 'ANA Hospitality',
+                                    },
                                 },
-                            }),
+                                {
+                                    '@context': 'https://schema.org',
+                                    '@type': 'BreadcrumbList',
+                                    'itemListElement': [
+                                        {
+                                            '@type': 'ListItem',
+                                            'position': 1,
+                                            'name': 'Home',
+                                            'item': 'https://aahospitalitysolutions.com'
+                                        },
+                                        {
+                                            '@type': 'ListItem',
+                                            'position': 2,
+                                            'name': 'Insights',
+                                            'item': 'https://aahospitalitysolutions.com/blog'
+                                        },
+                                        {
+                                            '@type': 'ListItem',
+                                            'position': 3,
+                                            'name': post.title,
+                                            'item': `https://aahospitalitysolutions.com/blog/${slug}`
+                                        }
+                                    ]
+                                }
+                            ]),
                         }}
                     />
                     <div

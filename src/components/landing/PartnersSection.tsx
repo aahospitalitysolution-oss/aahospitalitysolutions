@@ -5,8 +5,10 @@ import { InfiniteSlider } from "@/components/ui/infinite-slider";
 import ClientOnly from "@/components/ui/client-only";
 import FadeIn, { FadeInStagger } from "@/components/ui/fade-in";
 import { MorphSection } from "../MorphSection";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function PartnersSection() {
+    const { t } = useLanguage();
     return (
         <MorphSection
             id="partners"
@@ -24,14 +26,14 @@ export default function PartnersSection() {
                     {/* CHANGE 4: Reduced bottom margin from mb-16 to mb-8 for mobile */}
                     <FadeIn className="text-center max-w-3xl mx-auto mb-8 md:mb-24">
                         <span className="block text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase text-[#7ea8be] mb-4 md:mb-6">
-                            Our Partners
+                            {t.partners.tag}
                         </span>
                         {/* CHANGE 5: Adjusted font sizes for mobile */}
                         <h2 className="text-3xl md:text-6xl font-serif text-[#f6f0ed] mb-4 md:mb-8 leading-tight">
-                            The best are <span className="italic font-light text-[#c2948a]">already here.</span>
+                            {t.partners.titleStart} <span className="italic font-light text-[#c2948a]">{t.partners.titleItalic}</span>
                         </h2>
                         <p className="text-sm md:text-xl text-[#f6f0ed]/80 leading-relaxed max-w-2xl mx-auto">
-                            From iconic resorts to national infrastructure, we&apos;ve laid the digital foundation for industry giants.
+                            {t.partners.description}
                         </p>
                     </FadeIn>
 

@@ -7,6 +7,7 @@ import { LandingCanvas, LandingCanvasHandle } from "./LandingCanvas";
 import SmartButton from "../SmartButton";
 import { MorphSection } from "../MorphSection";
 import { HeroImageContainer } from "./HeroImageContainer";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface LandingHeroProps {
   canvasRef: React.RefObject<LandingCanvasHandle | null>;
@@ -40,6 +41,7 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
     const sloganRef = useRef<HTMLDivElement>(null);
     const headingRef = useRef<HTMLHeadingElement>(null);
     const buttonWrapperRef = useRef<HTMLDivElement>(null);
+    const { t } = useLanguage();
 
     useEffect(() => {
       if (!headerRef.current) return;
@@ -80,15 +82,15 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
         <div className={styles.heroContainer}>
           <div className={styles.heroDiv} ref={headerRef}>
             <p ref={sloganRef} className={`${styles.slogan} reveal`}>
-              Advisory Grounded in Authenticity
+              {t.landingHero.slogan}
             </p>
             <h1 ref={headingRef} className={`${styles.heroHeading} reveal`}>
-              Strategic excellence for hospitality owners and operators
+              {t.landingHero.heading}
             </h1>
             <div ref={buttonWrapperRef} data-partner-button>
               <div className="reveal">
                 <SmartButton
-                  text="Partner With Us"
+                  text={t.landingHero.partnerButton}
                   alignment="center"
                   onClick={() => router.push("/#contact")}
                   hoverColor="var(--rosy-taupe)"
@@ -107,9 +109,7 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
           className={`${styles.quadrantText} ${styles.quadrantTextLowerCenter}`}
         >
           <p>
-            We bring clarity to complex hotel operations, helping owners
-            understand their asset, strengthen performance, and make informed
-            decisions that protect long-term value.
+            {t.landingHero.quadrant1}
           </p>
         </div>
 
@@ -119,9 +119,7 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
           className={`${styles.quadrantText} ${styles.quadrantTextLowerCenter}`}
         >
           <p>
-            We elevate how hotels run, working side-by-side with operators to
-            sharpen systems, improve guest experience, and build capable,
-            aligned teams.
+            {t.landingHero.quadrant2}
           </p>
         </div>
 
@@ -131,8 +129,7 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
           className={`${styles.quadrantText} ${styles.quadrantTextCenter}`}
         >
           <p>
-            Together, we transform strategy into results — ensuring every hotel
-            performs the way it was meant to.
+            {t.landingHero.quadrant3}
           </p>
         </div>
 
@@ -141,17 +138,13 @@ export const LandingHero = forwardRef<HTMLElement, LandingHeroProps>(
           className={`${styles.quadrantText} ${styles.quadrantTextCenter}`}
         >
           <p>
-            Every hotel carries a story, and our role is to help shape the
-            chapters that lead to lasting value. From strategic oversight to
-            daily operational excellence, we bring structure, insight, and
-            momentum to your vision. Curious how we turn possibility into
-            performance?
+            {t.landingHero.quadrant4}
             <br />
             <br />
-            <strong>Come find out.</strong>
+            <strong>{t.landingHero.quadrant4Bold}</strong>
           </p>
           <SmartButton
-            text="Learn More"
+            text={t.landingHero.learnMoreButton}
             alignment="center"
             onClick={() => router.push("/#our-story")}
             hoverColor="var(--charcoal-blue)"

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useAdaptiveColor } from "@/hooks/useAdaptiveColor";
 import SmartButton from "@/components/SmartButton";
 import { useMenuContext } from "@/contexts/MenuContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface Props {
   className?: string;
@@ -18,6 +19,7 @@ export const AdaptiveReachOutButton = ({
   const router = useRouter();
   const ref = useRef<HTMLDivElement>(null);
   const { isMenuOpen } = useMenuContext();
+  const { t } = useLanguage();
   const [isContactVisible, setIsContactVisible] = useState(false);
 
   // lightColor: returned when background is DARK
@@ -87,7 +89,7 @@ export const AdaptiveReachOutButton = ({
           }}
         >
           <SmartButton
-            text="Reach Out"
+            text={t.navbar.reachOut}
             alignment="center"
             onClick={() => router.push("/#contact")}
             size="small"

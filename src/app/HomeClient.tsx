@@ -51,9 +51,14 @@ export default function HomeClient() {
       >
         <Link
           href="/"
-          className={`logo-link-wrapper transition-opacity duration-300 ${
-            isMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"
-          }`}
+          className="logo-link-wrapper"
+          style={{
+            pointerEvents: isMenuOpen ? "none" : "auto",
+            visibility: isMenuOpen ? "hidden" : "visible",
+            opacity: isMenuOpen ? 0 : 1,
+            transition: `opacity 0.3s ease, visibility 0s linear ${isMenuOpen ? "0.3s" : "0s"
+              }`,
+          }}
           aria-label="Home"
         >
           <div

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, Button, Input, Textarea, Labe
 import { MapPin, Phone, MessageCircle, Mail, Loader2 } from "lucide-react";
 import styles from "./ContactSection.module.css";
 import { MorphSection } from "./MorphSection";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface ContactFormData {
   name: string;
@@ -15,6 +16,7 @@ interface ContactFormData {
 }
 
 export default function ContactSection() {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState<ContactFormData>({
     name: "",
     email: "",
@@ -55,7 +57,7 @@ export default function ContactSection() {
       if (response.ok) {
         setSubmitStatus({
           type: "success",
-          message: "Thank you for reaching out! We'll be in touch soon.",
+          message: t.contactSection.successMessage,
         });
         setFormData({
           name: "",
@@ -70,7 +72,7 @@ export default function ContactSection() {
     } catch {
       setSubmitStatus({
         type: "error",
-        message: "Unable to send message. Please try again or contact us directly.",
+        message: t.contactSection.errorMessage,
       });
     } finally {
       setIsSubmitting(false);
@@ -86,9 +88,9 @@ export default function ContactSection() {
     >
       <div className={styles.container}>
         <div className={styles.header}>
-          <h2 className={styles.title}>Let's Connect</h2>
+          <h2 className={styles.title}>{t.contactSection.title}</h2>
           <p className={styles.subtitle}>
-            Ready to elevate your hospitality experience? We'd love to hear from you.
+            {t.contactSection.subtitle}
           </p>
         </div>
 
@@ -96,7 +98,7 @@ export default function ContactSection() {
           {/* Left Card - Contact Information */}
           <Card className={styles.infoCard}>
             <CardHeader>
-              <CardTitle>Get In Touch</CardTitle>
+              <CardTitle>{t.contactSection.getInTouch}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className={styles.contactInfo}>
@@ -104,12 +106,9 @@ export default function ContactSection() {
                 <div className={styles.infoItem}>
                   <div className={styles.infoHeader}>
                     <MapPin className={styles.icon} />
-                    <span className={styles.infoLabel}>Visit Us</span>
+                    <span className={styles.infoLabel}>{t.contactSection.visitUs}</span>
                   </div>
-                  <p className={styles.infoText}>
-                    123 Hospitality Lane<br />
-                    Suite 100<br />
-                    City, State 12345
+                  <p className={styles.infoText} dangerouslySetInnerHTML={{ __html: t.contactSection.address }}>
                   </p>
                 </div>
 
@@ -117,13 +116,13 @@ export default function ContactSection() {
                 <div className={styles.infoItem}>
                   <div className={styles.infoHeader}>
                     <Phone className={styles.icon} />
-                    <span className={styles.infoLabel}>Call Us</span>
+                    <span className={styles.infoLabel}>{t.contactSection.callUs}</span>
                   </div>
                   <a
-                    href="tel:+1234567890"
+                    href="tel:+66614157942"
                     className={styles.infoLink}
                   >
-                    +1 (234) 567-890
+                    +66 6 1415 7942
                   </a>
                 </div>
 
@@ -134,12 +133,12 @@ export default function ContactSection() {
                     <span className={styles.infoLabel}>WhatsApp</span>
                   </div>
                   <a
-                    href="https://wa.me/1234567890?text=Hello!%20I%27m%20interested%20in%20your%20hospitality%20services"
+                    href="https://wa.me/66614157942?text=Hello!%20I%27m%20interested%20in%20your%20hospitality%20services"
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.infoLink}
                   >
-                    Chat with us
+                    {t.contactSection.chatWithUs}
                   </a>
                 </div>
 
@@ -147,13 +146,13 @@ export default function ContactSection() {
                 <div className={styles.infoItem}>
                   <div className={styles.infoHeader}>
                     <Mail className={styles.icon} />
-                    <span className={styles.infoLabel}>Email</span>
+                    <span className={styles.infoLabel}>{t.contactSection.email}</span>
                   </div>
                   <a
-                    href="mailto:hello@anahospitality.com"
+                    href="mailto:shankar.sreekumar@aahospitalitysolutions.com"
                     className={styles.infoLink}
                   >
-                    hello@anahospitality.com
+                    shankar.sreekumar@aahospitalitysolutions.com
                   </a>
                 </div>
               </div>
@@ -163,13 +162,13 @@ export default function ContactSection() {
           {/* Right Card - Contact Form */}
           <Card className={styles.formCard}>
             <CardHeader>
-              <CardTitle>Send a Message</CardTitle>
+              <CardTitle>{t.contactSection.sendMessage}</CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className={styles.form}>
                 {/* Name Field */}
                 <div className={styles.formField}>
-                  <Label htmlFor="name">Name *</Label>
+                  <Label htmlFor="name">{t.contactSection.nameLabel}</Label>
                   <Input
                     id="name"
                     name="name"
@@ -177,13 +176,13 @@ export default function ContactSection() {
                     value={formData.name}
                     onChange={handleInputChange}
                     required
-                    placeholder="Your name"
+                    placeholder={t.contactSection.namePlaceholder}
                   />
                 </div>
 
                 {/* Email Field */}
                 <div className={styles.formField}>
-                  <Label htmlFor="email">Email *</Label>
+                  <Label htmlFor="email">{t.contactSection.emailLabel}</Label>
                   <Input
                     id="email"
                     name="email"
@@ -191,26 +190,26 @@ export default function ContactSection() {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    placeholder="your.email@example.com"
+                    placeholder={t.contactSection.emailPlaceholder}
                   />
                 </div>
 
                 {/* Phone Field */}
                 <div className={styles.formField}>
-                  <Label htmlFor="phone">Phone</Label>
+                  <Label htmlFor="phone">{t.contactSection.phoneLabel}</Label>
                   <Input
                     id="phone"
                     name="phone"
                     type="tel"
                     value={formData.phone}
                     onChange={handleInputChange}
-                    placeholder="+1 (234) 567-890"
+                    placeholder="+66 6 1415 7942"
                   />
                 </div>
 
                 {/* Subject Field */}
                 <div className={styles.formField}>
-                  <Label htmlFor="subject">Subject *</Label>
+                  <Label htmlFor="subject">{t.contactSection.subjectLabel}</Label>
                   <Input
                     id="subject"
                     name="subject"
@@ -218,20 +217,20 @@ export default function ContactSection() {
                     value={formData.subject}
                     onChange={handleInputChange}
                     required
-                    placeholder="How can we help?"
+                    placeholder={t.contactSection.subjectPlaceholder}
                   />
                 </div>
 
                 {/* Message Field */}
                 <div className={styles.formField}>
-                  <Label htmlFor="message">Message *</Label>
+                  <Label htmlFor="message">{t.contactSection.messageLabel}</Label>
                   <Textarea
                     id="message"
                     name="message"
                     value={formData.message}
                     onChange={handleInputChange}
                     required
-                    placeholder="Tell us about your needs..."
+                    placeholder={t.contactSection.messagePlaceholder}
                   />
                 </div>
 
@@ -244,10 +243,10 @@ export default function ContactSection() {
                   {isSubmitting ? (
                     <>
                       <Loader2 className={styles.spinner} />
-                      Sending...
+                      {t.contactSection.sendingButton}
                     </>
                   ) : (
-                    "Send Message"
+                    t.contactSection.sendButton
                   )}
                 </Button>
 
@@ -255,8 +254,8 @@ export default function ContactSection() {
                 {submitStatus.type && (
                   <div
                     className={`${styles.statusMessage} ${submitStatus.type === "success"
-                        ? styles.statusSuccess
-                        : styles.statusError
+                      ? styles.statusSuccess
+                      : styles.statusError
                       }`}
                   >
                     {submitStatus.message}

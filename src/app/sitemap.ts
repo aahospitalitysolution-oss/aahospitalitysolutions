@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { getSortedPostsData } from '@/lib/blog';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-    const baseUrl = 'https://anahospitality.com'; // Replace with your actual domain
+    const baseUrl = 'https://aahospitalitysolutions.com'; // Replace with your actual domain
     const posts = getSortedPostsData();
 
     const blogPosts = posts.map((post) => ({

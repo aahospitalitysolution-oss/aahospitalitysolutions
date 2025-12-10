@@ -1,11 +1,14 @@
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 import styles from "./OurStory.module.css";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface OurStoryProps {
     startAnimation?: boolean;
 }
 
 export const OurStory = ({ startAnimation = false }: OurStoryProps) => {
+    const { t } = useLanguage();
     const sectionRef = useRef<HTMLElement>(null);
     const imageRef = useRef<HTMLDivElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
@@ -55,17 +58,18 @@ export const OurStory = ({ startAnimation = false }: OurStoryProps) => {
                         "-=0.8"
                     );
 
-                // Signature Animation - Use GPU-accelerated scaleX instead of clipPath
+                // Signature Animation - Wipe in from left using clip-path
                 if (signature && founderDetails) {
-                    // Reset signature wipe - use scaleX for better performance than clipPath
+                    // Reset signature wipe
                     gsap.set(signature, {
-                        scaleX: 0,
-                        transformOrigin: "left center",
+                        clipPath: "inset(0 100% 0 0)",
+                        webkitClipPath: "inset(0 100% 0 0)", // Safari support
                         opacity: 1
                     });
 
                     tl.to(signature, {
-                        scaleX: 1,
+                        clipPath: "inset(0 0% 0 0)",
+                        webkitClipPath: "inset(0 0% 0 0)",
                         duration: 2,
                         ease: "power2.inOut"
                     }, "-=0.5")
@@ -91,38 +95,45 @@ export const OurStory = ({ startAnimation = false }: OurStoryProps) => {
             <div className={styles.container}>
                 <div className={styles.imageWrapper} ref={imageRef}>
                     <div className={styles.blueBox}></div>
-                    <img
+                    <Image
                         src="/images/founder.png"
                         alt="Shankar Sreekumar, Founder of A&A Hospitality"
                         className={styles.founderImage}
+                        width={600}
+                        height={800}
+                        style={{ width: '100%', height: 'auto' }}
+                        priority
                     />
                 </div>
 
                 <div className={styles.content} ref={contentRef}>
-                    <h2 className={styles.title}>Built on 25 Years of True Hospitality</h2>
+                    <h2 className={styles.title}>{t.ourStory.title}</h2>
 
                     <p className={styles.paragraph}>
-                        I'm Shankar Sreekumar, and I've spent my career in the trenches and the boardrooms of hospitality. From F&B floors to regional leadership across South and Southeast Asia, I've seen what works—and what doesn't.
+                        {t.ourStory.para1}
                     </p>
 
                     <p className={styles.paragraph}>
-                        Born in India, educated in Australia, and shaped by roles at IHG, Onyx Hospitality, and La Vie Hotels & Resorts, I founded A&A Hospitality to bring clarity, energy, and uncompromising standards to every partnership.
+                        {t.ourStory.para2}
                     </p>
 
                     <p className={styles.paragraph}>
-                        This isn't about templates or one-size-fits-all solutions. It's about understanding your asset, your market, and your goals—then delivering results that matter.
+                        {t.ourStory.para3}
                     </p>
 
                     <div className={styles.signatureSection}>
-                        <img
+                        <Image
                             ref={signatureRef}
                             src="/images/founder-signature.png"
                             alt="Shankar Sreekumar Signature"
                             className={styles.signatureImage}
+                            width={300}
+                            height={150}
+                            style={{ width: '200px', height: 'auto' }}
                         />
                         <div className={styles.founderDetails} ref={founderDetailsRef}>
-                            <h4 className={styles.founderName}>Shankar Sreekumar</h4>
-                            <span className={styles.founderRole}>Founder & Managing Director</span>
+                            <h4 className={styles.founderName}>{t.ourStory.founderName}</h4>
+                            <span className={styles.founderRole}>{t.ourStory.founderRole}</span>
                         </div>
                     </div>
                 </div>

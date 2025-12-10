@@ -7,6 +7,7 @@ import styles from './Globe.module.css';
 import gsap from 'gsap';
 import * as THREE from 'three';
 import { isMobileDevice } from '@/utils/deviceUtils';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 // Dynamically import Globe to avoid SSR issues
 const Globe = dynamic(() => import('react-globe.gl'), { ssr: false });
@@ -49,132 +50,30 @@ const EXP_LEVELS = {
     L: { color: COLORS.steel, label: "Low" },
 };
 
-const TARGET_COUNTRIES: CountryData[] = [
-    {
-        name: "India",
-        iso: "IND",
-        level: "H",
-        lat: 22.0,
-        lng: 79.0,
-        desc: "Driving operational excellence and robust owner relationships across major hubs. We have successfully implemented pre-opening frameworks that streamline development and maximize business growth potential.",
-        color: COLORS.rosy,
-    },
-    {
-        name: "Australia",
-        iso: "AUS",
-        level: "H",
-        lat: -25.0,
-        lng: 135.0,
-        desc: "Delivering strategic pre-opening frameworks and operational oversight in key metropolitan markets. Our focus on sustainable business development has fostered enduring partnerships with asset owners.",
-        color: COLORS.steel,
-    },
-    {
-        name: "New Zealand",
-        iso: "NZL",
-        level: "H",
-        lat: -42.0,
-        lng: 172.0,
-        desc: "Enhancing asset value through tailored operational strategies and owner-centric relationship management. We provide comprehensive support from pre-opening planning to long-term business development.",
-        color: COLORS.khaki,
-    },
-    {
-        name: "Thailand",
-        iso: "THA",
-        level: "H",
-        lat: 16.0,
-        lng: 101.0,
-        desc: "Optimizing hospitality assets with a focus on operational precision and market expansion. Our team leads pre-opening initiatives that align owner vision with sustainable business performance.",
-        color: COLORS.rosy,
-    },
-    {
-        name: "Vietnam",
-        iso: "VNM",
-        level: "M",
-        lat: 16.0,
-        lng: 107.5,
-        desc: "Facilitating market entry through structured pre-opening frameworks and strategic business development. We build strong owner relationships to navigate the evolving local landscape effectively.",
-        color: COLORS.rosy,
-    },
-    {
-        name: "Indonesia",
-        iso: "IDN",
-        level: "L",
-        lat: -4.0,
-        lng: 120.0,
-        desc: "Supporting new ventures with rigorous pre-opening protocols and dynamic business development strategies. Our approach centers on cultivating transparent and productive relationships with property owners.",
-        color: COLORS.khaki,
-    },
-    {
-        name: "Singapore",
-        iso: "SGP",
-        level: "H",
-        lat: 1.35,
-        lng: 103.8,
-        desc: "Setting the standard for operational excellence in a high-stakes market. We manage complex pre-opening phases and drive business development while maintaining close alignment with owner objectives.",
-        color: COLORS.rosy,
-    },
-    {
-        name: "Sri Lanka",
-        iso: "LKA",
-        level: "H",
-        lat: 7.5,
-        lng: 80.5,
-        desc: "Revitalizing operations and guiding properties through critical pre-opening stages. We focus on strengthening owner relationships and identifying new avenues for business growth.",
-        color: COLORS.khaki,
-    },
-    {
-        name: "Maldives",
-        iso: "MDV",
-        level: "H",
-        lat: 3.2,
-        lng: 73.2,
-        desc: "Elevating resort operations through bespoke pre-opening frameworks and excellence in service delivery. We partner closely with owners to drive business development in this premier destination.",
-        color: COLORS.steel,
-    },
-    {
-        name: "Bangladesh",
-        iso: "BGD",
-        level: "H",
-        lat: 24.0,
-        lng: 90.0,
-        desc: "Implementing robust operational standards and pre-opening strategies for emerging properties. Our work emphasizes solid owner relationships and proactive business development.",
-        color: COLORS.steel,
-    },
-    {
-        name: "Malaysia",
-        iso: "MYS",
-        level: "H",
-        lat: 4.0,
-        lng: 102.0,
-        desc: "Streamlining operations and executing precise pre-opening plans across diverse assets. We are dedicated to fostering owner trust and accelerating business development opportunities.",
-        color: COLORS.steel,
-    },
-    {
-        name: "Cambodia",
-        iso: "KHM",
-        level: "M",
-        lat: 12.5,
-        lng: 105.0,
-        desc: "Guiding projects from concept to launch with comprehensive pre-opening frameworks. We prioritize owner collaboration and strategic business development to ensure long-term success.",
-        color: COLORS.khaki,
-    },
-    {
-        name: "Laos",
-        iso: "LAO",
-        level: "H",
-        lat: 19.5,
-        lng: 102.0,
-        desc: "Delivering operational expertise and structured pre-opening support for unique market entries. We build lasting owner relationships that underpin successful business development.",
-        color: COLORS.steel,
-    },
-];
 
 export const GlobeSection = () => {
+    const { t } = useLanguage();
     const globeEl = useRef<any>(null);
     const [countries, setCountries] = useState<GeoJsonFeature[]>([]);
     const [hoveredIso, setHoveredIso] = useState<string | null>(null);
     const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
     const [loading, setLoading] = useState(true);
+
+    const TARGET_COUNTRIES = useMemo<CountryData[]>(() => [
+        { name: t.globe.countries.india.name, iso: "IND", level: "H", lat: 22.0, lng: 79.0, desc: t.globe.countries.india.desc, color: COLORS.rosy },
+        { name: t.globe.countries.australia.name, iso: "AUS", level: "H", lat: -25.0, lng: 135.0, desc: t.globe.countries.australia.desc, color: COLORS.steel },
+        { name: t.globe.countries.newZealand.name, iso: "NZL", level: "H", lat: -42.0, lng: 172.0, desc: t.globe.countries.newZealand.desc, color: COLORS.khaki },
+        { name: t.globe.countries.thailand.name, iso: "THA", level: "H", lat: 16.0, lng: 101.0, desc: t.globe.countries.thailand.desc, color: COLORS.rosy },
+        { name: t.globe.countries.vietnam.name, iso: "VNM", level: "M", lat: 16.0, lng: 107.5, desc: t.globe.countries.vietnam.desc, color: COLORS.rosy },
+        { name: t.globe.countries.indonesia.name, iso: "IDN", level: "L", lat: -4.0, lng: 120.0, desc: t.globe.countries.indonesia.desc, color: COLORS.khaki },
+        { name: t.globe.countries.singapore.name, iso: "SGP", level: "H", lat: 1.35, lng: 103.8, desc: t.globe.countries.singapore.desc, color: COLORS.rosy },
+        { name: t.globe.countries.sriLanka.name, iso: "LKA", level: "H", lat: 7.5, lng: 80.5, desc: t.globe.countries.sriLanka.desc, color: COLORS.khaki },
+        { name: t.globe.countries.maldives.name, iso: "MDV", level: "H", lat: 3.2, lng: 73.2, desc: t.globe.countries.maldives.desc, color: COLORS.steel },
+        { name: t.globe.countries.bangladesh.name, iso: "BGD", level: "H", lat: 24.0, lng: 90.0, desc: t.globe.countries.bangladesh.desc, color: COLORS.steel },
+        { name: t.globe.countries.malaysia.name, iso: "MYS", level: "H", lat: 4.0, lng: 102.0, desc: t.globe.countries.malaysia.desc, color: COLORS.steel },
+        { name: t.globe.countries.cambodia.name, iso: "KHM", level: "M", lat: 12.5, lng: 105.0, desc: t.globe.countries.cambodia.desc, color: COLORS.khaki },
+        { name: t.globe.countries.laos.name, iso: "LAO", level: "H", lat: 19.5, lng: 102.0, desc: t.globe.countries.laos.desc, color: COLORS.steel },
+    ], [t]);
 
     // UI Refs
     const titleRef = useRef<HTMLHeadingElement>(null);
@@ -188,7 +87,7 @@ export const GlobeSection = () => {
         if (!d) return null;
         const iso = getIso(d);
         return TARGET_COUNTRIES.find((c) => c.iso === iso);
-    }, [getIso]);
+    }, [getIso, TARGET_COUNTRIES]);
 
     // Fetch Data
     useEffect(() => {
@@ -378,10 +277,9 @@ export const GlobeSection = () => {
                 <div ref={contentBlockRef} className={`${styles.contentBlock} w-full max-w-lg mx-auto md:mx-0`}>
                     <div className="mb-3 md:mb-8">
                         <span className="text-[10px] md:text-xs font-semibold tracking-widest text-[#7ea8be] uppercase">
-                            Regional Impact
+                            {t.globe.tag}
                         </span>
-                        <h2 className="text-3xl md:text-5xl font-bold mt-1 leading-tight text-[#f6f0ed]">
-                            Pan-Asian<br />Excellence
+                        <h2 className="text-3xl md:text-5xl font-bold mt-1 leading-tight text-[#f6f0ed]" dangerouslySetInnerHTML={{ __html: t.globe.title }}>
                         </h2>
                     </div>
 
@@ -391,14 +289,14 @@ export const GlobeSection = () => {
                             id="country-name"
                             className="text-xl md:text-3xl font-semibold mb-4 md:mb-8 min-h-[1.75rem] md:min-h-[2.5rem] text-[#c2948a]"
                         >
-                            Decades of Expertise
+                            {t.globe.subtitle}
                         </h3>
                         <p
                             ref={descRef}
                             id="country-desc"
                             className="text-sm md:text-lg leading-relaxed min-h-[90px] md:min-h-[160px] text-[#f6f0ed]/80 text-justify"
                         >
-                            We deliver transformative results for owners across Asia Pacific's most dynamic markets. Hover over the highlighted regions to explore our specific engagements.
+                            {t.globe.description}
                         </p>
                     </div>
 
