@@ -499,13 +499,13 @@ function OwnerModal({ onClose }: { onClose: () => void }) {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-[60] bg-[var(--parchment)] overflow-y-auto animate-in fade-in zoom-in-95 duration-300 overscroll-contain"
+      className="fixed inset-0 z-[300] bg-[var(--parchment)] overflow-y-auto animate-in fade-in zoom-in-95 duration-300 overscroll-contain"
       data-lenis-prevent
       style={{ touchAction: "pan-y" }}
     >
       <button
         onClick={onClose}
-        className="fixed top-8 right-8 z-[70] p-2 bg-[var(--charcoal-blue)] text-[var(--parchment)] rounded-full hover:bg-[var(--khaki-beige)] transition-colors shadow-lg cursor-pointer"
+        className="fixed top-8 right-8 z-[310] p-2 bg-[var(--charcoal-blue)] text-[var(--parchment)] rounded-full hover:bg-[var(--khaki-beige)] transition-colors shadow-lg cursor-pointer"
         aria-label="Close details"
       >
         <X className="w-6 h-6" />
@@ -631,13 +631,13 @@ function OperatorModal({ onClose }: { onClose: () => void }) {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-[60] bg-[var(--charcoal-blue)] overflow-y-auto animate-in fade-in zoom-in-95 duration-300 text-[var(--parchment)] overscroll-contain"
+      className="fixed inset-0 z-[300] bg-[var(--charcoal-blue)] overflow-y-auto animate-in fade-in zoom-in-95 duration-300 text-[var(--parchment)] overscroll-contain"
       data-lenis-prevent
       style={{ touchAction: "pan-y" }}
     >
       <button
         onClick={onClose}
-        className="fixed top-8 right-8 z-[70] p-2 bg-[var(--parchment)] text-[var(--charcoal-blue)] rounded-full hover:bg-[var(--khaki-beige)] transition-colors shadow-lg cursor-pointer"
+        className="fixed top-8 right-8 z-[310] p-2 bg-[var(--parchment)] text-[var(--charcoal-blue)] rounded-full hover:bg-[var(--khaki-beige)] transition-colors shadow-lg cursor-pointer"
         aria-label="Close details"
       >
         <X className="w-6 h-6" />

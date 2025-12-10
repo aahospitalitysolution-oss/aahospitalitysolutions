@@ -107,6 +107,7 @@
   color: rgba(40, 83, 107, 0.7);
   line-height: var(--leading-relaxed);
   margin-left: calc(1.25rem + var(--space-3));
+  word-break: break-word;
 }
 
 .infoLink {
@@ -116,6 +117,7 @@
   text-decoration: none;
   transition: color 0.2s ease;
   margin-left: calc(1.25rem + var(--space-3));
+  word-break: break-all;
 }
 
 .infoLink:hover {
