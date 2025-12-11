@@ -6,6 +6,7 @@ import { useAdaptiveColor } from "@/hooks/useAdaptiveColor";
 import SmartButton from "@/components/SmartButton";
 import { useMenuContext } from "@/contexts/MenuContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useScrollContext } from "@/contexts/ScrollContext";
 
 interface Props {
   className?: string;
@@ -20,6 +21,7 @@ export const AdaptiveReachOutButton = ({
   const ref = useRef<HTMLDivElement>(null);
   const { isMenuOpen } = useMenuContext();
   const { t } = useLanguage();
+  const { scrollTo } = useScrollContext();
   const [isContactVisible, setIsContactVisible] = useState(false);
 
   // lightColor: returned when background is DARK
@@ -91,7 +93,13 @@ export const AdaptiveReachOutButton = ({
           <SmartButton
             text={t.navbar.reachOut}
             alignment="center"
-            onClick={() => router.push("/#contact")}
+            onClick={() => {
+              if (window.location.pathname === "/") {
+                scrollTo("#contact");
+              } else {
+                router.push("/#contact");
+              }
+            }}
             size="small"
             theme={isDarkBg ? "light" : "dark"}
             backgroundColor={

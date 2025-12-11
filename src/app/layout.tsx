@@ -35,6 +35,8 @@ const manrope = Manrope({
   display: "swap",
 });
 
+import { ScrollProvider } from "@/contexts/ScrollContext";
+
 export const metadata: Metadata = createMetadata({
   title: "A&A Hospitality Solutions",
   description:
@@ -114,10 +116,12 @@ export default function RootLayout({
         <LanguageProvider>
           <AnimationProvider>
             <MenuProvider>
-              <FloatingContactIcons />
-              {children}
-              <Footer />
-              <FullScreenMenu />
+              <ScrollProvider>
+                <FloatingContactIcons />
+                {children}
+                <Footer />
+                <FullScreenMenu />
+              </ScrollProvider>
             </MenuProvider>
           </AnimationProvider>
         </LanguageProvider>

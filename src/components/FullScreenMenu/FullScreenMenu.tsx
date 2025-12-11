@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useMenuContext } from "@/contexts/MenuContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useScrollContext } from "@/contexts/ScrollContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import SmartButton from "@/components/SmartButton";
@@ -12,6 +13,7 @@ import styles from "./FullScreenMenu.module.css";
 export const FullScreenMenu = () => {
   const { isMenuOpen, closeMenu } = useMenuContext();
   const { t, language, setLanguage } = useLanguage();
+  const { scrollTo } = useScrollContext();
 
   const router = useRouter();
 
@@ -33,7 +35,13 @@ export const FullScreenMenu = () => {
 
   const handleContactClick = () => {
     closeMenu();
-    router.push("/#contact");
+    if (window.location.pathname === "/") {
+      scrollTo("#contact");
+      // Update URL without jump
+      window.history.pushState(null, "", "#contact");
+    } else {
+      router.push("/#contact");
+    }
   };
 
   return (

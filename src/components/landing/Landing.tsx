@@ -21,7 +21,6 @@ const Globe = dynamic(() => import("./Globe").then((mod) => mod.GlobeSection), {
 
 type GSAPStatic = any;
 type ScrollTriggerStatic = any;
-type LenisInstance = any;
 
 // Hoist easing functions to avoid re-creation on every frame
 const power2Out = (t: number) => 1 - Math.pow(1 - t, 2);
@@ -42,7 +41,6 @@ export const Landing = ({ navRef }: LandingProps) => {
   const aaryahiRef = useRef<HTMLDivElement>(null);
   const togetherRef = useRef<HTMLDivElement>(null);
   const textBlock4Ref = useRef<HTMLDivElement>(null);
-  const lenisRef = useRef<LenisInstance>(null);
   const scrollTriggerRef = useRef<ScrollTriggerStatic>(null);
   const [heroPinned, setHeroPinned] = useState(false);
   const progressRef = useRef({ resize: 0, timeline: 0 });
@@ -100,53 +98,16 @@ export const Landing = ({ navRef }: LandingProps) => {
       gsap = gsapModule.default;
       const scrollTriggerModule = await import("gsap/ScrollTrigger");
       ScrollTrigger = scrollTriggerModule.ScrollTrigger;
-      const lenisModule = await import("lenis");
-      Lenis = lenisModule.default;
 
       gsap.registerPlugin(ScrollTrigger);
 
       // Detect device type for performance optimizations
       const isMobile = isMobileDevice();
-      const isIOS = isIOSDevice();
-      const lenisConfig = getLenisConfig(isMobile);
       const scrollTriggerConfig = getScrollTriggerConfig(isMobile);
 
       // Apply global ScrollTrigger configuration for mobile (prevents jumps from iOS dynamic bars)
       if (scrollTriggerConfig.ignoreMobileResize) {
         ScrollTrigger.config({ ignoreMobileResize: true });
-      }
-
-      // Prevent the "reach out" button from being revealed by usePageTransition
-      // because on the home page it should start hidden (behind the hero section)
-      const navButtons = navRef?.current?.querySelector(
-        "[data-reach-out-button]"
-      );
-      if (navButtons) {
-        gsap.killTweensOf(navButtons);
-        gsap.set(navButtons, { opacity: 0, pointerEvents: "none" });
-      }
-
-      // OPTIMIZATION C: Skip Lenis on iOS - native iOS scroll is already smooth
-      // Lenis adds unnecessary overhead and can conflict with iOS momentum scrolling
-      if (!isIOS) {
-        const lenis = new Lenis({
-          duration: lenisConfig.duration,
-          easing: lenisConfig.easing,
-          orientation: lenisConfig.orientation,
-          gestureOrientation: lenisConfig.gestureOrientation,
-          smoothWheel: lenisConfig.smoothWheel,
-          wheelMultiplier: lenisConfig.wheelMultiplier,
-          smoothTouch: lenisConfig.smoothTouch,
-          touchMultiplier: lenisConfig.touchMultiplier,
-          infinite: lenisConfig.infinite,
-        });
-
-        lenisRef.current = lenis;
-        lenis.on("scroll", ScrollTrigger.update);
-
-        gsap.ticker.add((time: number) => {
-          lenis.raf(time * 1000);
-        });
       }
 
       gsap.ticker.lagSmoothing(0);
@@ -555,21 +516,6 @@ export const Landing = ({ navRef }: LandingProps) => {
       setTimeout(() => {
         ScrollTrigger.refresh();
         setHeroPinned(true);
-
-        // FIX: Deep Linking Correction
-        // Browsers scroll to hash *before* GSAP pins the hero (adding ~8000px spacer).
-        // This checks for a hash after layout stabilization and corrects the scroll position.
-        if (window.location.hash) {
-          const target = document.querySelector(window.location.hash);
-          if (target) {
-            if (lenisRef.current) {
-              // formatting: "immediate" jump to avoid visual "rewind" to top
-              lenisRef.current.scrollTo(target, { immediate: true, offset: 0 });
-            } else {
-              target.scrollIntoView();
-            }
-          }
-        }
       }, 100);
 
       return () => {
@@ -588,7 +534,6 @@ export const Landing = ({ navRef }: LandingProps) => {
       });
       if (scrollTriggerRef.current) scrollTriggerRef.current.kill();
       ScrollTrigger?.getAll().forEach((trigger: any) => trigger.kill());
-      if (lenisRef.current) lenisRef.current.destroy();
     };
   }, [imagesLoaded, navRef]);
 

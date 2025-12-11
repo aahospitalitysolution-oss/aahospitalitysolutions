@@ -117,8 +117,11 @@ export const AnimationProvider = ({ children }: AnimationProviderProps) => {
 
   // Scroll to top on mount and on navigation (back/forward)
   useLayoutEffect(() => {
-    // Scroll to top immediately
-    window.scrollTo(0, 0);
+    // Only scroll to top if there is no hash
+    // This allows deep linking to work correctly
+    if (!window.location.hash) {
+      window.scrollTo(0, 0);
+    }
 
     // Disable browser's automatic scroll restoration
     if ('scrollRestoration' in history) {
