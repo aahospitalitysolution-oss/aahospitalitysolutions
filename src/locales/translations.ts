@@ -12,7 +12,7 @@ export const translations = {
             ethos: "Ethos",
             services: "Services",
             globalReach: "Global Reach",
-            partners: "Partners",
+            partners: "Our History",
             blog: "Blog",
             talkToUs: "Talk to us",
         },
@@ -68,7 +68,7 @@ export const translations = {
             },
         },
         partners: {
-            tag: "Our Partners",
+            tag: "Our History",
             titleStart: "The best are",
             titleItalic: "already here.",
             description: "From iconic resorts to national infrastructure, we've laid the digital foundation for industry giants.",
@@ -175,7 +175,7 @@ export const translations = {
         footer: {
             slogan: "Advisory Grounded in Authenticity",
             services: "Services",
-            partners: "Partners",
+            partners: "Our History",
             ourStory: "Our Story",
             insights: "Insights",
             contact: "Contact",
@@ -196,7 +196,7 @@ export const translations = {
             ethos: "ปรัชญา",
             services: "บริการ",
             globalReach: "การเข้าถึงระดับโลก",
-            partners: "พันธมิตร",
+            partners: "ประวัติของเรา",
             blog: "บล็อก",
             talkToUs: "พูดคุยกับเรา",
         },
@@ -252,7 +252,7 @@ export const translations = {
             },
         },
         partners: {
-            tag: "พันธมิตรของเรา",
+            tag: "ประวัติของเรา",
             titleStart: "สิ่งที่ดีที่สุด",
             titleItalic: "อยู่ที่นี่แล้ว",
             description: "จากรีสอร์ทระดับตำนานไปจนถึงโครงสร้างพื้นฐานระดับชาติ เราได้วางรากฐานดิจิทัลสำหรับยักษ์ใหญ่ในอุตสาหกรรม",
@@ -359,7 +359,7 @@ export const translations = {
         footer: {
             slogan: "คำแนะนำที่ตั้งอยู่บนความจริงใจ",
             services: "บริการ",
-            partners: "พันธมิตร",
+            partners: "ประวัติของเรา",
             ourStory: "เรื่องราวของเรา",
             insights: "ข้อมูลเชิงลึก",
             contact: "ติดต่อ",

@@ -103,13 +103,13 @@ export default function Footer() {
                 <div
                   className={styles.footerLogoMark}
                   role="img"
-                  aria-label="Ana Hospitality Logo"
+                  aria-label="A&A Hospitality Logo"
                 />
                 {/* Wordmark */}
                 <div
                   className={styles.footerWordmark}
                   role="img"
-                  aria-label="Ana Hospitality"
+                  aria-label="A&A Hospitality"
                 />
               </div>
               <span
@@ -143,10 +143,10 @@ export default function Footer() {
               </div>
               <div className="flex flex-col gap-3">
                 <Link
-                  href="/insights"
+                  href="/blog"
                   className={`transition-colors ${styles.hoverTextRosyTaupe}`}
                 >
-                  {t.footer.insights}
+                  Blog
                 </Link>
                 <Link
                   href="/#contact"

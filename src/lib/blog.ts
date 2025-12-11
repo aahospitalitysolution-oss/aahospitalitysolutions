@@ -44,7 +44,7 @@ export function getSortedPostsData(): BlogPost[] {
                 date: matterResult.data.date || new Date().toISOString(),
                 excerpt: matterResult.data.excerpt || '',
                 coverImage: matterResult.data.coverImage || '/images/placeholder.jpg',
-                author: matterResult.data.author || 'ANA Hospitality',
+                author: matterResult.data.author || 'A&A Hospitality',
                 category: matterResult.data.category || 'Insights',
                 ...matterResult.data,
             };
@@ -85,7 +85,7 @@ export async function getPostData(slug: string): Promise<BlogPost> {
         date: matterResult.data.date,
         excerpt: matterResult.data.excerpt,
         coverImage: matterResult.data.coverImage || '/images/placeholder.jpg',
-        author: matterResult.data.author || 'ANA Hospitality',
+        author: matterResult.data.author || 'A&A Hospitality',
         category: matterResult.data.category || 'Insights',
     };
 }

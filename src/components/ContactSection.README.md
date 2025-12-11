@@ -48,8 +48,8 @@ Edit `src/components/ContactSection.tsx`:
 >
 
 // Email
-<a href="mailto:hello@anahospitality.com" className={styles.infoLink}>
-  hello@anahospitality.com
+<a href="mailto:hello@aahospitalitysolutions.com" className={styles.infoLink}>
+  hello@aahospitalitysolutions.com
 </a>
 ```
 

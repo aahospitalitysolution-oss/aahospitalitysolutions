@@ -14,14 +14,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     try {
         const post = await getPostData(slug);
         return {
-            title: `${post.title} | ANA Hospitality Insights`,
+            title: `${post.title} | A&A Hospitality Insights`,
             description: post.excerpt,
             openGraph: {
                 title: post.title,
                 description: post.excerpt,
                 type: 'article',
                 publishedTime: post.date,
-                authors: [post.author || 'ANA Hospitality'],
+                authors: [post.author || 'A&A Hospitality'],
             },
         };
     } catch (e) {
@@ -86,7 +86,7 @@ export default async function BlogPost({ params }: Props) {
                                     A
                                 </div>
                                 <div>
-                                    <div className="text-sm font-medium text-[#f6f0ed]">ANA Hospitality</div>
+                                    <div className="text-sm font-medium text-[#f6f0ed]">A&A Hospitality</div>
                                     <div className="text-xs text-[#f6f0ed]/50">Advisory Team</div>
                                 </div>
                             </div>
@@ -108,7 +108,7 @@ export default async function BlogPost({ params }: Props) {
                                     image: [post.coverImage],
                                     author: {
                                         '@type': 'Organization',
-                                        name: post.author || 'ANA Hospitality',
+                                        name: post.author || 'A&A Hospitality',
                                     },
                                 },
                                 {

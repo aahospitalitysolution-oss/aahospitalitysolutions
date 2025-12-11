@@ -555,6 +555,21 @@ export const Landing = ({ navRef }: LandingProps) => {
       setTimeout(() => {
         ScrollTrigger.refresh();
         setHeroPinned(true);
+
+        // FIX: Deep Linking Correction
+        // Browsers scroll to hash *before* GSAP pins the hero (adding ~8000px spacer).
+        // This checks for a hash after layout stabilization and corrects the scroll position.
+        if (window.location.hash) {
+          const target = document.querySelector(window.location.hash);
+          if (target) {
+            if (lenisRef.current) {
+              // formatting: "immediate" jump to avoid visual "rewind" to top
+              lenisRef.current.scrollTo(target, { immediate: true, offset: 0 });
+            } else {
+              target.scrollIntoView();
+            }
+          }
+        }
       }, 100);
 
       return () => {

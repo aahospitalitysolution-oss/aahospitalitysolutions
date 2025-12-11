@@ -55,15 +55,6 @@ export default function PartnersSection() {
                                         <div className="flex items-center">
                                             <Image
                                                 className="mx-auto h-32 w-auto object-contain"
-                                                src="/images/logo-bg/0aba23c2-f724-48b1-8f80-0fa009044cfa.png"
-                                                alt="Partner Logo"
-                                                height={128}
-                                                width={200}
-                                            />
-                                        </div>
-                                        <div className="flex items-center">
-                                            <Image
-                                                className="mx-auto h-32 w-auto object-contain"
                                                 src="/images/logo-bg/0b6aee71-b84e-416a-a9ea-a5471cf88bf7.png"
                                                 alt="Partner Logo"
                                                 height={128}
@@ -78,17 +69,6 @@ export default function PartnersSection() {
                                         <Image
                                             className="mx-auto h-32 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100"
                                             src="/images/logo-bg/01e69e16-50a9-4318-b6c8-f6b783015dc7.png"
-                                            alt="Partner Logo"
-                                            height={128}
-                                            width={200}
-                                            sizes="(max-width: 768px) 150px, 200px"
-                                        />
-                                    </div>
-
-                                    <div className="flex items-center">
-                                        <Image
-                                            className="mx-auto h-32 w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300 opacity-60 hover:opacity-100"
-                                            src="/images/logo-bg/0aba23c2-f724-48b1-8f80-0fa009044cfa.png"
                                             alt="Partner Logo"
                                             height={128}
                                             width={200}

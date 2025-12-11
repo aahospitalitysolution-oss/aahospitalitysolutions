@@ -3,7 +3,7 @@ title: "Staff Retention Strategies for High-End Hospitality"
 date: "2025-08-10"
 excerpt: "Staff Retention Strategies for High-End Hospitality is a critical topic for modern hoteliers. In this article, we explore the key drivers and strategies that define success in this area."
 category: "HR"
-author: "ANA Hospitality"
+author: "A&A Hospitality"
 coverImage: "/images/blog/placeholder-1.jpg"
 ---
 
@@ -43,6 +43,6 @@ Sustainability is more than a buzzword; it is a business imperative. Implementin
 
 As we look towards the future, the importance of **Staff Retention Strategies for High-End Hospitality** will only grow. Those who proactively address these issues today will find themselves well-positioned to lead the market tomorrow.
 
-At ANA Hospitality, we are committed to guiding our partners through these complex terrains. Our expertise in HR ensures that your asset is not just surviving, but thriving.
+At A&A Hospitality, we are committed to guiding our partners through these complex terrains. Our expertise in HR ensures that your asset is not just surviving, but thriving.
 
 *For more insights on optimizing your hospitality assets, contact our advisory team today.*
