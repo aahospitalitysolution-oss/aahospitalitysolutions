@@ -1,5 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Spectral, DM_Sans, Playfair_Display, Manrope, IBM_Plex_Sans_Thai } from "next/font/google";
+import {
+  Spectral,
+  DM_Sans,
+  Playfair_Display,
+  Manrope,
+  IBM_Plex_Sans_Thai,
+} from "next/font/google";
 import "./globals.css";
 import { AnimationProvider } from "@/contexts/AnimationContext";
 import { MenuProvider } from "@/contexts/MenuContext";
@@ -47,10 +53,16 @@ import { ScrollProvider } from "@/contexts/ScrollContext";
 export const metadata: Metadata = createMetadata({
   title: "A&A Hospitality Solutions",
   description:
-    "Experience elegant animations and modern design solutions for your hospitality business",
+    "Strategic advisory and consulting for hospitality owners and operators. Expert guidance grounded in authenticity for hotels, resorts, and hospitality businesses.",
   image: "/og-image.png",
   url: "/",
-  keywords: ["hospitality", "animations", "design", "web solutions"],
+  keywords: [
+    "hospitality consulting",
+    "hotel advisory",
+    "hospitality solutions",
+    "hotel management",
+    "hospitality strategy",
+  ],
 });
 
 export const viewport: Viewport = {
@@ -79,34 +91,35 @@ export default function RootLayout({
               {
                 "@context": "https://schema.org",
                 "@type": "ProfessionalService",
-                "name": "A&A Hospitality Solutions",
-                "url": "https://aahospitalitysolutions.com",
-                "logo": "https://aahospitalitysolutions.com/logo.png",
-                "priceRange": "$$$",
-                "contactPoint": {
+                name: "A&A Hospitality Solutions",
+                url: "https://aahospitalitysolutions.com",
+                logo: "https://aahospitalitysolutions.com/logo.png",
+                priceRange: "$$$",
+                contactPoint: {
                   "@type": "ContactPoint",
-                  "telephone": "+66-6-1415-7942",
-                  "contactType": "customer service",
-                  "address": {
+                  telephone: "+66-6-1415-7942",
+                  contactType: "customer service",
+                  address: {
                     "@type": "PostalAddress",
-                    "streetAddress": "388 Exchange Tower, 29th Floor, Unit 2901 - 2904, Sukhumvit Road, Khlong Toey",
-                    "addressLocality": "Bangkok",
-                    "postalCode": "10110",
-                    "addressCountry": "TH"
-                  }
+                    streetAddress:
+                      "388 Exchange Tower, 29th Floor, Unit 2901 - 2904, Sukhumvit Road, Khlong Toey",
+                    addressLocality: "Bangkok",
+                    postalCode: "10110",
+                    addressCountry: "TH",
+                  },
                 },
-                "sameAs": [
+                sameAs: [
                   "https://www.linkedin.com/company/anahospitality",
-                  "https://twitter.com/anahospitality"
-                ]
+                  "https://twitter.com/anahospitality",
+                ],
               },
               {
                 "@context": "https://schema.org",
                 "@type": "WebSite",
-                "name": "A&A Hospitality Solutions",
-                "url": "https://aahospitalitysolutions.com"
-              }
-            ])
+                name: "A&A Hospitality Solutions",
+                url: "https://aahospitalitysolutions.com",
+              },
+            ]),
           }}
         />
         <script

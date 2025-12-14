@@ -26,7 +26,9 @@ export function getAbsoluteUrl(path: string): string {
   // Get base URL from environment variable with fallback
   const baseUrl =
     process.env.NEXT_PUBLIC_SITE_URL ||
-    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+    (process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "http://localhost:3000");
 
   // Ensure path starts with /
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
@@ -112,10 +114,16 @@ export function createMetadata(config: MetadataConfig): Metadata {
 const defaultMetadata: Metadata = createMetadata({
   title: "A&A Hospitality Solutions",
   description:
-    "Experience elegant animations and modern design solutions for your hospitality business",
+    "Strategic advisory and consulting for hospitality owners and operators. Expert guidance grounded in authenticity for hotels, resorts, and hospitality businesses.",
   image: "/og-image.png",
   url: "/",
-  keywords: ["hospitality", "solutions", "business", "A&A"],
+  keywords: [
+    "hospitality consulting",
+    "hotel advisory",
+    "hospitality solutions",
+    "hotel management",
+    "hospitality strategy",
+  ],
   robots: {
     index: true,
     follow: true,
