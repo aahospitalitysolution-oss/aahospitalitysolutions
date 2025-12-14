@@ -13,6 +13,7 @@
 
   --font-serif: var(--font-spectral);
   --font-sans: var(--font-dm-sans);
+  --font-thai: var(--font-ibm-plex-thai);
 
   /* ===== TYPOGRAPHY TOKENS ===== */
 
@@ -459,4 +460,27 @@ html.is-loading .site-content-wrapper {
 .logo-slot svg polygon,
 .logo-slot svg rect {
   transition: fill 0.3s ease;
+}
+
+/* ===== THAI LANGUAGE FONT OVERRIDES ===== */
+/* When Thai language is active, use IBM Plex Sans Thai for all text */
+body.lang-th {
+  font-family: var(--font-thai), var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+body.lang-th h1,
+body.lang-th h2,
+body.lang-th h3,
+body.lang-th h4,
+body.lang-th h5,
+body.lang-th h6 {
+  font-family: var(--font-thai), var(--font-serif);
+}
+
+/* Override font-family for elements that explicitly set fonts */
+body.lang-th .nav-link,
+body.lang-th .skip-to-content,
+body.lang-th .counter,
+body.lang-th .demo-title {
+  font-family: var(--font-thai), inherit;
 }

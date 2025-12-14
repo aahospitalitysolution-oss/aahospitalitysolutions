@@ -12,8 +12,8 @@ import styles from "./FullScreenMenu.module.css";
 
 export const FullScreenMenu = () => {
   const { isMenuOpen, closeMenu } = useMenuContext();
-  const { t, language, setLanguage } = useLanguage();
-  const { scrollTo } = useScrollContext();
+  const { t } = useLanguage();
+  const { scrollTo, setPendingHash } = useScrollContext();
 
   const router = useRouter();
 
@@ -37,10 +37,25 @@ export const FullScreenMenu = () => {
     closeMenu();
     if (window.location.pathname === "/") {
       scrollTo("#contact");
-      // Update URL without jump
       window.history.pushState(null, "", "#contact");
     } else {
-      router.push("/#contact");
+      // Cross-page navigation: queue hash, then navigate
+      setPendingHash("#contact");
+      router.push("/", { scroll: false });
+    }
+  };
+
+  // Generic handler for hash links pointing to home page sections
+  const handleHashLinkClick = (e: React.MouseEvent, hash: string) => {
+    e.preventDefault();
+    closeMenu();
+    if (window.location.pathname === "/") {
+      scrollTo(hash);
+      window.history.pushState(null, "", hash);
+    } else {
+      // Cross-page navigation: queue hash, then navigate
+      setPendingHash(hash);
+      router.push("/", { scroll: false });
     }
   };
 
@@ -51,59 +66,32 @@ export const FullScreenMenu = () => {
       aria-modal="true"
       aria-hidden={!isMenuOpen}
     >
-      {/* Language Switcher */}
-      <div
-        className="absolute left-8 z-[300] flex gap-4 text-xs font-medium tracking-widest pointer-events-auto"
-        style={{
-          top: "calc(1.5rem + env(safe-area-inset-top, 0px))",
-        }}
-      >
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            setLanguage("en");
-          }}
-          className={`p-2 -m-2 ${language === "en" ? "text-white border-b border-white" : "text-white/60 hover:text-white"} transition-colors font-semibold`}
-        >
-          {t.menu.english}
-        </button>
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            setLanguage("th");
-          }}
-          className={`p-2 -m-2 ${language === "th" ? "text-white border-b border-white" : "text-white/60 hover:text-white"} transition-colors`}
-        >
-          {t.menu.thai}
-        </button>
-      </div>
-
       {/* Close Button (replicates Navbar position) */}
       <div className={styles.closeButton}>
         <MenuButton />
       </div>
 
       {/* Main Menu Content */}
-      <main className={`flex-grow flex flex-col justify-center items-center w-full z-0 relative ${styles.menuContent}`}>
+      <main
+        className={`flex-grow flex flex-col justify-center items-center w-full z-0 relative ${styles.menuContent}`}
+      >
         <nav className="text-center flex flex-col items-center gap-4 md:gap-6">
           {/* Row 1 */}
           <div className="flex flex-wrap justify-center items-baseline gap-8 md:gap-16">
-            <Link
+            <a
               href="/#our-story"
-              onClick={handleLinkClick}
+              onClick={(e) => handleHashLinkClick(e, "#our-story")}
               className={`${styles.menuItem} ${styles.fancyUnderline} text-3xl md:text-5xl lg:text-6xl`}
             >
               {t.menu.ourStory}
-            </Link>
-            <Link
+            </a>
+            <a
               href="/#ethos"
-              onClick={handleLinkClick}
+              onClick={(e) => handleHashLinkClick(e, "#ethos")}
               className={`${styles.menuItem} ${styles.fancyUnderline} text-3xl md:text-5xl lg:text-6xl`}
             >
               {t.menu.ethos}
-            </Link>
+            </a>
             <Link
               href="/services"
               onClick={handleLinkClick}
@@ -115,20 +103,20 @@ export const FullScreenMenu = () => {
 
           {/* Row 2 */}
           <div className="flex flex-wrap justify-center items-baseline gap-8 md:gap-16 mt-4 md:mt-6">
-            <Link
+            <a
               href="/#global-reach"
-              onClick={handleLinkClick}
+              onClick={(e) => handleHashLinkClick(e, "#global-reach")}
               className={`${styles.menuItem} ${styles.fancyUnderline} text-3xl md:text-5xl lg:text-6xl`}
             >
               {t.menu.globalReach}
-            </Link>
-            <Link
+            </a>
+            <a
               href="/#partners"
-              onClick={handleLinkClick}
+              onClick={(e) => handleHashLinkClick(e, "#partners")}
               className={`${styles.menuItem} ${styles.fancyUnderline} text-3xl md:text-5xl lg:text-6xl`}
             >
               {t.menu.partners}
-            </Link>
+            </a>
             <Link
               href="/blog"
               onClick={handleLinkClick}
@@ -140,11 +128,14 @@ export const FullScreenMenu = () => {
 
           {/* CTA Section */}
           <div className="flex items-center gap-8 mt-12 md:mt-20">
-            <SmartButton text={t.menu.talkToUs} onClick={handleContactClick} theme="dark" />
+            <SmartButton
+              text={t.menu.talkToUs}
+              onClick={handleContactClick}
+              theme="dark"
+            />
           </div>
         </nav>
       </main>
     </div>
   );
 };
-

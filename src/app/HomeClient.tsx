@@ -8,6 +8,7 @@ import { useMenuContext } from "@/contexts/MenuContext";
 import { Landing } from "@/components/landing/Landing";
 import { MenuButton } from "@/components/MenuButton/MenuButton";
 import { AdaptiveItem } from "@/components/AdaptiveItem";
+import { LanguageToggle } from "@/components/LanguageToggle";
 import ContactSection from "@/components/ContactSection";
 import Link from "next/link";
 import { AdaptiveReachOutButton } from "@/components/AdaptiveReachOutButton";
@@ -56,8 +57,9 @@ export default function HomeClient() {
             pointerEvents: isMenuOpen ? "none" : "auto",
             visibility: isMenuOpen ? "hidden" : "visible",
             opacity: isMenuOpen ? 0 : 1,
-            transition: `opacity 0.3s ease, visibility 0s linear ${isMenuOpen ? "0.3s" : "0s"
-              }`,
+            transition: `opacity 0.3s ease, visibility 0s linear ${
+              isMenuOpen ? "0.3s" : "0s"
+            }`,
           }}
           aria-label="Home"
         >
@@ -86,6 +88,9 @@ export default function HomeClient() {
           <div className="hidden md:block">
             <AdaptiveReachOutButton skipRevealAnimation={true} />
           </div>
+          <AdaptiveItem>
+            <LanguageToggle className="reveal md:ml-4" />
+          </AdaptiveItem>
           <AdaptiveItem>
             <MenuButton className="reveal" />
           </AdaptiveItem>

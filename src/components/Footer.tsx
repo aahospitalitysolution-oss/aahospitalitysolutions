@@ -2,9 +2,11 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Instagram, Linkedin, Twitter } from "lucide-react";
 import styles from "./Footer.module.css";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useScrollContext } from "@/contexts/ScrollContext";
 
 export default function Footer() {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -12,6 +14,21 @@ export default function Footer() {
   const layer2Ref = useRef<HTMLDivElement>(null);
   const layer3Ref = useRef<HTMLDivElement>(null);
   const { t } = useLanguage();
+  const { scrollTo, setPendingHash } = useScrollContext();
+  const router = useRouter();
+
+  // Handler for hash links pointing to home page sections
+  const handleHashLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, hash: string) => {
+    e.preventDefault();
+    if (window.location.pathname === "/") {
+      scrollTo(hash);
+      window.history.pushState(null, "", hash);
+    } else {
+      // Cross-page navigation: queue hash, then navigate
+      setPendingHash(hash);
+      router.push("/", { scroll: false });
+    }
+  };
 
   useEffect(() => {
     let animationFrameId: number;
@@ -122,24 +139,27 @@ export default function Footer() {
             {/* Right: Links */}
             <div className="flex gap-12 md:gap-20 text-sm md:text-base opacity-90 text-white/90">
               <div className="flex flex-col gap-3">
-                <Link
-                  href="/services"
+                <a
+                  href="/#global-reach"
+                  onClick={(e) => handleHashLinkClick(e, "#global-reach")}
                   className={`transition-colors ${styles.hoverTextRosyTaupe}`}
                 >
-                  {t.menu.services}
-                </Link>
-                <Link
+                  {t.menu.globalReach}
+                </a>
+                <a
                   href="/#partners"
+                  onClick={(e) => handleHashLinkClick(e, "#partners")}
                   className={`transition-colors ${styles.hoverTextRosyTaupe}`}
                 >
                   {t.menu.partners}
-                </Link>
-                <Link
+                </a>
+                <a
                   href="/#our-story"
+                  onClick={(e) => handleHashLinkClick(e, "#our-story")}
                   className={`transition-colors ${styles.hoverTextRosyTaupe}`}
                 >
                   {t.menu.ourStory}
-                </Link>
+                </a>
               </div>
               <div className="flex flex-col gap-3">
                 <Link
@@ -148,12 +168,13 @@ export default function Footer() {
                 >
                   Blog
                 </Link>
-                <Link
+                <a
                   href="/#contact"
+                  onClick={(e) => handleHashLinkClick(e, "#contact")}
                   className={`transition-colors ${styles.hoverTextRosyTaupe}`}
                 >
                   {t.footer.contact}
-                </Link>
+                </a>
               </div>
             </div>
           </div>

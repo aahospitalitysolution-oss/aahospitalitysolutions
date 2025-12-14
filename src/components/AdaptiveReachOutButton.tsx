@@ -21,7 +21,7 @@ export const AdaptiveReachOutButton = ({
   const ref = useRef<HTMLDivElement>(null);
   const { isMenuOpen } = useMenuContext();
   const { t } = useLanguage();
-  const { scrollTo } = useScrollContext();
+  const { scrollTo, setPendingHash } = useScrollContext();
   const [isContactVisible, setIsContactVisible] = useState(false);
 
   // lightColor: returned when background is DARK
@@ -96,8 +96,11 @@ export const AdaptiveReachOutButton = ({
             onClick={() => {
               if (window.location.pathname === "/") {
                 scrollTo("#contact");
+                window.history.pushState(null, "", "#contact");
               } else {
-                router.push("/#contact");
+                // Cross-page navigation: queue hash, then navigate
+                setPendingHash("#contact");
+                router.push("/", { scroll: false });
               }
             }}
             size="small"

@@ -271,7 +271,7 @@ export const GlobeSection = () => {
     }, [getCountryData]);
 
     return (
-        <section id="global-reach" className={styles.globeSection}>
+        <section className={styles.globeSection}>
             {/* UI Layer */}
             <div className={styles.uiLayer}>
                 <div ref={contentBlockRef} className={`${styles.contentBlock} w-full max-w-lg mx-auto md:mx-0`}>

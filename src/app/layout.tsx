@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Spectral, DM_Sans, Playfair_Display, Manrope } from "next/font/google";
+import { Spectral, DM_Sans, Playfair_Display, Manrope, IBM_Plex_Sans_Thai } from "next/font/google";
 import "./globals.css";
 import { AnimationProvider } from "@/contexts/AnimationContext";
 import { MenuProvider } from "@/contexts/MenuContext";
@@ -35,6 +35,13 @@ const manrope = Manrope({
   display: "swap",
 });
 
+const ibmPlexSansThai = IBM_Plex_Sans_Thai({
+  variable: "--font-ibm-plex-thai",
+  subsets: ["thai", "latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700"],
+  display: "swap",
+});
+
 import { ScrollProvider } from "@/contexts/ScrollContext";
 
 export const metadata: Metadata = createMetadata({
@@ -63,7 +70,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${spectral.variable} ${dmSans.variable} ${playfair.variable} ${manrope.variable} antialiased`}
+        className={`${spectral.variable} ${dmSans.variable} ${playfair.variable} ${manrope.variable} ${ibmPlexSansThai.variable} antialiased`}
       >
         <script
           type="application/ld+json"

@@ -28,6 +28,7 @@ import { useMenuContext } from "@/contexts/MenuContext";
 import { usePageTransition } from "@/hooks/usePageTransition";
 import { MenuButton } from "@/components/MenuButton/MenuButton";
 import { AdaptiveItem } from "@/components/AdaptiveItem";
+import { LanguageToggle } from "@/components/LanguageToggle";
 import SmartButton from "@/components/SmartButton";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -198,8 +199,9 @@ export default function ServicesClient() {
             pointerEvents: isMenuOpen ? "none" : "auto",
             visibility: isMenuOpen ? "hidden" : "visible",
             opacity: isMenuOpen ? 0 : 1,
-            transition: `opacity 0.3s ease, visibility 0s linear ${isMenuOpen ? "0.3s" : "0s"
-              }`,
+            transition: `opacity 0.3s ease, visibility 0s linear ${
+              isMenuOpen ? "0.3s" : "0s"
+            }`,
           }}
           aria-label="Home"
         >
@@ -210,7 +212,16 @@ export default function ServicesClient() {
             aria-label="A&A Hospitality logo animation"
           />
         </Link>
-        <div className="nav-items">
+        <div
+          className="nav-items"
+          style={{ display: "flex", alignItems: "center", gap: "1rem" }}
+        >
+          <AdaptiveItem
+            lightColor="var(--parchment)"
+            darkColor="var(--charcoal-blue)"
+          >
+            <LanguageToggle className="reveal" />
+          </AdaptiveItem>
           <AdaptiveItem
             lightColor="var(--parchment)"
             darkColor="var(--charcoal-blue)"
@@ -515,7 +526,9 @@ function OwnerModal({ onClose }: { onClose: () => void }) {
           <div className="mb-20 md:w-2/3 modal-anim">
             <h2
               className="text-5xl md:text-6xl font-serif text-[var(--charcoal-blue)] mb-6"
-              dangerouslySetInnerHTML={{ __html: t.servicesPage.modals.owner.title }}
+              dangerouslySetInnerHTML={{
+                __html: t.servicesPage.modals.owner.title,
+              }}
             />
             <p className="text-xl text-[var(--charcoal-blue)]/70 font-light">
               {t.servicesPage.modals.owner.description}
@@ -647,7 +660,9 @@ function OperatorModal({ onClose }: { onClose: () => void }) {
           <div className="mb-20 md:w-2/3 ml-auto text-right modal-anim">
             <h2
               className="text-5xl md:text-6xl font-serif mb-6"
-              dangerouslySetInnerHTML={{ __html: t.servicesPage.modals.operator.title }}
+              dangerouslySetInnerHTML={{
+                __html: t.servicesPage.modals.operator.title,
+              }}
             />
             <p className="text-xl text-[var(--parchment)]/70 font-light">
               {t.servicesPage.modals.operator.description}

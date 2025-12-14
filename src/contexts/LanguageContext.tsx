@@ -25,6 +25,15 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
         }
     }, []);
 
+    // Toggle lang-th class on body for Thai font styling
+    useEffect(() => {
+        if (language === "th") {
+            document.body.classList.add("lang-th");
+        } else {
+            document.body.classList.remove("lang-th");
+        }
+    }, [language]);
+
     const setLanguage = (lang: Language) => {
         setLanguageState(lang);
         localStorage.setItem("app-language", lang);

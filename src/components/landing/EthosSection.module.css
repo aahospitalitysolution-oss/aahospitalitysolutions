@@ -24,9 +24,9 @@
 
 .symbolGraphic {
   position: absolute;
-  width: 80%;
-  height: 80%;
-  color: var(--rosy-taupe);
+  width: 35%;
+  height: 35%;
+  color: var(--charcoal-blue);
   opacity: 0;
   /* Transition removed - GSAP handles opacity animation */
 }
@@ -148,6 +148,11 @@
   .symbolWrapper {
     width: 100%;
     height: 100%;
+  }
+
+  .symbolGraphic {
+    width: 80%;
+    height: 80%;
   }
 
   .textBlock {

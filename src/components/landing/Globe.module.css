@@ -6,7 +6,7 @@
   background-color: var(--charcoal-blue);
   margin-top: -25vh;
   padding-top: 30vh;
-  z-index: 10;
+  z-index: 25;
 }
 
 .globeContainer {

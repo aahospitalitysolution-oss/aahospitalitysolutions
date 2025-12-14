@@ -33,7 +33,7 @@ interface LandingProps {
 }
 
 export const Landing = ({ navRef }: LandingProps) => {
-  const { imagesLoaded } = useAnimationContext();
+  const { imagesLoaded, heroPinned, setHeroPinned } = useAnimationContext();
   const heroRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<LandingCanvasHandle>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -42,7 +42,6 @@ export const Landing = ({ navRef }: LandingProps) => {
   const togetherRef = useRef<HTMLDivElement>(null);
   const textBlock4Ref = useRef<HTMLDivElement>(null);
   const scrollTriggerRef = useRef<ScrollTriggerStatic>(null);
-  const [heroPinned, setHeroPinned] = useState(false);
   const progressRef = useRef({ resize: 0, timeline: 0 });
   const isCompleteRef = useRef(false);
   const heroContainerRef = useRef<HTMLDivElement | null>(null);
@@ -170,9 +169,9 @@ export const Landing = ({ navRef }: LandingProps) => {
         const exitEnd = stayVisible
           ? 1
           : Math.min(
-            1,
-            threshold + reduceSizeDuration + holdDuration + zoomOutDuration
-          );
+              1,
+              threshold + reduceSizeDuration + holdDuration + zoomOutDuration
+            );
 
         if (stayVisible) {
           if (progress < entryStart) {
@@ -235,24 +234,28 @@ export const Landing = ({ navRef }: LandingProps) => {
       // Enable GPU layers when entering scroll animation, disable when leaving
       const enableWillChange = () => {
         if (heroContainerRef.current) {
-          heroContainerRef.current.style.willChange = 'transform, opacity';
+          heroContainerRef.current.style.willChange = "transform, opacity";
         }
-        [headerRef, aadityaRef, aaryahiRef, togetherRef, textBlock4Ref].forEach(ref => {
-          if (ref.current) {
-            ref.current.style.willChange = 'transform, opacity';
+        [headerRef, aadityaRef, aaryahiRef, togetherRef, textBlock4Ref].forEach(
+          (ref) => {
+            if (ref.current) {
+              ref.current.style.willChange = "transform, opacity";
+            }
           }
-        });
+        );
       };
 
       const disableWillChange = () => {
         if (heroContainerRef.current) {
-          heroContainerRef.current.style.willChange = 'auto';
+          heroContainerRef.current.style.willChange = "auto";
         }
-        [headerRef, aadityaRef, aaryahiRef, togetherRef, textBlock4Ref].forEach(ref => {
-          if (ref.current) {
-            ref.current.style.willChange = 'auto';
+        [headerRef, aadityaRef, aaryahiRef, togetherRef, textBlock4Ref].forEach(
+          (ref) => {
+            if (ref.current) {
+              ref.current.style.willChange = "auto";
+            }
           }
-        });
+        );
       };
 
       const trigger = ScrollTrigger.create({
@@ -315,24 +318,35 @@ export const Landing = ({ navRef }: LandingProps) => {
             const buttonOpacity = 1 - resizeProgress;
             const navOpacity = resizeProgress;
 
-            if (setButtonOpacity && Math.abs(prev.buttonOpacity - buttonOpacity) > 0.01) {
+            if (
+              setButtonOpacity &&
+              Math.abs(prev.buttonOpacity - buttonOpacity) > 0.01
+            ) {
               setButtonOpacity(buttonOpacity);
               // Update pointer events less frequently (only at threshold)
               if (buttonWrapper) {
-                buttonWrapper.style.pointerEvents = resizeProgress > 0.5 ? "none" : "auto";
+                buttonWrapper.style.pointerEvents =
+                  resizeProgress > 0.5 ? "none" : "auto";
               }
               prev.buttonOpacity = buttonOpacity;
             }
-            if (setNavOpacity && Math.abs(prev.navOpacity - navOpacity) > 0.01) {
+            if (
+              setNavOpacity &&
+              Math.abs(prev.navOpacity - navOpacity) > 0.01
+            ) {
               setNavOpacity(navOpacity);
               if (navButtonsEl) {
-                navButtonsEl.style.pointerEvents = resizeProgress > 0.5 ? "auto" : "none";
+                navButtonsEl.style.pointerEvents =
+                  resizeProgress > 0.5 ? "auto" : "none";
               }
               prev.navOpacity = navOpacity;
             }
 
             // Transition hero text color from blue to white
-            if (headerRef.current && Math.abs(prev.textColorTransition - resizeProgress) > 0.01) {
+            if (
+              headerRef.current &&
+              Math.abs(prev.textColorTransition - resizeProgress) > 0.01
+            ) {
               gsap.set(headerRef.current, {
                 "--hero-text-color-transition": resizeProgress,
               });
@@ -549,13 +563,15 @@ export const Landing = ({ navRef }: LandingProps) => {
           togetherRef={togetherRef}
           textBlock4Ref={textBlock4Ref}
           heroContainerRef={heroContainerRef}
-          onImagesLoaded={() => { }}
+          onImagesLoaded={() => {}}
         />
       </div>
 
       <OurStory startAnimation={heroPinned} />
       <EthosSection startAnimation={heroPinned} />
-      <Globe />
+      <div id="global-reach" data-scroll-offset="220">
+        <Globe />
+      </div>
       <PartnersSection />
       <BadgeCloud startAnimation={heroPinned} />
     </div>
