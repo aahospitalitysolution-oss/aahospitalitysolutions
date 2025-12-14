@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { Hotel, Flashlight } from "lucide-react";
+import { Hotel } from "lucide-react";
 import SmartButton from "@/components/SmartButton";
 import { useAnimationContext } from "@/contexts/AnimationContext";
 import { useMenuContext } from "@/contexts/MenuContext";
@@ -14,8 +14,10 @@ import { MenuButton } from "@/components/MenuButton/MenuButton";
 
 export default function NotFound() {
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const animationRef = useRef<number | null>(null);
 
   // Animation context for logo transition
   const { loaderComplete, shouldPlayLoader, boxRef, blueRef, stageRef } =
@@ -32,17 +34,16 @@ export default function NotFound() {
     logoTargetRef,
   });
 
-  // Mouse position tracking
+  // Spotlight position
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  // Smooth out the mouse movement for the spotlight effect (Lag effect for elegance)
+  // Smooth out the movement for the spotlight effect
   const springConfig = { damping: 25, stiffness: 150 };
   const smoothX = useSpring(mouseX, springConfig);
   const smoothY = useSpring(mouseY, springConfig);
 
-  // Create the mask gradient based on smooth mouse position
-  // We use useTransform here so it updates reactively with the spring values
+  // Create the mask gradient based on smooth position
   const maskImage = useTransform(
     [smoothX, smoothY],
     ([x, y]) =>
@@ -55,45 +56,69 @@ export default function NotFound() {
       `radial-gradient(circle 350px at ${x}px ${y}px, black 0%, transparent 80%)`
   );
 
-  // Auto-pan animation state for mobile/idle users
-  const [isHovering, setIsHovering] = useState(false);
-
   useEffect(() => {
     setMounted(true);
 
+    // Detect mobile
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 768 || "ontouchstart" in window;
+      setIsMobile(mobile);
+      return mobile;
+    };
+
+    const mobile = checkMobile();
+    const centerX = window.innerWidth / 2;
+    const centerY = window.innerHeight / 2;
+
     // Initial centering
-    if (typeof window !== "undefined") {
-      mouseX.set(window.innerWidth / 2);
-      mouseY.set(window.innerHeight / 2);
+    mouseX.set(centerX);
+    mouseY.set(centerY);
+
+    if (mobile) {
+      // Mobile: Auto-animate the spotlight in a gentle figure-8 pattern
+      let startTime = Date.now();
+      const radiusX = Math.min(window.innerWidth * 0.15, 100);
+      const radiusY = Math.min(window.innerHeight * 0.1, 60);
+
+      const animate = () => {
+        const elapsed = (Date.now() - startTime) / 1000;
+        // Slow, gentle figure-8 motion
+        const x = centerX + Math.sin(elapsed * 0.3) * radiusX;
+        const y = centerY + Math.sin(elapsed * 0.6) * radiusY * 0.5;
+        mouseX.set(x);
+        mouseY.set(y);
+        animationRef.current = requestAnimationFrame(animate);
+      };
+
+      animationRef.current = requestAnimationFrame(animate);
+    } else {
+      // Desktop: Follow mouse
+      const handleMouseMove = (e: MouseEvent) => {
+        mouseX.set(e.clientX);
+        mouseY.set(e.clientY);
+      };
+
+      window.addEventListener("mousemove", handleMouseMove);
+
+      return () => {
+        window.removeEventListener("mousemove", handleMouseMove);
+        if (animationRef.current) {
+          cancelAnimationFrame(animationRef.current);
+        }
+      };
     }
 
-    const handleMouseMove = (e: MouseEvent) => {
-      setIsHovering(true);
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
-    };
-
-    const handleTouchMove = (e: TouchEvent) => {
-      setIsHovering(true);
-      if (e.touches[0]) {
-        mouseX.set(e.touches[0].clientX);
-        mouseY.set(e.touches[0].clientY);
-      }
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("touchmove", handleTouchMove);
-
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("touchmove", handleTouchMove);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
     };
   }, [mouseX, mouseY]);
 
   // Brand Colors
   const colors = {
     charcoal: "#28536b",
-    deepCharcoal: "#1a3646", // Darker version for the 'off' state
+    deepCharcoal: "#1a3646",
     parchment: "#f6f0ed",
     rosyTaupe: "#c2948a",
     steel: "#7ea8be",
@@ -150,7 +175,9 @@ export default function NotFound() {
 
       <main
         ref={containerRef}
-        className="relative flex h-svh w-full flex-col items-center justify-center overflow-hidden cursor-none selection:bg-transparent"
+        className={`relative flex h-svh w-full flex-col items-center justify-center overflow-hidden selection:bg-transparent ${
+          !isMobile ? "cursor-none" : ""
+        }`}
         style={{ backgroundColor: colors.deepCharcoal }}
       >
         {/* =========================================
@@ -170,7 +197,6 @@ export default function NotFound() {
         <motion.div
           className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-[#28536b]"
           style={{
-            // Apply the transformed motion values here
             maskImage: maskImage,
             WebkitMaskImage: webkitMaskImage,
           }}
@@ -186,22 +212,22 @@ export default function NotFound() {
             <div className="absolute bottom-1/3 left-0 w-full h-px bg-[#c2948a] opacity-10"></div>
           </div>
 
-          {/* The Main Content - Revealed in GOLD */}
-          <div className="relative flex flex-col items-center text-center p-12 border border-[#c2948a]/20 backdrop-blur-sm bg-[#28536b]/40 max-w-2xl rounded-sm">
-            {/* "Do Not Disturb" Iconography */}
+          {/* The Main Content */}
+          <div className="relative flex flex-col items-center text-center p-8 md:p-12 border border-[#c2948a]/20 backdrop-blur-sm bg-[#28536b]/40 max-w-2xl mx-4 rounded-sm">
+            {/* Hotel Icon */}
             <div className="mb-6 text-[#c2948a]">
               <Hotel size={48} strokeWidth={1} />
             </div>
 
-            <h1 className="font-serif text-8xl md:text-9xl text-[#f6f0ed] mb-2 tracking-tighter">
+            <h1 className="font-serif text-7xl md:text-9xl text-[#f6f0ed] mb-2 tracking-tighter">
               404
             </h1>
 
-            <h2 className="font-serif text-2xl md:text-3xl text-[#c2948a] mb-6 italic">
+            <h2 className="font-serif text-xl md:text-3xl text-[#c2948a] mb-6 italic">
               This wing is currently closed.
             </h2>
 
-            <p className="font-sans text-[#7ea8be] max-w-md text-lg font-light leading-relaxed mb-10">
+            <p className="font-sans text-[#7ea8be] max-w-md text-base md:text-lg font-light leading-relaxed mb-10">
               You have ventured into an architectural void. <br />
               Let us escort you back to the main lobby.
             </p>
@@ -255,36 +281,22 @@ export default function NotFound() {
         </motion.div>
 
         {/* =========================================
-            CUSTOM CURSOR (The "Lantern" visual)
-            This floats on top of everything
+            CUSTOM CURSOR (Desktop only)
            ========================================= */}
-        <motion.div
-          className="fixed top-0 left-0 z-50 pointer-events-none mix-blend-screen"
-          style={{
-            x: smoothX,
-            y: smoothY,
-            translateX: "-50%",
-            translateY: "-50%",
-          }}
-        >
-          {/* The glow center */}
-          <div className="w-8 h-8 bg-[#c2948a] rounded-full blur-md opacity-50" />
-          {/* The outer halo */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#c2948a] rounded-full blur-3xl opacity-10" />
-        </motion.div>
-
-        {/* Mobile Hint (Visible only if user isn't moving mouse) */}
-        {!isHovering && (
+        {!isMobile && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 2 }}
-            className="absolute bottom-10 z-20 flex flex-col items-center text-[#c2948a]/50 animate-pulse pointer-events-none"
+            className="fixed top-0 left-0 z-50 pointer-events-none mix-blend-screen"
+            style={{
+              x: smoothX,
+              y: smoothY,
+              translateX: "-50%",
+              translateY: "-50%",
+            }}
           >
-            <Flashlight size={24} className="mb-2" />
-            <span className="text-xs tracking-widest uppercase">
-              Illuminate the screen
-            </span>
+            {/* The glow center */}
+            <div className="w-8 h-8 bg-[#c2948a] rounded-full blur-md opacity-50" />
+            {/* The outer halo */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#c2948a] rounded-full blur-3xl opacity-10" />
           </motion.div>
         )}
       </main>
