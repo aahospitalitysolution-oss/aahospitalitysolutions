@@ -24,8 +24,7 @@ export function getAbsoluteUrl(path: string): string {
   }
 
   // Get base URL from environment variable with fallback
-  const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
   // Ensure path starts with /
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
@@ -61,6 +60,19 @@ export function createMetadata(config: MetadataConfig): Metadata {
     authors: [{ name: "A&A Hospitality Solutions" }],
     alternates: {
       canonical: absoluteUrl,
+    },
+    icons: {
+      icon: [
+        { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+        { url: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+      ],
+      apple: [
+        {
+          url: "/icons/apple-touch-icon.png",
+          sizes: "180x180",
+          type: "image/png",
+        },
+      ],
     },
     openGraph: {
       title,
