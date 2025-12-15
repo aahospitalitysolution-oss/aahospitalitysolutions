@@ -58,7 +58,7 @@ export const translations = {
     },
     globe: {
       tag: "Regional Impact",
-      title: "Pan-Asian<br />Excellence",
+      title: "Global<br />Excellence",
       subtitle: "Decades of Expertise",
       description:
         "We deliver transformative results for owners across Asia Pacific's most dynamic markets. Hover over the highlighted regions to explore our specific engagements.",
@@ -122,7 +122,7 @@ export const translations = {
       titleStart: "The best are",
       titleItalic: "already here.",
       description:
-        "From iconic resorts to national infrastructure, we've laid the digital foundation for industry giants.",
+        "From Iconic hotels and resorts to high performing teams, we’ve laid the foundation of excellence and trust.",
     },
     badgeCloud: {
       intro1: "We ",
