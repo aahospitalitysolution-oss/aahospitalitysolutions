@@ -1,0 +1,109 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-family: var(--font-sans);
+  font-weight: 500;
+  border-radius: var(--space-2);
+  outline: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  border: 2px solid transparent;
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* Variants */
+.primary {
+  background-color: var(--charcoal-blue);
+  color: var(--parchment);
+  border-color: var(--charcoal-blue);
+}
+
+.primary:hover:not(:disabled) {
+  background-color: var(--steel-blue);
+  border-color: var(--steel-blue);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(40, 83, 107, 0.2);
+}
+
+.primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.secondary {
+  background-color: var(--rosy-taupe);
+  color: var(--parchment);
+  border-color: var(--rosy-taupe);
+}
+
+.secondary:hover:not(:disabled) {
+  background-color: var(--khaki-beige);
+  border-color: var(--khaki-beige);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(194, 148, 138, 0.2);
+}
+
+.secondary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.outline {
+  background-color: transparent;
+  color: var(--charcoal-blue);
+  border-color: var(--charcoal-blue);
+}
+
+.outline:hover:not(:disabled) {
+  background-color: var(--charcoal-blue);
+  color: var(--parchment);
+  transform: translateY(-1px);
+}
+
+.outline:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Sizes */
+.default {
+  height: 2.75rem;
+  padding: var(--space-3) var(--space-6);
+  font-size: var(--text-base);
+}
+
+.sm {
+  height: 2.25rem;
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+}
+
+.lg {
+  height: 3.25rem;
+  padding: var(--space-4) var(--space-8);
+  font-size: var(--text-lg);
+}
+
+@media (max-width: 768px) {
+  .default {
+    height: 2.5rem;
+    padding: var(--space-3) var(--space-5);
+    font-size: var(--text-sm);
+  }
+
+  .lg {
+    height: 3rem;
+    padding: var(--space-3) var(--space-6);
+    font-size: var(--text-base);
+  }
+}

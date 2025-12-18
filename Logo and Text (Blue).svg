@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 192 48">
+  <!-- Generator: Adobe Illustrator 30.0.0, SVG Export Plug-In . SVG Version: 2.1.1 Build 123)  -->
+  <defs>
+    <style>
+      .st0 {
+        font-size: 28.54px;
+      }
+
+      .st0, .st1, .st2, .st3 {
+        fill: #2a546c;
+      }
+
+      .st0, .st2, .st3 {
+        isolation: isolate;
+      }
+
+      .st0, .st3 {
+        font-family: MyriadPro-Regular, 'Myriad Pro';
+      }
+
+      .st4 {
+        fill: none;
+      }
+
+      .st2 {
+        font-family: AesthetNova-Regular, 'Aesthet Nova';
+        font-size: 20.55px;
+      }
+
+      .st3 {
+        font-size: 28.73px;
+      }
+    </style>
+  </defs>
+  <line class="st4" x1="16.43" y1=".71" x2="16.41" y2=".74"/>
+  <path class="st1" d="M35.35,45.63c-4.06-.12-8.99.16-11.74-2.83-1.8,1.41-6.65,3.32-11.59,2.75.42-1.16.85-2.31,1.27-3.47,2.78.34,5.6.48,8.27-1.9-2.43-4.54-2.78-11.2-.29-15.17,2.49,8.42.72,18.46,12.9,17.07.49,1.39,1.01,2.58,1.18,3.55Z"/>
+  <path class="st1" d="M47.57,45.54L32.76.9h-2.86l-6.75,21.09c.87,2.64,1.5,4.76,1.92,6.25.11.39.49,1.57,1.24,3.94.64,2,.97,3.01,1.2,2.96.1-.02.16-.23.29-1.5.15-1.49.23-2.23.23-2.93,0-.79-.04-2.11-.35-3.68-.15-.76-.3-1.3-.55-2.16-.31-1.09-.62-1.99-.85-2.61,1.71-5.31,3.42-10.62,5.14-15.94l9.21,28.07-8.4.03-1.28,3.63,10.97-.03,2.39,7.53h3.26Z"/>
+  <polygon class="st1" points="16.46 .9 1.95 45.61 5.18 45.61 7.72 37.97 17.29 37.97 16.12 34.47 8.85 34.42 17.91 6.44 22.01 19.79 23.69 14.66 19.21 .9 16.46 .9"/>
+  <path class="st1" d="M33.86,47.29"/>
+  <text class="st2" transform="translate(64.37 30.39) scale(.7 1)"><tspan x="0" y="0">&amp;</tspan></text>
+  <text class="st0" transform="translate(49.14 33.19)"><tspan x="0" y="0">A</tspan></text>
+  <text class="st0" transform="translate(71.48 33.19)"><tspan x="0" y="0">A</tspan></text>
+  <text class="st3" transform="translate(91.04 32.96) scale(.75 1)"><tspan x="0" y="0">Hospitality</tspan></text>
+</svg>

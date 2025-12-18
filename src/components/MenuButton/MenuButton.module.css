@@ -1,0 +1,74 @@
+/* Container for the interactive area */
+.menuTrigger {
+  cursor: pointer;
+  width: 80px; /* Increased from 64px */
+  height: 80px; /* Increased from 64px */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  /* Remove tap highlight on mobile */
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* SVG Styling */
+.hamburgerSvg {
+  width: 50px; /* Increased from 40px */
+  height: 50px;
+  overflow: visible;
+}
+
+.line {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3.5; /* Increased from 2.5 */
+  stroke-linecap: square;
+  transform-origin: center;
+  transition: stroke-dasharray 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    stroke-dashoffset 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+}
+
+/* ANIMATION LOGIC */
+
+/* Line 1 (Top) */
+.lineTop {
+  transform: translateY(-18px); /* Adjusted to 18px */
+}
+
+/* Line 2 (Middle) */
+.lineMiddle {
+  transform: scaleX(1);
+  opacity: 1;
+}
+
+/* Line 3 (Bottom) */
+.lineBottom {
+  transform: translateY(18px); /* Adjusted to 18px */
+}
+
+/* ACTIVE STATE (The Cross) */
+.menuTrigger:hover {
+  color: var(--rosy-taupe) !important;
+}
+
+.menuTrigger.active {
+  color: var(--parchment);
+}
+
+.menuTrigger.active:hover {
+  color: var(--rosy-taupe) !important;
+}
+
+.menuTrigger.active .lineTop {
+  transform: translateY(0) rotate(45deg);
+}
+
+.menuTrigger.active .lineMiddle {
+  transform: scaleX(0);
+  opacity: 0;
+}
+
+.menuTrigger.active .lineBottom {
+  transform: translateY(0) rotate(-45deg);
+}

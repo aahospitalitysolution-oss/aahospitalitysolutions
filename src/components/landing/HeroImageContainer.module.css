@@ -1,0 +1,61 @@
+/* HeroImageContainer styles */
+
+.container {
+  /* Position will be set via inline styles (absolute) */
+  overflow: hidden;
+  /* No transitions - controlled by GSAP via inline styles */
+  transition: none;
+  /* will-change removed - GSAP handles GPU hints dynamically */
+  /* Ensure proper stacking */
+  z-index: 1;
+  position: relative;
+  /* Transform controlled via CSS variables set by GSAP */
+  /* Scale and Y translation: starts smaller and offset below text, grows to fullscreen */
+  transform: scale(var(--container-scale, 0.5)) translateY(var(--container-y, 180px));
+  top: 12vh;
+}
+
+/* Translucent blue overlay - starts transparent, becomes charcoal blue as canvas expands */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--charcoal-blue);
+  /* Opacity controlled via CSS variable set by GSAP */
+  /* Default 0 = no overlay initially, increases to 0.4 as canvas becomes fullscreen */
+  opacity: var(--overlay-opacity, 0);
+  pointer-events: none;
+  z-index: 1;
+  /* Use brand color with opacity for translucency */
+  mix-blend-mode: normal;
+  /* Performance optimization */
+  will-change: opacity;
+}
+
+/* Mobile responsive breakpoint */
+@media (max-width: 767px) {
+  .container {
+    /* Mobile-specific adjustments handled in component */
+    /* Disable will-change on mobile to reduce GPU layer pressure */
+    will-change: auto;
+  }
+
+  .overlay {
+    /* Disable will-change on mobile */
+    will-change: auto;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .container {
+    will-change: auto;
+    transition: none;
+  }
+
+  .overlay {
+    will-change: auto;
+  }
+}

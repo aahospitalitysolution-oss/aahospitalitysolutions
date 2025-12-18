@@ -1,0 +1,671 @@
+/* Landing page styles - ported from reference with scoping */
+
+.landingContainer {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* High Z-Index for Morph Sections to sit ON TOP of spacer */
+.heroWrapper {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  z-index: 20;
+  /* Sit on top of spacer */
+}
+
+.hero {
+  position: relative;
+  width: 100vw;
+  height: 100svh;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  top: 0;
+  left: 0;
+  /* z-index handled by wrapper */
+}
+
+/* Hero Container - matches reference layout */
+.heroContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: var(--container-wide);
+  height: 100%;
+  padding: var(--space-16) var(--space-20);
+  padding-top: 15vh;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* Hero Div - contains slogan and heading */
+.heroDiv {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+  z-index: 2;
+  position: relative;
+  --hero-text-color-transition: 0;
+}
+
+/* Slogan styling - matches reference */
+.slogan {
+  color: color-mix(in srgb,
+      var(--charcoal-blue) calc((1 - var(--hero-text-color-transition)) * 100%),
+      var(--parchment) calc(var(--hero-text-color-transition) * 100%));
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  font-family: var(--font-serif), serif;
+  font-size: var(--text-xs);
+  font-weight: 500;
+}
+
+/* Hero Heading - matches reference h1 */
+.heroHeading {
+  color: color-mix(in srgb,
+      var(--charcoal-blue) calc((1 - var(--hero-text-color-transition)) * 100%),
+      var(--parchment) calc(var(--hero-text-color-transition) * 100%));
+  font-family: var(--font-serif), serif;
+  font-size: var(--heading-section);
+  font-weight: 300;
+  line-height: var(--leading-snug);
+  margin: 0;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+/* Hero Image Wrapper - contains the canvas */
+/* Matches reference2: justify-content: center; align-items: center; display: flex; */
+.heroImageWrapper {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: visible;
+}
+
+/* Inner Hero Div - direct container for canvas */
+/* Matches reference2: flex: none; width: 100vw */
+.innerHeroDiv {
+  flex: none;
+  width: 100vw;
+  height: 100%;
+  position: relative;
+}
+
+/* Spacer Section - Low Z-Index to sit UNDER morph sections */
+.spacerSection {
+  position: relative;
+  z-index: 10;
+  margin-top: -20vh;
+  /* Pull under Hero */
+  margin-bottom: -20vh;
+  /* Pull under Final Section */
+  padding-top: 20vh;
+  /* Compensate overlap */
+  padding-bottom: 20vh;
+  /* Compensate overlap */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 80vh;
+  background-color: var(--parchment);
+  color: var(--charcoal-blue);
+}
+
+
+
+.canvas {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.heroContent {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  padding: var(--space-2) 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.header {
+  position: absolute;
+  top: 40%;
+  /* Moved up from 90% to 40% as requested */
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+  text-align: center;
+  color: var(--parchment);
+  transform-origin: center;
+  /* will-change removed - GSAP handles GPU hints dynamically */
+}
+
+.header h1 {
+  font-family: var(--font-serif), serif;
+  font-size: var(--heading-sub);
+  font-weight: 400;
+  line-height: var(--leading-normal);
+  width: 100%;
+  margin-bottom: var(--space-2);
+  margin-top: 0;
+}
+
+.header p {
+  text-transform: uppercase;
+  font-family: var(--font-sans), sans-serif;
+  font-size: var(--text-sm);
+  font-weight: 400;
+  opacity: 0.8;
+  /* Increased opacity for better visibility with colors */
+  margin: 0;
+}
+
+.quadrantText {
+  position: absolute;
+  width: 25%;
+  max-width: 400px;
+  /* will-change removed - GSAP handles GPU hints dynamically */
+  pointer-events: none;
+  opacity: 0;
+  z-index: 10;
+  /* Above canvas container */
+}
+
+
+.quadrantText p {
+  font-family: var(--font-sans), sans-serif;
+  font-size: var(--text-2xl);
+  font-weight: 300;
+  line-height: var(--leading-relaxed);
+  color: var(--parchment);
+  margin: 0;
+  text-align: justify;
+}
+
+.quadrantTitle {
+  font-family: var(--font-serif), serif;
+  font-size: var(--heading-hero);
+  font-weight: 400;
+  color: var(--parchment);
+  margin-bottom: var(--space-6);
+  text-align: center;
+  line-height: var(--leading-tight);
+}
+
+.quadrantText strong {
+  font-weight: 400;
+}
+
+/* Centered Vertically without transform for Left/Right quadrants */
+.quadrantTextTopLeft {
+  top: 40%;
+  bottom: auto;
+  margin: 0;
+  height: fit-content;
+  left: 10%;
+  text-align: justify;
+  /* Justified text */
+}
+
+.quadrantTextTopRight {
+  top: 40%;
+  /* Changed from top: 0; bottom: 0; margin: auto; to match TopLeft */
+  bottom: auto;
+  margin: 0;
+  height: fit-content;
+  right: 10%;
+  text-align: justify;
+  /* Justified text */
+}
+
+.quadrantTextBottomLeft {
+  bottom: 20%;
+  left: 10%;
+  text-align: justify;
+  /* Justified text */
+}
+
+.quadrantTextBottomRight {
+  bottom: 20%;
+  right: 10%;
+  text-align: justify;
+  /* Justified text */
+}
+
+/* New classes for Center Aligned Aaditya/Aaryahi */
+.quadrantTextUpperCenter {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: 60%;
+  max-width: 900px;
+}
+
+.quadrantTextLowerCenter {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  width: 60%;
+  max-width: 900px;
+}
+
+.quadrantTextUpperCenter p,
+.quadrantTextLowerCenter p {
+  text-align: center;
+  /* Center text inside these blocks */
+  text-align-last: center;
+}
+
+
+.quadrantTextCenter {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: justify;
+  /* Justified text */
+  width: 60%;
+  max-width: 900px;
+  pointer-events: auto;
+  /* Allow button clicks */
+}
+
+.quadrantTextCenter p {
+  margin-bottom: var(--space-8);
+  text-align: center;
+  text-align-last: center;
+}
+
+.sideText {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 30%;
+  max-width: 400px;
+  /* will-change removed - GSAP handles GPU hints dynamically */
+  pointer-events: none;
+}
+
+.sideTextLeft {
+  left: 5%;
+  text-align: left;
+}
+
+.sideTextRight {
+  right: 5%;
+  text-align: right;
+}
+
+.sideText p {
+  font-family: var(--font-sans), sans-serif;
+  font-size: var(--text-xl);
+  font-weight: 400;
+  line-height: var(--leading-snug);
+  color: var(--parchment);
+  margin: 0;
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  pointer-events: none;
+  /* will-change removed - GSAP handles GPU hints dynamically */
+}
+
+.outro {
+  position: relative;
+  width: 100vw;
+  height: 100svh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-8);
+  background-color: var(--parchment);
+  color: var(--charcoal-blue);
+}
+
+.outro h1 {
+  font-family: var(--font-serif), serif;
+  font-size: var(--heading-section);
+  font-weight: 400;
+  line-height: var(--leading-tight);
+  margin: 0;
+}
+
+/* --- Word Animation Styles --- */
+
+.wordWrapper {
+  position: relative;
+  display: inline-block;
+  font-weight: 400;
+  cursor: default;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+/* --- AADITYA ANIMATION (Solar/Energy) --- */
+
+.sunRays {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 264%;
+  height: 264%;
+  z-index: -1;
+  opacity: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 0 1px rgba(255, 215, 0, 0.2));
+  /* Reduced glow */
+}
+
+.sunCoreGlow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 144%;
+  height: 120%;
+  background: radial-gradient(circle, rgba(255, 220, 50, 0.4) 0%, rgba(255, 140, 0, 0.1) 70%);
+  /* Reduced opacity */
+  filter: blur(10px);
+  /* Reduced blur */
+  z-index: -1;
+  opacity: 0;
+}
+
+.aadityaText {
+  position: relative;
+  display: inline-block;
+  color: #ffeb3b;
+  /* Solid bright yellow */
+  font-weight: 400;
+  font-style: italic;
+}
+
+/* --- AARYAHI ANIMATION (Crystal/Prism/Precision) --- */
+
+.crystalPrism {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 160%;
+  height: 160%;
+  z-index: -1;
+  opacity: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 0 1px rgba(0, 255, 255, 0.15));
+  /* Reduced glow */
+}
+
+.prismCoreGlow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 140%;
+  height: 100%;
+  /* Cool, Clean, High-Standard Blue/Cyan - Brighter */
+  background: radial-gradient(circle, rgba(100, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 60%);
+  /* Reduced opacity */
+  filter: blur(6px);
+  /* Reduced blur */
+  z-index: -1;
+  opacity: 0;
+}
+
+.aaryahiText {
+  position: relative;
+  display: inline-block;
+  color: #00e5ff;
+  /* Solid bright cyan */
+  font-weight: 400;
+  font-style: italic;
+}
+
+/* Animation Classes - toggled when visible */
+.animateAaditya .sunRays {
+  animation: riseAndShine 2s ease-out 0s forwards, rotateRays 20s linear 0s infinite;
+}
+
+.animateAaditya .sunCoreGlow {
+  animation: pulseGlow 3s ease-in-out 0s infinite alternate, fadeInGlow 1.5s ease-out 0s forwards;
+}
+
+.animateAaryahi .crystalPrism {
+  animation: prismFadeIn 2s ease-out 0s forwards, rotatePrism 30s linear 0s infinite;
+}
+
+.animateAaryahi .prismCoreGlow {
+  animation: pulseSharp 4s ease-in-out 0s infinite alternate, fadeInGlow 2s ease-out 0s forwards;
+}
+
+
+/* --- Keyframes --- */
+
+/* Aaditya Keyframes */
+@keyframes rotateRays {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes riseAndShine {
+  0% {
+    opacity: 0;
+    width: 0%;
+    height: 0%;
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  60% {
+    opacity: 1;
+  }
+
+  /* Fully opaque */
+  100% {
+    opacity: 1;
+    width: 264%;
+    height: 264%;
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+}
+
+/* Aaryahi Keyframes */
+@keyframes prismFadeIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5) rotate(0deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+
+  /* Fully opaque */
+}
+
+@keyframes rotatePrism {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  to {
+    transform: translate(-50%, -50%) rotate(-360deg);
+  }
+
+  /* Counter-clockwise for contrast */
+}
+
+@keyframes pulseSharp {
+  0% {
+    opacity: 0.1;
+    filter: blur(4px);
+  }
+
+  50% {
+    opacity: 0.3;
+    filter: blur(3px);
+  }
+
+  /* Less blur creates "sharpness" */
+  100% {
+    opacity: 0.1;
+    filter: blur(5px);
+  }
+}
+
+/* Shared/Generic Keyframes */
+
+@keyframes textShimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@keyframes pulseGlow {
+  0% {
+    opacity: 0.2;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+
+  100% {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+@keyframes fadeInGlow {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 0.4;
+  }
+}
+
+
+
+
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .header h1 {
+    font-size: var(--text-2xl);
+    width: calc(100% - var(--space-16));
+  }
+
+  .heroContainer {
+    padding: var(--space-16) var(--space-10);
+  }
+
+  .sideText {
+    width: calc(100% - var(--space-16));
+    max-width: none;
+  }
+
+  .sideText p {
+    font-size: var(--text-lg);
+  }
+}
+
+@media (max-width: 768px) {
+  .heroContainer {
+    padding: var(--section-padding-y-mobile) var(--section-padding-x-mobile);
+    padding-top: 25vh;
+    /* Push content down on mobile */
+  }
+
+  .heroDiv {
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+  }
+
+  .slogan {
+    letter-spacing: var(--tracking-wider);
+  }
+
+  /* Ensure consistent vertical centering for all quadrant texts on mobile */
+  .quadrantTextUpperCenter,
+  .quadrantTextLowerCenter,
+  .quadrantTextCenter {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85%;
+    max-width: none;
+  }
+
+  .quadrantText p {
+    font-size: var(--text-lg);
+  }
+
+  /* Mobile performance optimizations: disable will-change to reduce GPU layer pressure */
+  .header,
+  .quadrantText,
+  .sideText,
+  .sideText p {
+    will-change: auto;
+  }
+
+  /* Disable glow animations on mobile for performance */
+  .sunRays,
+  .sunCoreGlow,
+  .crystalPrism,
+  .prismCoreGlow {
+    display: none;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+
+  .header,
+  .sideText,
+  .sunRays,
+  .sunCoreGlow,
+  .crystalPrism,
+  .prismCoreGlow,
+  .aadityaText,
+  .aaryahiText {
+    will-change: auto;
+    animation: none !important;
+  }
+}

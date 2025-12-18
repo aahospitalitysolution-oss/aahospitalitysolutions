@@ -1,0 +1,134 @@
+.footerWrapper {
+  --charcoal-blue: #28536bff;
+  --rosy-taupe: #c2948aff;
+  --steel-blue: #7ea8beff;
+  --parchment: #f6f0edff;
+  --khaki-beige: #bbb193ff;
+
+  position: relative;
+  width: 100%;
+  margin-top: 50px;
+}
+
+.fontSerifDisplay {
+  font-family: var(--font-playfair), serif;
+}
+
+.fontDisplayHeavy {
+  font-family: var(--font-manrope), sans-serif;
+}
+
+.stackLayer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 400px;
+  border-radius: 40px 40px 0 0;
+  width: 100%;
+  z-index: 0;
+  will-change: transform;
+}
+
+.stackLayer1 {
+  z-index: 30;
+  background-color: var(--khaki-beige);
+}
+
+.stackLayer2 {
+  z-index: 20;
+  background-color: var(--rosy-taupe);
+}
+
+.stackLayer3 {
+  z-index: 10;
+  background-color: var(--steel-blue);
+}
+
+.mainFooterContent {
+  position: relative;
+  z-index: 40;
+  background-color: var(--charcoal-blue);
+  border-radius: 40px 40px 0 0;
+  width: 100%;
+  padding-top: 4rem;
+  padding-bottom: 2.5rem;
+  color: var(--parchment);
+}
+
+.footerLogoMark {
+  width: 48px;
+  height: 48px;
+  background-color: var(--parchment);
+  -webkit-mask-image: url(/logo-blue-square.svg);
+  mask-image: url(/logo-blue-square.svg);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+.footerWordmark {
+  width: 200px;
+  height: 48px;
+  background-color: var(--parchment);
+  -webkit-mask-image: url(/logo-text-blue.svg);
+  mask-image: url(/logo-text-blue.svg);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: left center;
+  mask-position: left center;
+}
+
+@media (min-width: 768px) {
+  .stackLayer,
+  .mainFooterContent {
+    border-radius: 24px 24px 0 0;
+  }
+
+  .footerLogoMark {
+    width: 64px;
+    height: 64px;
+  }
+
+  .footerWordmark {
+    width: 280px;
+    height: 64px;
+  }
+}
+
+@media (max-width: 768px) {
+  .stackLayer,
+  .mainFooterContent {
+    border-radius: 24px 24px 0 0;
+  }
+}
+
+/* Helper classes for text colors using the variables */
+.textCharcoalBlue {
+  color: var(--charcoal-blue);
+}
+
+.textRosyTaupe {
+  color: var(--rosy-taupe);
+}
+
+.textSteelBlue {
+  color: var(--steel-blue);
+}
+
+.textParchment {
+  color: var(--parchment);
+}
+
+.textKhakiBeige {
+  color: var(--khaki-beige);
+}
+
+.hoverTextRosyTaupe:hover {
+  color: var(--rosy-taupe);
+}

@@ -1,0 +1,286 @@
+.badgeCloudSection {
+  position: relative;
+  min-height: 100svh;
+  width: 100%;
+  border-top: 1px solid rgba(40, 83, 107, 0.1);
+  border-bottom: 1px solid rgba(40, 83, 107, 0.1);
+  background-color: var(--parchment);
+  color: var(--charcoal-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--section-padding-y) var(--section-padding-x-mobile);
+  overflow: hidden;
+  margin-top: -15vh;
+  padding-bottom: var(--section-padding-y);
+  /* Tuck under previous section */
+}
+
+.contentWrapper {
+  position: relative;
+  width: min(95%, var(--container-max));
+  text-align: center;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: var(--heading-section);
+  line-height: var(--leading-snug);
+  color: var(--charcoal-blue);
+}
+
+.lede {
+  margin: 0;
+  letter-spacing: var(--tracking-tight);
+  opacity: 0;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  gap: var(--space-2);
+  border: 2px solid var(--charcoal-blue);
+  color: var(--charcoal-blue);
+  padding: 0.1em 0.7em;
+  border-radius: 999px;
+  margin: 0 0.2em;
+  background-color: rgba(255, 255, 255, 0.2);
+  font-size: 0.7em;
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  font-weight: 700;
+  position: relative;
+  top: -0.1em;
+  cursor: pointer;
+  /* REMOVED transition for transform - GSAP handles this to avoid conflict */
+  /* Hover transitions are CSS-only since GSAP doesn't animate during hover */
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.badge:hover {
+  background-color: var(--charcoal-blue) !important;
+  color: var(--parchment) !important;
+  border-color: var(--charcoal-blue) !important;
+  transform: translateY(-2px);
+}
+
+.badge:active {
+  transform: translateY(0);
+}
+
+.rosy {
+  border-color: var(--rosy-taupe);
+  color: var(--rosy-taupe);
+}
+
+.rosy:hover {
+  background-color: var(--rosy-taupe) !important;
+  color: var(--parchment) !important;
+  border-color: var(--rosy-taupe) !important;
+}
+
+.khaki {
+  border-color: var(--khaki-beige);
+  color: #9c9273;
+}
+
+.khaki:hover {
+  background-color: var(--khaki-beige) !important;
+  color: var(--charcoal-blue) !important;
+  border-color: var(--khaki-beige) !important;
+}
+
+/* Hover effect on icon when badge is hovered */
+.badge:hover .iconCircle {
+  background-color: var(--parchment);
+  color: var(--charcoal-blue);
+}
+
+.rosy:hover .iconCircle {
+  background-color: var(--parchment);
+  color: var(--rosy-taupe);
+}
+
+.khaki:hover .iconCircle {
+  background-color: var(--charcoal-blue);
+  /* Contrast for khaki bg */
+  color: var(--khaki-beige);
+}
+
+
+.iconWrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0;
+  height: 1.5em;
+  overflow: hidden;
+  transform-origin: center;
+  margin-right: 0.15em;
+  pointer-events: none;
+  /* Let clicks pass through to button */
+}
+
+.iconCircle {
+  width: 1.2em;
+  height: 1.2em;
+  border-radius: 999px;
+  background-color: var(--steel-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--parchment);
+  transform: scale(0);
+  transform-origin: center;
+  /* REMOVED transition for transform/scale - GSAP handles this */
+  /* Only keep color transitions for hover states (not animated by GSAP) */
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.rosy .iconCircle {
+  background-color: var(--rosy-taupe);
+}
+
+.khaki .iconCircle {
+  background-color: var(--khaki-beige);
+}
+
+.iconSvg {
+  width: 0.65em;
+  height: 0.65em;
+  fill: currentColor;
+}
+
+.lineBreakText {
+  display: block;
+  margin-top: 0;
+  /* Reset margin to ensure natural line height spacing */
+}
+
+.introText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-serif);
+  font-size: var(--heading-section);
+  letter-spacing: var(--tracking-tight);
+  color: var(--charcoal-blue);
+  text-align: center;
+  width: min(85vw, 1000px);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.outroText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-serif);
+  font-size: var(--heading-section);
+  letter-spacing: var(--tracking-tight);
+  color: var(--charcoal-blue);
+  text-align: center;
+  width: min(85vw, 1000px);
+  opacity: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.emphasisWord {
+  position: relative;
+  display: inline-block;
+  font-style: normal;
+  font-weight: 400;
+  padding-bottom: 0.15em;
+}
+
+.emphasisUnderline {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  background-color: currentColor;
+  border-radius: 999px;
+  transform-origin: center;
+  transform: scaleX(0);
+  opacity: 0;
+}
+
+.screenReaderOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  border: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .badgeCloudSection {
+    padding: var(--section-padding-y-mobile) var(--space-4) var(--space-12);
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  .contentWrapper {
+    font-size: var(--text-3xl);
+    text-align: center;
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .lede {
+    text-align: center;
+    max-width: 100%;
+    display: block;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .badge {
+    display: inline-flex;
+    margin: var(--space-1) var(--space-1);
+  }
+}
+
+@media (max-width: 480px) {
+  .badge {
+    font-size: 0.55em;
+    /* Smaller font on very small screens to prevent overflow */
+    padding: 0.1em 0.5em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lede {
+    opacity: 1;
+  }
+
+  .emphasisWord {
+    font-style: italic;
+    font-weight: 700;
+  }
+
+  .emphasisUnderline {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}

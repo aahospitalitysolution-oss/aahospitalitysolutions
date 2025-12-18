@@ -1,0 +1,215 @@
+
+> anahospitality@0.1.0 lint
+> eslint
+
+
+/Users/aakashnair/projects/anahospitality/.kiro/specs/blog-content-rewrite/infrastructure/validate-seo.ts
+  492:72  warning  '_' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/aakashnair/projects/anahospitality/src/app/HomeClient.tsx
+  18:9  warning  'router' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/aakashnair/projects/anahospitality/src/app/blog/[slug]/page.tsx
+  27:14  warning  'e' is defined but never used  @typescript-eslint/no-unused-vars
+  46:14  warning  'e' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/aakashnair/projects/anahospitality/src/app/not-found-particle.tsx
+   6:28  warning  'index' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+  10:9   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/aakashnair/projects/anahospitality/src/app/not-found-particle.tsx:10:9
+   8 |
+   9 |     useEffect(() => {
+> 10 |         setRandomValues({
+     |         ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  11 |             x: Math.random() * width,
+  12 |             y: Math.random() * height,
+  13 |             yEnd: Math.random() * -100,  react-hooks/set-state-in-effect
+
+/Users/aakashnair/projects/anahospitality/src/app/not-found.tsx
+  61:5   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/aakashnair/projects/anahospitality/src/app/not-found.tsx:61:5
+  59 |
+  60 |   useEffect(() => {
+> 61 |     setMounted(true);
+     |     ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  62 |
+  63 |     // Detect mobile
+  64 |     const checkMobile = () => {  react-hooks/set-state-in-effect
+  80:11  error  'startTime' is never reassigned. Use 'const' instead                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       prefer-const
+
+/Users/aakashnair/projects/anahospitality/src/app/privacy-policy/page.tsx
+  4:10  warning  'Navbar' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/aakashnair/projects/anahospitality/src/app/services/ServicesClient.tsx
+  10:3   warning  'ArrowRight' is defined but never used  @typescript-eslint/no-unused-vars
+  24:10  warning  'cn' is defined but never used          @typescript-eslint/no-unused-vars
+
+/Users/aakashnair/projects/anahospitality/src/app/terms-of-service/page.tsx
+  4:10  warning  'Navbar' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/aakashnair/projects/anahospitality/src/components/SmartButton.tsx
+  219:6  warning  React Hook useLayoutEffect has a missing dependency: 'alignment'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/aakashnair/projects/anahospitality/src/components/landing/BadgeCloud.tsx
+  27:7  warning  'ChatIcon' is assigned a value but never used    @typescript-eslint/no-unused-vars
+  41:7  warning  'PencilIcon' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/aakashnair/projects/anahospitality/src/components/landing/EthosSection.tsx
+  72:15  warning  'select' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/aakashnair/projects/anahospitality/src/components/landing/Globe.tsx
+  48:7  warning  'EXP_LEVELS' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/aakashnair/projects/anahospitality/src/components/landing/HeroImageContainer.tsx
+  17:3  warning  'textHeight' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+  23:5  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/aakashnair/projects/anahospitality/src/components/landing/HeroImageContainer.tsx:23:5
+  21 |
+  22 |   useEffect(() => {
+> 23 |     setMounted(true);
+     |     ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  24 |   }, []);
+  25 |
+  26 |   // Base style without transform/opacity calculations  react-hooks/set-state-in-effect
+
+/Users/aakashnair/projects/anahospitality/src/components/landing/Landing.tsx
+    3:29  warning  'useState' is defined but never used                                                                              @typescript-eslint/no-unused-vars
+   14:26  warning  'isIOSDevice' is defined but never used                                                                           @typescript-eslint/no-unused-vars
+   15:10  warning  'getLenisConfig' is defined but never used                                                                        @typescript-eslint/no-unused-vars
+   22:19  error    Unexpected any. Specify a different type                                                                          @typescript-eslint/no-explicit-any
+   23:28  error    Unexpected any. Specify a different type                                                                          @typescript-eslint/no-explicit-any
+   93:9   warning  'Lenis' is defined but never used                                                                                 @typescript-eslint/no-unused-vars
+   93:16  error    Unexpected any. Specify a different type                                                                          @typescript-eslint/no-explicit-any
+  318:26  error    Unexpected any. Specify a different type                                                                          @typescript-eslint/no-explicit-any
+  596:49  error    Unexpected any. Specify a different type                                                                          @typescript-eslint/no-explicit-any
+  598:6   warning  React Hook useEffect has a missing dependency: 'setHeroPinned'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/aakashnair/projects/anahospitality/src/components/landing/LandingCanvas.tsx
+  19:6  warning  'onImagesLoaded' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/aakashnair/projects/anahospitality/src/components/landing/LandingSpecialText.tsx
+  3:8  warning  'gsap' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/aakashnair/projects/anahospitality/src/components/ui/client-only.tsx
+  14:9  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/aakashnair/projects/anahospitality/src/components/ui/client-only.tsx:14:9
+  12 |
+  13 |     useEffect(() => {
+> 14 |         setHasMounted(true);
+     |         ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  15 |     }, []);
+  16 |
+  17 |     if (!hasMounted) {  react-hooks/set-state-in-effect
+
+/Users/aakashnair/projects/anahospitality/src/components/ui/infinite-slider.tsx
+  37:9  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/aakashnair/projects/anahospitality/src/components/ui/infinite-slider.tsx:37:9
+  35 |     // Fix hydration by ensuring component only animates after mount
+  36 |     useEffect(() => {
+> 37 |         setIsMounted(true);
+     |         ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  38 |     }, []);
+  39 |
+  40 |     // PERFORMANCE: Use Intersection Observer to pause animation when off-screen  react-hooks/set-state-in-effect
+
+/Users/aakashnair/projects/anahospitality/src/components/ui/input.tsx
+  4:11  error  An interface declaring no members is equivalent to its supertype  @typescript-eslint/no-empty-object-type
+
+/Users/aakashnair/projects/anahospitality/src/contexts/AnimationContext.tsx
+  16:3   warning  'hasSeenLoader' is defined but never used                 @typescript-eslint/no-unused-vars
+  63:28  warning  'setShouldPlayLoader' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/aakashnair/projects/anahospitality/src/contexts/LanguageContext.tsx
+  24:13  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/aakashnair/projects/anahospitality/src/contexts/LanguageContext.tsx:24:13
+  22 |         const savedLang = localStorage.getItem("app-language") as Language;
+  23 |         if (savedLang && (savedLang === "en" || savedLang === "th")) {
+> 24 |             setLanguageState(savedLang);
+     |             ^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  25 |         }
+  26 |     }, []);
+  27 |  react-hooks/set-state-in-effect
+
+/Users/aakashnair/projects/anahospitality/src/contexts/ScrollContext.tsx
+   11:3   warning  'useCallback' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+   24:63  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-explicit-any
+   74:28  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-explicit-any
+   80:7   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+/Users/aakashnair/projects/anahospitality/src/contexts/ScrollContext.tsx:80:7
+  78 |
+  79 |       lenisRef.current = lenisInstance;
+> 80 |       setLenis(lenisInstance);
+     |       ^^^^^^^^ Avoid calling setState() directly within an effect
+  81 |
+  82 |       // Sync Lenis with GSAP ScrollTrigger
+  83 |       lenisInstance.on("scroll", ScrollTrigger.update);  react-hooks/set-state-in-effect
+  110:14  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-explicit-any
+  149:9   warning  'targetPos' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  @typescript-eslint/no-unused-vars
+  306:6   warning  React Hook useEffect has a missing dependency: 'setPendingHash'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               react-hooks/exhaustive-deps
+  322:6   warning  React Hook useEffect has a missing dependency: 'setPendingHash'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               react-hooks/exhaustive-deps
+
+/Users/aakashnair/projects/anahospitality/src/hooks/useImagePreloader.test.ts
+  405:11  error  'progress' is never reassigned. Use 'const' instead  prefer-const
+
+/Users/aakashnair/projects/anahospitality/src/hooks/useImagePreloader.ts
+   10:5  warning  'globalLoadProgress' is assigned a value but never used                                                        @typescript-eslint/no-unused-vars
+  242:6  warning  React Hook useCallback has a missing dependency: 'isMobile'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/aakashnair/projects/anahospitality/src/hooks/useLoaderAnimation.ts
+  234:11  warning  'updateCounter' is assigned a value but never used                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+  260:16  error    'targetIdx' is never reassigned. Use 'const' instead                                                                                                                                                                                       prefer-const
+  310:6   warning  React Hook useLayoutEffect has a missing dependency: 'onComplete'. Either include it or remove the dependency array. If 'onComplete' changes too often, find the parent component that defines it and wrap that definition in useCallback  react-hooks/exhaustive-deps
+  372:6   warning  React Hook useLayoutEffect has missing dependencies: 'counter1Ref', 'counter2Ref', 'counter3Ref', and 'heroBgRef'. Either include them or remove the dependency array                                                                      react-hooks/exhaustive-deps
+
+✖ 52 problems (19 errors, 33 warnings)
+  3 errors and 0 warnings potentially fixable with the `--fix` option.
+
