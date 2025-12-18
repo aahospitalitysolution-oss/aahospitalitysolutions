@@ -199,9 +199,8 @@ export default function ServicesClient() {
             pointerEvents: isMenuOpen ? "none" : "auto",
             visibility: isMenuOpen ? "hidden" : "visible",
             opacity: isMenuOpen ? 0 : 1,
-            transition: `opacity 0.3s ease, visibility 0s linear ${
-              isMenuOpen ? "0.3s" : "0s"
-            }`,
+            transition: `opacity 0.3s ease, visibility 0s linear ${isMenuOpen ? "0.3s" : "0s"
+              }`,
           }}
           aria-label="Home"
         >
@@ -464,7 +463,6 @@ export default function ServicesClient() {
                 theme="light"
                 onClick={() => router.push("/#contact")}
               />
-              <SmartButton text={t.servicesPage.cta.download} theme="dark" />
             </div>
           </div>
         </section>

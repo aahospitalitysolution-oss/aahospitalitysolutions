@@ -14,12 +14,12 @@ describe('useImagePreloader - Key Frame Loading Logic', () => {
     it('should calculate key frames at intervals of 4', () => {
       const frameCount = 20;
       const keyFrameIndices: number[] = [];
-      
+
       // This is the logic from the implementation
       for (let i = 0; i < frameCount; i += KEY_FRAME_INTERVAL) {
         keyFrameIndices.push(i);
       }
-      
+
       // Always include the last frame
       if (!keyFrameIndices.includes(frameCount - 1)) {
         keyFrameIndices.push(frameCount - 1);
@@ -32,11 +32,11 @@ describe('useImagePreloader - Key Frame Loading Logic', () => {
     it('should always include the last frame as a key frame', () => {
       const frameCount = 385; // Real frame count
       const keyFrameIndices: number[] = [];
-      
+
       for (let i = 0; i < frameCount; i += KEY_FRAME_INTERVAL) {
         keyFrameIndices.push(i);
       }
-      
+
       if (!keyFrameIndices.includes(frameCount - 1)) {
         keyFrameIndices.push(frameCount - 1);
       }
@@ -49,11 +49,11 @@ describe('useImagePreloader - Key Frame Loading Logic', () => {
     it('should load key frames where index % 4 === 0', () => {
       const frameCount = 50;
       const keyFrameIndices: number[] = [];
-      
+
       for (let i = 0; i < frameCount; i += KEY_FRAME_INTERVAL) {
         keyFrameIndices.push(i);
       }
-      
+
       if (!keyFrameIndices.includes(frameCount - 1)) {
         keyFrameIndices.push(frameCount - 1);
       }
@@ -68,11 +68,11 @@ describe('useImagePreloader - Key Frame Loading Logic', () => {
     it('should handle edge case where last frame is already a key frame', () => {
       const frameCount = 21; // Last frame (20) is at index 20, which is 20 % 4 === 0
       const keyFrameIndices: number[] = [];
-      
+
       for (let i = 0; i < frameCount; i += KEY_FRAME_INTERVAL) {
         keyFrameIndices.push(i);
       }
-      
+
       if (!keyFrameIndices.includes(frameCount - 1)) {
         keyFrameIndices.push(frameCount - 1);
       }
@@ -80,7 +80,7 @@ describe('useImagePreloader - Key Frame Loading Logic', () => {
       // Expected key frames: 0, 4, 8, 12, 16, 20
       // Frame 20 should only appear once (not duplicated)
       expect(keyFrameIndices).toEqual([0, 4, 8, 12, 16, 20]);
-      
+
       // Verify no duplicates
       const uniqueFrames = new Set(keyFrameIndices);
       expect(uniqueFrames.size).toBe(keyFrameIndices.length);
@@ -96,7 +96,7 @@ describe('useImagePreloader - Key Frame Loading Logic', () => {
 
       // Frame 0 is a key frame and should be returned
       expect(getNearestLoadedFrame(0, loadedFrames, frameCount)).toBe(0);
-      
+
       // Frame 4 is a key frame and should be returned
       expect(getNearestLoadedFrame(4, loadedFrames, frameCount)).toBe(4);
     });
@@ -165,7 +165,7 @@ describe('useImagePreloader - Key Frame Loading Logic', () => {
     it('should load all remaining frames after phase 1 completes', () => {
       const frameCount = 20;
       const keyFrameIndices: number[] = [];
-      
+
       // Calculate key frames (phase 1)
       for (let i = 0; i < frameCount; i += KEY_FRAME_INTERVAL) {
         keyFrameIndices.push(i);
@@ -176,7 +176,7 @@ describe('useImagePreloader - Key Frame Loading Logic', () => {
 
       // Simulate phase 1 completion - key frames loaded
       const loadedFrames = new Set(keyFrameIndices);
-      
+
       // Calculate remaining frames (phase 2)
       const remainingIndices: number[] = [];
       for (let i = 0; i < frameCount; i++) {
@@ -190,7 +190,7 @@ describe('useImagePreloader - Key Frame Loading Logic', () => {
 
       // After phase 2, all frames should be loaded
       expect(loadedFrames.size).toBe(frameCount);
-      
+
       // Verify every frame index is in the loaded set
       for (let i = 0; i < frameCount; i++) {
         expect(loadedFrames.has(i)).toBe(true);
@@ -200,7 +200,7 @@ describe('useImagePreloader - Key Frame Loading Logic', () => {
     it('should have allFramesLoaded state become true after phase 2', () => {
       const frameCount = 20;
       const keyFrameIndices: number[] = [];
-      
+
       // Calculate key frames
       for (let i = 0; i < frameCount; i += KEY_FRAME_INTERVAL) {
         keyFrameIndices.push(i);
@@ -212,7 +212,7 @@ describe('useImagePreloader - Key Frame Loading Logic', () => {
       // Simulate loading state
       let allFramesLoaded = false;
       const loadedFrames = new Set(keyFrameIndices);
-      
+
       // Phase 1 complete - allFramesLoaded should still be false
       expect(allFramesLoaded).toBe(false);
 
@@ -231,7 +231,7 @@ describe('useImagePreloader - Key Frame Loading Logic', () => {
       remainingIndices.forEach(index => {
         loadedFrames.add(index);
         loadedCount++;
-        
+
         if (loadedCount === totalRemaining) {
           allFramesLoaded = true;
         }
@@ -245,7 +245,7 @@ describe('useImagePreloader - Key Frame Loading Logic', () => {
     it('should correctly identify remaining frames after phase 1', () => {
       const frameCount = 20;
       const keyFrameIndices: number[] = [];
-      
+
       // Calculate key frames
       for (let i = 0; i < frameCount; i += KEY_FRAME_INTERVAL) {
         keyFrameIndices.push(i);
@@ -256,7 +256,7 @@ describe('useImagePreloader - Key Frame Loading Logic', () => {
 
       // Key frames: [0, 4, 8, 12, 16, 19]
       const loadedFrames = new Set(keyFrameIndices);
-      
+
       // Calculate remaining frames
       const remainingIndices: number[] = [];
       for (let i = 0; i < frameCount; i++) {
@@ -274,7 +274,7 @@ describe('useImagePreloader - Key Frame Loading Logic', () => {
     it('should handle case where all frames are already loaded', () => {
       const frameCount = 20;
       const loadedFrames = new Set<number>();
-      
+
       // Simulate all frames already loaded
       for (let i = 0; i < frameCount; i++) {
         loadedFrames.add(i);
@@ -290,7 +290,7 @@ describe('useImagePreloader - Key Frame Loading Logic', () => {
 
       // No remaining frames
       expect(remainingIndices.length).toBe(0);
-      
+
       // allFramesLoaded should be true immediately
       let allFramesLoaded = false;
       if (remainingIndices.length === 0) {
@@ -304,7 +304,7 @@ describe('useImagePreloader - Key Frame Loading Logic', () => {
     it('should increase progress from 0 to 100 during phase 1', () => {
       const frameCount = 20;
       const keyFrameIndices: number[] = [];
-      
+
       // Calculate key frames
       for (let i = 0; i < frameCount; i += KEY_FRAME_INTERVAL) {
         keyFrameIndices.push(i);
@@ -327,7 +327,7 @@ describe('useImagePreloader - Key Frame Loading Logic', () => {
       // Progress should start above 0 and end at 100
       expect(progressValues[0]).toBeGreaterThan(0);
       expect(progressValues[progressValues.length - 1]).toBe(100);
-      
+
       // Progress should increase monotonically
       for (let i = 1; i < progressValues.length; i++) {
         expect(progressValues[i]).toBeGreaterThanOrEqual(progressValues[i - 1]);
@@ -337,7 +337,7 @@ describe('useImagePreloader - Key Frame Loading Logic', () => {
     it('should calculate progress based on key frames loaded', () => {
       const frameCount = 20;
       const keyFrameIndices: number[] = [];
-      
+
       // Calculate key frames
       for (let i = 0; i < frameCount; i += KEY_FRAME_INTERVAL) {
         keyFrameIndices.push(i);
@@ -369,7 +369,7 @@ describe('useImagePreloader - Key Frame Loading Logic', () => {
     it('should call progress callback during loading', () => {
       const frameCount = 20;
       const keyFrameIndices: number[] = [];
-      
+
       // Calculate key frames
       for (let i = 0; i < frameCount; i += KEY_FRAME_INTERVAL) {
         keyFrameIndices.push(i);
@@ -396,14 +396,14 @@ describe('useImagePreloader - Key Frame Loading Logic', () => {
 
       // Progress callback should be called for each key frame
       expect(progressCallbacks.length).toBe(totalKeyFrames);
-      
+
       // Last callback should be 100
       expect(progressCallbacks[progressCallbacks.length - 1]).toBe(100);
     });
 
     it('should have progress at 0 before loading starts', () => {
-      let progress = 0;
-      
+      const progress = 0;
+
       // Before loading, progress should be 0
       expect(progress).toBe(0);
     });
@@ -411,7 +411,7 @@ describe('useImagePreloader - Key Frame Loading Logic', () => {
     it('should reach 100% when all key frames are loaded', () => {
       const frameCount = 385; // Real frame count
       const keyFrameIndices: number[] = [];
-      
+
       // Calculate key frames
       for (let i = 0; i < frameCount; i += KEY_FRAME_INTERVAL) {
         keyFrameIndices.push(i);

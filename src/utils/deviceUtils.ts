@@ -20,9 +20,9 @@ export const isIOSDevice = (): boolean => {
     if (typeof window === 'undefined') return false;
 
     if (_isIOS === null) {
-        const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+        const userAgent = navigator.userAgent || navigator.vendor || (window as unknown as { opera: string }).opera;
         // Check for iOS devices
-        _isIOS = /iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream;
+        _isIOS = /iPad|iPhone|iPod/.test(userAgent) && !(window as unknown as { MSStream: boolean }).MSStream;
 
         // Also check for iPad on iOS 13+ (reports as Mac)
         if (!_isIOS && navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) {
@@ -57,7 +57,24 @@ export const isLowPowerDevice = (): boolean => {
     if (typeof window === 'undefined') return false;
 
     if (_isLowPowerDevice === null) {
-        const nav = navigator as any;
+        // Extended Navigator interface for non-standard properties
+        interface ExtendedNavigator extends Navigator {
+            deviceMemory?: number;
+            connection?: {
+                effectiveType: string;
+                saveData: boolean;
+            };
+            mozConnection?: {
+                effectiveType: string;
+                saveData: boolean;
+            };
+            webkitConnection?: {
+                effectiveType: string;
+                saveData: boolean;
+            };
+        }
+
+        const nav = navigator as ExtendedNavigator;
 
         // Check hardware concurrency (number of logical processors)
         const lowCores = nav.hardwareConcurrency ? nav.hardwareConcurrency <= 4 : false;

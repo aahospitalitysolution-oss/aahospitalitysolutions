@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import {
@@ -77,6 +78,7 @@ export const ScrollProvider = ({ children }: ScrollProviderProps) => {
       });
 
       lenisRef.current = lenisInstance;
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLenis(lenisInstance);
 
       // Sync Lenis with GSAP ScrollTrigger

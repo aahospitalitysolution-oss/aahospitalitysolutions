@@ -1,7 +1,8 @@
 import * as React from "react";
 import styles from "./input.module.css";
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+// Use type alias to avoid empty interface lint error
+export type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
 
 export function Input({ className = "", ...props }: InputProps) {
   return (

@@ -234,7 +234,7 @@ export const useLoaderAnimation = ({
     const updateCounter = (progress: number) => {
       // 0 to 100
       const p = Math.min(100, Math.max(0, progress));
-      
+
       // Column 1 (Hundreds/Tens overflow logic for 100): 
       // 0-99 -> 0, 100 -> 1
       // Actually c1 is just 0 or 1. 
@@ -242,10 +242,10 @@ export const useLoaderAnimation = ({
       if (c1) {
         const sample = c1.querySelector<HTMLElement>(".num");
         if (sample) {
-           const h = sample.clientHeight;
-           // Switch to '1' only at 100%
-           const targetIdx = p >= 100 ? 1 : 0;
-           gsap.to(c1, { y: -targetIdx * h, duration: 0.5, ease: "power2.out" });
+          const h = sample.clientHeight;
+          // Switch to '1' only at 100%
+          const targetIdx = p >= 100 ? 1 : 0;
+          gsap.to(c1, { y: -targetIdx * h, duration: 0.5, ease: "power2.out" });
         }
       }
 
@@ -256,10 +256,10 @@ export const useLoaderAnimation = ({
       if (c2) {
         const sample = c2.querySelector<HTMLElement>(".num");
         if (sample) {
-           const h = sample.clientHeight;
-           let targetIdx = Math.floor(p / 10);
-           // If p=100, targetIdx=10, which maps correctly to the last '0'
-           gsap.to(c2, { y: -targetIdx * h, duration: 0.5, ease: "power2.out" });
+          const h = sample.clientHeight;
+          const targetIdx = Math.floor(p / 10);
+          // If p=100, targetIdx=10, which maps correctly to the last '0'
+          gsap.to(c2, { y: -targetIdx * h, duration: 0.5, ease: "power2.out" });
         }
       }
 
@@ -272,18 +272,18 @@ export const useLoaderAnimation = ({
       // 30 items -> indices 0..29. plus last 0 -> index 30.
       // Let's just track the digit directly.
       if (c3) {
-         const sample = c3.querySelector<HTMLElement>(".num");
-         if (sample) {
-            const h = sample.clientHeight;
-            // We want it to cycle.
-            // simple mapping: digit = p % 10.
-            // but to make it look like it scrolled multiple times, we can add rotations.
-            // 0 -> index 0
-            // 100 -> index 30 (last 0)
-            // map 0..100 to 0..30
-            const targetIdx = (p / 100) * 30; 
-            gsap.to(c3, { y: -targetIdx * h, duration: 0.5, ease: "power2.out" });
-         }
+        const sample = c3.querySelector<HTMLElement>(".num");
+        if (sample) {
+          const h = sample.clientHeight;
+          // We want it to cycle.
+          // simple mapping: digit = p % 10.
+          // but to make it look like it scrolled multiple times, we can add rotations.
+          // 0 -> index 0
+          // 100 -> index 30 (last 0)
+          // map 0..100 to 0..30
+          const targetIdx = (p / 100) * 30;
+          gsap.to(c3, { y: -targetIdx * h, duration: 0.5, ease: "power2.out" });
+        }
       }
     };
 
@@ -298,9 +298,9 @@ export const useLoaderAnimation = ({
     // Or should it track progress too? Let's keep it time-based or link it to progress?
     // User asked if "0 to 100 loading actually loading". 
     // So 0->100 should track progress. The background rise can also track progress.
-    
+
     // Let's update background scaleY based on progress in the effect below
-    
+
     return () => {
       mm.revert();
       ctx.revert();
@@ -323,51 +323,51 @@ export const useLoaderAnimation = ({
 
   // Separate effect to handle progress updates
   useLayoutEffect(() => {
-      if (!shouldPlay || !heroBgRef.current || completionTriggeredRef.current) return;
+    if (!shouldPlay || !heroBgRef.current || completionTriggeredRef.current) return;
 
-      const p = Math.min(100, Math.max(0, progress));
-      
-      // Animate background rise with progress
-      gsap.to(heroBgRef.current, { 
-          scaleY: p / 100, 
-          duration: 0.5, 
-          ease: "power2.out" 
-      });
+    const p = Math.min(100, Math.max(0, progress));
 
-      // Animate counters
-      const c1 = counter1Ref.current;
-      const c2 = counter2Ref.current;
-      const c3 = counter3Ref.current;
+    // Animate background rise with progress
+    gsap.to(heroBgRef.current, {
+      scaleY: p / 100,
+      duration: 0.5,
+      ease: "power2.out"
+    });
 
-      if (c1 && c2 && c3) {
-          const sample = c3.querySelector<HTMLElement>(".num");
-          if (sample) {
-              const h = sample.clientHeight;
-              
-              // C1: 0 or 1
-              const idx1 = p >= 100 ? 1 : 0;
-              gsap.to(c1, { y: -idx1 * h, duration: 0.5 });
+    // Animate counters
+    const c1 = counter1Ref.current;
+    const c2 = counter2Ref.current;
+    const c3 = counter3Ref.current;
 
-              // C2: 0-10
-              const idx2 = Math.floor(p / 10);
-              gsap.to(c2, { y: -idx2 * h, duration: 0.5 });
+    if (c1 && c2 && c3) {
+      const sample = c3.querySelector<HTMLElement>(".num");
+      if (sample) {
+        const h = sample.clientHeight;
 
-              // C3: 0-30 (spinning)
-              const idx3 = (p / 100) * 30;
-              gsap.to(c3, { y: -idx3 * h, duration: 0.5 });
-          }
+        // C1: 0 or 1
+        const idx1 = p >= 100 ? 1 : 0;
+        gsap.to(c1, { y: -idx1 * h, duration: 0.5 });
+
+        // C2: 0-10
+        const idx2 = Math.floor(p / 10);
+        gsap.to(c2, { y: -idx2 * h, duration: 0.5 });
+
+        // C3: 0-30 (spinning)
+        const idx3 = (p / 100) * 30;
+        gsap.to(c3, { y: -idx3 * h, duration: 0.5 });
       }
+    }
 
-      if (p >= 100) {
-         completionTriggeredRef.current = true;
-         // Complete sequence
-         const tl = gsap.timeline();
-         // Wait 0.5s after reaching 100 before starting fade out
-         const waitDuration = 0.5;
-         
-         tl.to(".counter", { autoAlpha: 0, duration: 0.3, ease: "power3.out" }, `+=${waitDuration}`);
-         tl.add(() => onComplete(), ">");
-      }
+    if (p >= 100) {
+      completionTriggeredRef.current = true;
+      // Complete sequence
+      const tl = gsap.timeline();
+      // Wait 0.5s after reaching 100 before starting fade out
+      const waitDuration = 0.5;
+
+      tl.to(".counter", { autoAlpha: 0, duration: 0.3, ease: "power3.out" }, `+=${waitDuration}`);
+      tl.add(() => onComplete(), ">");
+    }
 
   }, [shouldPlay, progress, onComplete]);
 };

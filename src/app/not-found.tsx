@@ -11,6 +11,7 @@ import { useMenuContext } from "@/contexts/MenuContext";
 import { usePageTransition } from "@/hooks/usePageTransition";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { MenuButton } from "@/components/MenuButton/MenuButton";
+import { Particle } from "./not-found-particle";
 
 export default function NotFound() {
   const [mounted, setMounted] = useState(false);
@@ -57,6 +58,7 @@ export default function NotFound() {
   );
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
 
     // Detect mobile
@@ -137,9 +139,8 @@ export default function NotFound() {
             pointerEvents: isMenuOpen ? "none" : "auto",
             visibility: isMenuOpen ? "hidden" : "visible",
             opacity: isMenuOpen ? 0 : 1,
-            transition: `opacity 0.3s ease, visibility 0s linear ${
-              isMenuOpen ? "0.3s" : "0s"
-            }`,
+            transition: `opacity 0.3s ease, visibility 0s linear ${isMenuOpen ? "0.3s" : "0s"
+              }`,
           }}
           aria-label="Home"
         >
@@ -175,9 +176,8 @@ export default function NotFound() {
 
       <main
         ref={containerRef}
-        className={`relative flex h-svh w-full flex-col items-center justify-center overflow-hidden selection:bg-transparent ${
-          !isMobile ? "cursor-none" : ""
-        }`}
+        className={`relative flex h-svh w-full flex-col items-center justify-center overflow-hidden selection:bg-transparent ${!isMobile ? "cursor-none" : ""
+          }`}
         style={{ backgroundColor: colors.deepCharcoal }}
       >
         {/* =========================================
@@ -254,28 +254,8 @@ export default function NotFound() {
 
           {/* Floating "Dust" Particles (Atmosphere) */}
           <div className="absolute inset-0 pointer-events-none">
-            {[...Array(6)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-1 h-1 bg-[#c2948a] rounded-full opacity-40"
-                initial={{
-                  x:
-                    Math.random() *
-                    (typeof window !== "undefined" ? window.innerWidth : 1000),
-                  y:
-                    Math.random() *
-                    (typeof window !== "undefined" ? window.innerHeight : 800),
-                }}
-                animate={{
-                  y: [null, Math.random() * -100],
-                  opacity: [0.2, 0.5, 0.2],
-                }}
-                transition={{
-                  duration: 5 + Math.random() * 5,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
-              />
+            {mounted && [...Array(6)].map((_, i) => (
+              <Particle key={i} index={i} width={window.innerWidth} height={window.innerHeight} />
             ))}
           </div>
         </motion.div>

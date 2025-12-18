@@ -484,3 +484,186 @@ body.lang-th .counter,
 body.lang-th .demo-title {
   font-family: var(--font-thai), inherit;
 }
+
+/* ===== BLOG CONTENT FORMATTING ===== */
+/* Enhanced text rendering and typography for blog articles */
+
+.prose {
+  /* Better text rendering */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.prose p {
+  /* Text justification with hyphenation support */
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -moz-hyphens: auto;
+  
+  /* Prevent orphans and widows */
+  orphans: 3;
+  widows: 3;
+  
+  /* Word wrapping for long strings */
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.prose p:first-of-type {
+  margin-top: 0;
+}
+
+.prose p:last-of-type {
+  margin-bottom: 0;
+}
+
+/* Ensure proper spacing for content elements */
+.prose > * + * {
+  margin-top: 1.5em;
+}
+
+/* Enhanced link styling */
+.prose a {
+  transition: color 0.2s ease, text-decoration 0.2s ease;
+}
+
+/* Code block styling */
+.prose pre {
+  background-color: rgba(26, 46, 59, 0.5);
+  border: 1px solid rgba(246, 240, 237, 0.1);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  overflow-x: auto;
+}
+
+/* Inline code styling */
+.prose code {
+  font-size: 0.9em;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* Table responsive wrapper */
+.prose table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* Responsive adjustments */
+/* Mobile: < 640px (sm breakpoint) */
+@media (max-width: 639px) {
+  .prose {
+    font-size: 1rem; /* 16px base */
+    line-height: 1.75;
+  }
+  
+  .prose p {
+    margin-bottom: 1.25em;
+    line-height: 1.7;
+  }
+  
+  .prose h2 {
+    font-size: 1.5rem; /* 24px */
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.3;
+  }
+  
+  .prose h3 {
+    font-size: 1.25rem; /* 20px */
+    margin-top: 1.5rem;
+    margin-bottom: 0.625rem;
+    line-height: 1.35;
+  }
+  
+  .prose h4 {
+    font-size: 1.125rem; /* 18px */
+    margin-top: 1.25rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+  }
+  
+  .prose ul, .prose ol {
+    padding-left: 1.25rem;
+  }
+  
+  .prose blockquote {
+    padding: 0.75rem 1rem;
+    margin: 1.25rem 0;
+  }
+  
+  .prose img {
+    margin: 1.5rem 0;
+  }
+  
+  .prose table {
+    font-size: 0.875rem;
+  }
+}
+
+/* Tablet: 640px - 1023px */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .prose {
+    font-size: 1.0625rem; /* 17px */
+    line-height: 1.75;
+  }
+  
+  .prose p {
+    margin-bottom: 1.375em;
+    line-height: 1.75;
+  }
+  
+  .prose h2 {
+    font-size: 1.875rem; /* 30px */
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .prose h3 {
+    font-size: 1.5rem; /* 24px */
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .prose h4 {
+    font-size: 1.25rem; /* 20px */
+    margin-top: 1.5rem;
+    margin-bottom: 0.625rem;
+  }
+}
+
+/* Desktop: >= 1024px */
+@media (min-width: 1024px) {
+  .prose {
+    font-size: 1.125rem; /* 18px */
+    line-height: 1.75;
+    /* Optimal line length: 65-75 characters */
+    max-width: 70ch;
+  }
+  
+  .prose p {
+    margin-bottom: 1.5em;
+    line-height: 1.75;
+  }
+  
+  .prose h2 {
+    font-size: 2rem; /* 32px */
+    margin-top: 3rem;
+    margin-bottom: 1.25rem;
+  }
+  
+  .prose h3 {
+    font-size: 1.625rem; /* 26px */
+    margin-top: 2.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .prose h4 {
+    font-size: 1.375rem; /* 22px */
+    margin-top: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+}

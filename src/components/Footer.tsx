@@ -51,7 +51,7 @@ export default function Footer() {
         const windowHeight = window.innerHeight;
         const distanceFromBottom = windowHeight - rect.top;
         const animationRange = 400;
-        let entryProgress = distanceFromBottom / animationRange;
+        const entryProgress = distanceFromBottom / animationRange;
 
         const scrollTop = window.scrollY;
         const docHeight = document.documentElement.scrollHeight;
@@ -139,27 +139,27 @@ export default function Footer() {
             {/* Right: Links */}
             <div className="flex gap-12 md:gap-20 text-sm md:text-base opacity-90 text-white/90">
               <div className="flex flex-col gap-3">
-                <a
+                <Link
                   href="/#global-reach"
                   onClick={(e) => handleHashLinkClick(e, "#global-reach")}
                   className={`transition-colors ${styles.hoverTextRosyTaupe}`}
                 >
                   {t.menu.globalReach}
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/#partners"
                   onClick={(e) => handleHashLinkClick(e, "#partners")}
                   className={`transition-colors ${styles.hoverTextRosyTaupe}`}
                 >
                   {t.menu.partners}
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/#our-story"
                   onClick={(e) => handleHashLinkClick(e, "#our-story")}
                   className={`transition-colors ${styles.hoverTextRosyTaupe}`}
                 >
                   {t.menu.ourStory}
-                </a>
+                </Link>
               </div>
               <div className="flex flex-col gap-3">
                 <Link
@@ -168,13 +168,13 @@ export default function Footer() {
                 >
                   Blog
                 </Link>
-                <a
+                <Link
                   href="/#contact"
                   onClick={(e) => handleHashLinkClick(e, "#contact")}
                   className={`transition-colors ${styles.hoverTextRosyTaupe}`}
                 >
                   {t.footer.contact}
-                </a>
+                </Link>
               </div>
             </div>
           </div>

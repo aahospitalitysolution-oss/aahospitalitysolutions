@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useRef, useEffect, useState } from "react";
@@ -111,6 +112,52 @@ export const Landing = ({ navRef }: LandingProps) => {
 
       gsap.ticker.lagSmoothing(0);
 
+      // FIX: Reset cache and initialize visual state to "scroll=0" values
+      // This ensures text is visible when navigating back to the landing page
+      // Without this, CSS variables retain their previous values and onUpdate doesn't fire until scroll
+      const startTop = isMobile ? 25 : 12; // vh units - matches the resize phase logic
+
+      // Reset the cache so that gsap.set() calls aren't skipped due to "unchanged" values
+      prevValuesRef.current = {
+        containerScale: -1,
+        overlayOpacity: -1,
+        containerY: -1,
+        containerTop: -1,
+        buttonOpacity: -1,
+        navOpacity: -1,
+        textColorTransition: -1,
+        lastPhase: "",
+      };
+
+      // Set initial container state (scroll position 0 = resize phase start)
+      if (heroContainerRef.current) {
+        gsap.set(heroContainerRef.current, {
+          "--container-scale": 0.5,
+          "--overlay-opacity": 0,
+          "--container-y": "180px",
+          top: `${startTop}vh`,
+        });
+      }
+
+      // Set initial header text color (blue, not white)
+      if (headerRef.current) {
+        gsap.set(headerRef.current, {
+          "--hero-text-color-transition": 0,
+        });
+      }
+
+      // Initialize text overlays to their hidden state
+      const textOverlays = [aadityaRef, aaryahiRef, togetherRef, textBlock4Ref];
+      textOverlays.forEach((ref) => {
+        if (ref.current) {
+          gsap.set(ref.current, {
+            opacity: 0,
+            scale: 3,
+            pointerEvents: "none",
+          });
+        }
+      });
+
       const frameCount = 385;
       const totalScrollDistance = window.innerHeight * 8;
       const resizePhaseEnd = window.innerHeight;
@@ -169,9 +216,9 @@ export const Landing = ({ navRef }: LandingProps) => {
         const exitEnd = stayVisible
           ? 1
           : Math.min(
-              1,
-              threshold + reduceSizeDuration + holdDuration + zoomOutDuration
-            );
+            1,
+            threshold + reduceSizeDuration + holdDuration + zoomOutDuration
+          );
 
         if (stayVisible) {
           if (progress < entryStart) {
@@ -563,7 +610,7 @@ export const Landing = ({ navRef }: LandingProps) => {
           togetherRef={togetherRef}
           textBlock4Ref={textBlock4Ref}
           heroContainerRef={heroContainerRef}
-          onImagesLoaded={() => {}}
+          onImagesLoaded={() => { }}
         />
       </div>
 

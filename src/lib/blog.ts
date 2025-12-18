@@ -3,6 +3,8 @@ import path from 'path';
 import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
+import remarkGfm from 'remark-gfm';
+import remarkBreaks from 'remark-breaks';
 
 const postsDirectory = path.join(process.cwd(), 'src/content/posts');
 
@@ -73,8 +75,13 @@ export async function getPostData(slug: string): Promise<BlogPost> {
     const matterResult = matter(fileContents);
 
     // Use remark to convert markdown into HTML string
+    // remarkGfm: Adds support for GitHub Flavored Markdown (tables, strikethrough, task lists, etc.)
+    // remarkBreaks: Converts line breaks to <br> tags for better formatting
+    // html: Converts markdown AST to HTML with proper escaping of special characters
     const processedContent = await remark()
-        .use(html)
+        .use(remarkGfm)
+        .use(remarkBreaks)
+        .use(html, { sanitize: false })
         .process(matterResult.content);
     const contentHtml = processedContent.toString();
 

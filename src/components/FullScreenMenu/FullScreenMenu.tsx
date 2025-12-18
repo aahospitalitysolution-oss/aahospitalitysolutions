@@ -78,20 +78,20 @@ export const FullScreenMenu = () => {
         <nav className="text-center flex flex-col items-center gap-4 md:gap-6">
           {/* Row 1 */}
           <div className="flex flex-wrap justify-center items-baseline gap-8 md:gap-16">
-            <a
+            <Link
               href="/#our-story"
-              onClick={(e) => handleHashLinkClick(e, "#our-story")}
+              onClick={(e: React.MouseEvent<HTMLAnchorElement>) => handleHashLinkClick(e, "#our-story")}
               className={`${styles.menuItem} ${styles.fancyUnderline} text-3xl md:text-5xl lg:text-6xl`}
             >
               {t.menu.ourStory}
-            </a>
-            <a
+            </Link>
+            <Link
               href="/#ethos"
-              onClick={(e) => handleHashLinkClick(e, "#ethos")}
+              onClick={(e: React.MouseEvent<HTMLAnchorElement>) => handleHashLinkClick(e, "#ethos")}
               className={`${styles.menuItem} ${styles.fancyUnderline} text-3xl md:text-5xl lg:text-6xl`}
             >
               {t.menu.ethos}
-            </a>
+            </Link>
             <Link
               href="/services"
               onClick={handleLinkClick}
@@ -103,20 +103,20 @@ export const FullScreenMenu = () => {
 
           {/* Row 2 */}
           <div className="flex flex-wrap justify-center items-baseline gap-8 md:gap-16 mt-4 md:mt-6">
-            <a
+            <Link
               href="/#global-reach"
-              onClick={(e) => handleHashLinkClick(e, "#global-reach")}
+              onClick={(e: React.MouseEvent<HTMLAnchorElement>) => handleHashLinkClick(e, "#global-reach")}
               className={`${styles.menuItem} ${styles.fancyUnderline} text-3xl md:text-5xl lg:text-6xl`}
             >
               {t.menu.globalReach}
-            </a>
-            <a
+            </Link>
+            <Link
               href="/#partners"
-              onClick={(e) => handleHashLinkClick(e, "#partners")}
+              onClick={(e: React.MouseEvent<HTMLAnchorElement>) => handleHashLinkClick(e, "#partners")}
               className={`${styles.menuItem} ${styles.fancyUnderline} text-3xl md:text-5xl lg:text-6xl`}
             >
               {t.menu.partners}
-            </a>
+            </Link>
             <Link
               href="/blog"
               onClick={handleLinkClick}

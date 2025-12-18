@@ -34,6 +34,7 @@ export function InfiniteSlider({
 
     // Fix hydration by ensuring component only animates after mount
     useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setIsMounted(true);
     }, []);
 
